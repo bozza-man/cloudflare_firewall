@@ -1,0 +1,54 @@
+{
+  "manifest_version": 3,
+  "name": "Cloudflare Gateway Log Streamer",
+  "version": "1.0.0",
+  "description": "Stream Cloudflare Zero Trust Gateway activity logs to local monitoring server",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "webRequest"
+  ],
+  "host_permissions": [
+    "https://*.cloudflare.com/*",
+    "https://dash.teams.cloudflare.com/*",
+    "http://localhost:8080/*",
+    "http://localhost:8081/*",
+    "ws://localhost:8080/*",
+    "ws://localhost:8081/*"
+  ],
+  "background": {
+    "service_worker": "src/background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://dash.teams.cloudflare.com/*",
+        "https://one.dash.cloudflare.com/*"
+      ],
+      "js": ["src/content.js"],
+      "css": ["src/styles.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "src/popup.html",
+    "default_icon": {
+      "16": "assets/icon-16.png",
+      "48": "assets/icon-48.png",
+      "128": "assets/icon-128.png"
+    }
+  },
+  "icons": {
+    "16": "assets/icon-16.png",
+    "48": "assets/icon-48.png",
+    "128": "assets/icon-128.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["src/injected.js"],
+      "matches": ["https://dash.teams.cloudflare.com/*", "https://one.dash.cloudflare.com/*"]
+    }
+  ]
+}

@@ -23,7 +23,10 @@
       "Bash(NODE_OPTIONS='--experimental-vm-modules' npx jest --config jest.config.mjs tests/unit/domain-conflict-detector.test.ts --no-coverage)",
       "Bash(NODE_OPTIONS='--experimental-vm-modules' npx jest --config jest.config.mjs tests/unit/domain-conflict-detector.test.ts::DomainConflictDetector::detectConflicts --no-coverage)",
       "Bash(node:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run start:*)",
+      "Bash(curl:*)"
     ],
     "deny": []
   }

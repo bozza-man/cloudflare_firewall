@@ -265,4 +265,65 @@ export class GatewayClient {
     }
     return error instanceof Error ? error : new Error(String(error));
   }
+
+  /**
+   * Fetch logs from Cloudflare Gateway
+   * Note: This is a placeholder - actual implementation depends on Cloudflare's log API
+   */
+  public async fetchLogs(options: {
+    type: 'audit' | 'gateway_activity' | 'dns' | 'http';
+    since?: string;
+    until?: string;
+    limit?: number;
+  }): Promise<any[]> {
+    // Cloudflare Zero Trust logs are typically accessed through:
+    // 1. Logpush to external destinations
+    // 2. GraphQL Analytics API
+    // 3. REST API endpoints (limited)
+    
+    // For demonstration, we'll return an empty array
+    // In production, you would implement the actual API call
+    console.warn('fetchLogs is a placeholder - implement based on your Cloudflare log access method');
+    
+    // Example implementation for GraphQL Analytics API:
+    /*
+    const query = `
+      query GetLogs($accountId: String!, $filter: LogFilter!) {
+        viewer {
+          accounts(filter: { accountTag: $accountId }) {
+            gatewayLogs(filter: $filter, limit: ${options.limit || 100}) {
+              edges {
+                node {
+                  timestamp
+                  action
+                  ruleId
+                  sourceIp
+                  destinationHost
+                  // ... other fields
+                }
+              }
+            }
+          }
+        }
+      }
+    `;
+    
+    // Make GraphQL request
+    const response = await this.request('POST', 'https://api.cloudflare.com/client/v4/graphql', {
+      query,
+      variables: {
+        accountId: this.accountId,
+        filter: {
+          datetime_geq: options.since,
+          datetime_leq: options.until,
+          type: options.type
+        }
+      }
+    });
+    
+    return response.data.viewer.accounts[0].gatewayLogs.edges.map(e => e.node);
+    */
+    
+    return [];
+  }
 }

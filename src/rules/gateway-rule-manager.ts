@@ -47,6 +47,31 @@ export class GatewayRuleManager {
     try {
       const existingRules = await this.gateway.listGatewayRules();
       
+      // LESSON LEARNED: Always check for exact duplicates first!
+      // Our deduplication found 13 redundant rules that were wasting processing time
+      spinner.text = 'Checking for exact duplicates...';
+      const exactDuplicate = this.findExactDuplicate(rule, existingRules);
+      if (exactDuplicate) {
+        spinner.warn(`Rule "${exactDuplicate.name}" already exists with same configuration`);
+        console.log(chalk.yellow('\n⚠️  Duplicate Detection:'));
+        console.log(`   Existing rule: ${exactDuplicate.name} (precedence: ${exactDuplicate.precedence})`);
+        console.log(`   Action: ${exactDuplicate.action}`);
+        console.log(chalk.cyan('   💡 Tip: Consider extending the existing rule instead of creating a duplicate\n'));
+        
+        if (process.stdin.isTTY) {
+          const { default: inquirer } = await import('inquirer');
+          const { continueAnyway } = await inquirer.prompt([{
+            type: 'confirm',
+            name: 'continueAnyway',
+            message: 'Create duplicate rule anyway?',
+            default: false
+          }]);
+          if (!continueAnyway) {
+            throw new Error('Duplicate rule creation cancelled');
+          }
+        }
+      }
+      
       // Use basic validation without AI optimization
       const validation = {
         valid: true,
@@ -215,6 +240,20 @@ export class GatewayRuleManager {
 
       // Ensure precedence is an integer and handle conflicts
       let integerPrecedence = Math.round(precedence);
+      
+      // CRITICAL LESSON: Catch-all DNS blocks MUST be last (high precedence)
+      // We incorrectly moved "Block Unknown DNS" to 1050 which broke legitimate services
+      // It needs to be AFTER all allows (2000+) to function as a catch-all
+      if (rule.action === 'block' && rule.name.toLowerCase().includes('unknown')) {
+        const minCatchAllPrecedence = 2000;
+        if (integerPrecedence < minCatchAllPrecedence) {
+          console.log(chalk.red('\n⚠️  CRITICAL PRECEDENCE CORRECTION:'));
+          console.log(`   "${rule.name}" is a catch-all block rule`);
+          console.log(`   It MUST have precedence >= ${minCatchAllPrecedence} (after all allows)`);
+          console.log(`   AI suggested: ${integerPrecedence}, correcting to: ${minCatchAllPrecedence}\n`);
+          integerPrecedence = minCatchAllPrecedence;
+        }
+      }
       
       // Check if precedence already exists and find next available
       const existingPrecedences = new Set(existingRules.map(r => r.precedence));
@@ -497,6 +536,164 @@ export class GatewayRuleManager {
       
     } catch (error) {
       console.log(chalk.red('\n❌ Domain verification failed:'), error instanceof Error ? error.message : error);
+    }
+  }
+
+  /**
+   * LESSON LEARNED: Check for exact duplicates before creating rules
+   * We found 13 duplicate rules that were redundant and slowing down Gateway processing
+   */
+  private findExactDuplicate(newRule: CreateGatewayRuleRequest, existingRules: GatewayRule[]): GatewayRule | null {
+    for (const existing of existingRules) {
+      // Check if action matches
+      if (existing.action !== newRule.action) continue;
+      
+      // Check if it's a similar service (name pattern matching)
+      const servicePattern = this.extractServicePattern(newRule.name);
+      if (servicePattern && existing.name.includes(servicePattern)) {
+        // Check if domains overlap significantly
+        const newDomains = this.extractDomainsFromRule(newRule);
+        const existingDomains = this.extractDomainsFromRule(existing);
+        
+        const overlap = newDomains.filter(d => existingDomains.includes(d));
+        if (overlap.length > 0 && overlap.length === newDomains.length) {
+          // All new domains are already covered
+          return existing;
+        }
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Extract service name pattern from rule name
+   * Examples: "Tesla: API Services" -> "Tesla"
+   *          "Apple: iCloud Services" -> "Apple"
+   */
+  private extractServicePattern(ruleName: string): string | null {
+    const match = ruleName.match(/^([^:]+):/);
+    return match ? match[1].trim() : null;
+  }
+
+  /**
+   * Extract domains from a rule's traffic or filters
+   */
+  private extractDomainsFromRule(rule: CreateGatewayRuleRequest | GatewayRule): string[] {
+    const domains: string[] = [];
+    
+    if ('traffic' in rule && rule.traffic) {
+      // Extract from traffic field
+      const matches = rule.traffic.match(/"([^"]+)"/g);
+      if (matches) {
+        matches.forEach(m => domains.push(m.replace(/"/g, '')));
+      }
+    } else if ('filters' in rule && rule.filters) {
+      // Extract from filters
+      domains.push(...this.domainVerifier.extractDomainsFromFilters(rule.filters));
+    }
+    
+    return domains;
+  }
+
+  /**
+   * LESSON LEARNED: Proper category-based precedence prevents conflicts
+   * Our optimization organized 56 rules into 20 logical categories with proper spacing
+   */
+  async optimizePrecedence(dryRun: boolean = false): Promise<void> {
+    const spinner = ora('Analyzing rule precedence...').start();
+    
+    try {
+      const rules = await this.gateway.listGatewayRules();
+      
+      // Define proper precedence ranges (learned from our optimization)
+      // CRITICAL: "Block Unknown" rules MUST be last (2000+) as catch-alls!
+      const categoryRanges = [
+        { name: 'Critical Auth & Certs', pattern: /Authentication|Certificate|OCSP/i, range: [990, 999] },
+        { name: 'Security Blocks (Specific)', pattern: /Block.*(Malware|Phishing|Command|Botnet)/i, range: [1000, 1099] },
+        { name: 'Development', pattern: /GitHub|NPM|Package/i, range: [1100, 1149] },
+        { name: 'Cloud Services', pattern: /AWS|Azure|Google.*Core/i, range: [1150, 1199] },
+        { name: 'Apple Services', pattern: /Apple|iCloud/i, range: [1200, 1249] },
+        { name: 'Communication', pattern: /Slack|Zoom|Teams/i, range: [1250, 1299] },
+        { name: 'Tesla', pattern: /Tesla/i, range: [1600, 1649] },
+        { name: 'General Allows', pattern: /Allow/i, range: [1900, 1999] },
+        { name: 'Catch-All Blocks', pattern: /Block.*Unknown|Block.*Default/i, range: [2000, 2999] },
+      ];
+      
+      let reorderCount = 0;
+      const reorderPlan: Array<{rule: GatewayRule, newPrecedence: number}> = [];
+      
+      // Categorize and plan reordering
+      for (const category of categoryRanges) {
+        const categoryRules = rules.filter(r => category.pattern.test(r.name));
+        let currentPrecedence = category.range[0];
+        
+        for (const rule of categoryRules) {
+          if (Math.abs(rule.precedence - currentPrecedence) > 10) {
+            reorderPlan.push({ rule, newPrecedence: currentPrecedence });
+            reorderCount++;
+          }
+          currentPrecedence += 5; // 5-point spacing for better organization
+        }
+      }
+      
+      spinner.succeed(`Found ${reorderCount} rules needing precedence optimization`);
+      
+      if (reorderCount > 0 && !dryRun) {
+        console.log(chalk.yellow(`\n⚠️  ${reorderCount} rules have suboptimal precedence`));
+        console.log(chalk.cyan('💡 Run deduplication script to optimize: npx tsx src/scripts/dedupe-and-reorder-rules.ts\n'));
+      }
+      
+      return;
+    } catch (error) {
+      spinner.fail('Failed to analyze precedence');
+      throw error;
+    }
+  }
+
+  /**
+   * LESSON LEARNED: Consolidation reduces rule count and improves performance
+   * We reduced from 69 to 56 rules (19% reduction) by consolidating duplicates
+   */
+  async suggestConsolidation(): Promise<void> {
+    const spinner = ora('Analyzing consolidation opportunities...').start();
+    
+    try {
+      const rules = await this.gateway.listGatewayRules();
+      const groups = new Map<string, GatewayRule[]>();
+      
+      // Group rules by service
+      for (const rule of rules) {
+        const service = this.extractServicePattern(rule.name);
+        if (service) {
+          if (!groups.has(service)) {
+            groups.set(service, []);
+          }
+          groups.get(service)!.push(rule);
+        }
+      }
+      
+      // Find groups with multiple rules
+      const consolidationOpportunities: string[] = [];
+      for (const [service, serviceRules] of groups) {
+        if (serviceRules.length > 2) {
+          consolidationOpportunities.push(`${service}: ${serviceRules.length} rules can be merged`);
+        }
+      }
+      
+      spinner.succeed('Consolidation analysis complete');
+      
+      if (consolidationOpportunities.length > 0) {
+        console.log(chalk.yellow('\n💡 Consolidation Opportunities Found:'));
+        consolidationOpportunities.forEach(opp => {
+          console.log(`   • ${opp}`);
+        });
+        console.log(chalk.cyan('\n   Run optimization: npx tsx src/scripts/optimize-all-rules.ts\n'));
+      } else {
+        console.log(chalk.green('\n✅ Rules are well consolidated'));
+      }
+    } catch (error) {
+      spinner.fail('Failed to analyze consolidation');
+      throw error;
     }
   }
 

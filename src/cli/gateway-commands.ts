@@ -3,11 +3,12 @@ import chalk from 'chalk';
 import { GatewayRuleManager } from '../rules/gateway-rule-manager.js';
 import { RuleOptimizer } from '../rules/rule-optimizer.js';
 import { DomainConflictDetector } from '../rules/domain-conflict-detector.js';
+import { StreamLogsCommand } from './stream-logs-command.js';
 import type { GatewayRule, GatewayList, GatewayCategory } from '../types/gateway.js';
 import inquirer from 'inquirer';
 import ora from 'ora';
 
-export function createGatewayCommands(): Command {
+export async function createGatewayCommands(): Promise<Command> {
   const program = new Command();
   const ruleManager = new GatewayRuleManager();
 
@@ -230,6 +231,15 @@ export function createGatewayCommands(): Command {
         process.exit(1);
       }
     });
+
+  // Add stream logs command
+  const streamCommand = new StreamLogsCommand();
+  program.addCommand(streamCommand.getCommand());
+
+  // Add monitor command (works with your current plan!)
+  const { MonitorCommand } = await import('./monitor-command.js');
+  const monitorCommand = new MonitorCommand();
+  program.addCommand(monitorCommand.getCommand());
 
   return program;
 }

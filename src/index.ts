@@ -8,7 +8,7 @@ async function main() {
   try {
     validateConfig();
     
-    const program = createGatewayCommands();
+    const program = await createGatewayCommands();
     await program.parseAsync(process.argv);
   } catch (error) {
     console.error(chalk.red('Fatal error:'), error);

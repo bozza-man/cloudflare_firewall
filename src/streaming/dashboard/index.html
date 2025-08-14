@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gateway Logs - Real-time Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .log-entry {
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .pulse-dot {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+            }
+        }
+        
+        .scrollbar-thin::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        
+        .scrollbar-thin::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .scrollbar-thin::-webkit-scrollbar-thumb {
+            background: #4b5563;
+            border-radius: 3px;
+        }
+        
+        .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+            background: #6b7280;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100">
+    <!-- Header -->
+    <header class="bg-gray-800 border-b border-gray-700 p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+                <h1 class="text-2xl font-bold flex items-center">
+                    <i class="fas fa-shield-alt text-blue-500 mr-2"></i>
+                    Gateway Logs Dashboard
+                </h1>
+                <div id="connectionStatus" class="flex items-center">
+                    <div class="w-3 h-3 bg-red-500 rounded-full mr-2" id="statusDot"></div>
+                    <span id="statusText" class="text-sm">Disconnected</span>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button id="pauseBtn" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition">
+                    <i class="fas fa-pause mr-2"></i>Pause
+                </button>
+                <button id="clearBtn" class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg transition">
+                    <i class="fas fa-trash mr-2"></i>Clear
+                </button>
+                <button id="exportBtn" class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg transition">
+                    <i class="fas fa-download mr-2"></i>Export
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Stats Bar -->
+    <div class="bg-gray-800 border-b border-gray-700 p-4">
+        <div class="container mx-auto grid grid-cols-5 gap-4">
+            <div class="bg-gray-700 rounded-lg p-3">
+                <div class="text-sm text-gray-400">Total Logs</div>
+                <div class="text-2xl font-bold" id="totalLogs">0</div>
+            </div>
+            <div class="bg-gray-700 rounded-lg p-3">
+                <div class="text-sm text-gray-400">Blocked</div>
+                <div class="text-2xl font-bold text-red-500" id="blockedCount">0</div>
+            </div>
+            <div class="bg-gray-700 rounded-lg p-3">
+                <div class="text-sm text-gray-400">Allowed</div>
+                <div class="text-2xl font-bold text-green-500" id="allowedCount">0</div>
+            </div>
+            <div class="bg-gray-700 rounded-lg p-3">
+                <div class="text-sm text-gray-400">Isolated</div>
+                <div class="text-2xl font-bold text-yellow-500" id="isolatedCount">0</div>
+            </div>
+            <div class="bg-gray-700 rounded-lg p-3">
+                <div class="text-sm text-gray-400">Logs/sec</div>
+                <div class="text-2xl font-bold text-blue-500" id="logsPerSec">0</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mx-auto p-4">
+        <div class="grid grid-cols-3 gap-4">
+            <!-- Filters Column -->
+            <div class="col-span-1">
+                <div class="bg-gray-800 rounded-lg p-4">
+                    <h2 class="text-lg font-semibold mb-4">
+                        <i class="fas fa-filter mr-2"></i>Filters
+                    </h2>
+                    
+                    <!-- Search -->
+                    <div class="mb-4">
+                        <label class="block text-sm text-gray-400 mb-2">Search</label>
+                        <input type="text" id="searchInput" 
+                               class="w-full px-3 py-2 bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="Search logs...">
+                    </div>
+                    
+                    <!-- Log Level -->
+                    <div class="mb-4">
+                        <label class="block text-sm text-gray-400 mb-2">Log Level</label>
+                        <select id="levelFilter" 
+                                class="w-full px-3 py-2 bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">All Levels</option>
+                            <option value="debug">Debug</option>
+                            <option value="info">Info</option>
+                            <option value="warning">Warning</option>
+                            <option value="error">Error</option>
+                            <option value="critical">Critical</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Action Filter -->
+                    <div class="mb-4">
+                        <label class="block text-sm text-gray-400 mb-2">Action</label>
+                        <select id="actionFilter" 
+                                class="w-full px-3 py-2 bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">All Actions</option>
+                            <option value="block">Block</option>
+                            <option value="allow">Allow</option>
+                            <option value="isolate">Isolate</option>
+                            <option value="inspect">Inspect</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Time Range -->
+                    <div class="mb-4">
+                        <label class="block text-sm text-gray-400 mb-2">Time Range</label>
+                        <select id="timeRange" 
+                                class="w-full px-3 py-2 bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="live">Live</option>
+                            <option value="1h">Last Hour</option>
+                            <option value="24h">Last 24 Hours</option>
+                            <option value="7d">Last 7 Days</option>
+                        </select>
+                    </div>
+                    
+                    <button id="applyFilters" 
+                            class="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition">
+                        Apply Filters
+                    </button>
+                </div>
+                
+                <!-- Top Rules -->
+                <div class="bg-gray-800 rounded-lg p-4 mt-4">
+                    <h2 class="text-lg font-semibold mb-4">
+                        <i class="fas fa-list-ol mr-2"></i>Top Rules
+                    </h2>
+                    <div id="topRules" class="space-y-2">
+                        <!-- Will be populated dynamically -->
+                    </div>
+                </div>
+                
+                <!-- Activity Chart -->
+                <div class="bg-gray-800 rounded-lg p-4 mt-4">
+                    <h2 class="text-lg font-semibold mb-4">
+                        <i class="fas fa-chart-line mr-2"></i>Activity
+                    </h2>
+                    <canvas id="activityChart" width="300" height="200"></canvas>
+                </div>
+            </div>
+            
+            <!-- Logs Column -->
+            <div class="col-span-2">
+                <div class="bg-gray-800 rounded-lg p-4 h-[calc(100vh-250px)]">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-lg font-semibold">
+                            <i class="fas fa-stream mr-2"></i>Real-time Logs
+                        </h2>
+                        <div class="flex items-center space-x-2">
+                            <label class="flex items-center">
+                                <input type="checkbox" id="autoScroll" checked 
+                                       class="mr-2 rounded bg-gray-700 border-gray-600">
+                                <span class="text-sm">Auto-scroll</span>
+                            </label>
+                            <span class="text-sm text-gray-400">
+                                Buffer: <span id="bufferSize">0</span>/10000
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <!-- Logs Container -->
+                    <div id="logsContainer" 
+                         class="h-[calc(100%-50px)] overflow-y-auto scrollbar-thin space-y-2">
+                        <!-- Logs will be added here dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Log Detail Modal -->
+    <div id="logModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-gray-800 rounded-lg p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold">Log Details</h2>
+                <button onclick="closeLogModal()" class="text-gray-400 hover:text-white">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="logModalContent">
+                <!-- Log details will be shown here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>
