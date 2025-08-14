@@ -2,6 +2,7 @@ import { GatewayClient } from '../api/gateway-client.js';
 import { GatewayAIAssistant } from '../llm/gateway-ai-assistant.js';
 import { ConflictResolver } from './conflict-resolver.js';
 import { DomainConflictDetector, type DomainConflict } from './domain-conflict-detector.js';
+import { DomainVerifier } from '../utils/domain-verifier.js';
 import type { 
   GatewayRule, 
   CreateGatewayRuleRequest, 
@@ -19,12 +20,14 @@ export class GatewayRuleManager {
   private ai: GatewayAIAssistant;
   private conflictResolver: ConflictResolver;
   private domainConflictDetector: DomainConflictDetector;
+  private domainVerifier: DomainVerifier;
 
   constructor() {
     this.gateway = new GatewayClient();
     this.ai = new GatewayAIAssistant();
     this.conflictResolver = new ConflictResolver();
     this.domainConflictDetector = new DomainConflictDetector();
+    this.domainVerifier = new DomainVerifier();
   }
 
   async listRules(): Promise<GatewayRule[]> {
@@ -226,6 +229,12 @@ export class GatewayRuleManager {
         spinner.succeed(`Suggested precedence: ${integerPrecedence} - ${reasoning}`);
       }
 
+      // Perform pre-rule verification to understand current state
+      await this.verifyRuleImplementation({
+        ...rule,
+        filters: validation.optimized
+      }, 'pre');
+      
       spinner.start('Creating rule...');
       const newRule = await this.gateway.createGatewayRule({
         ...rule,
@@ -234,6 +243,13 @@ export class GatewayRuleManager {
       });
 
       spinner.succeed('Rule created successfully');
+      
+      // Wait for rule propagation
+      await this.domainVerifier.waitForRulePropagation(3);
+      
+      // Perform post-rule verification to confirm implementation
+      await this.verifyRuleImplementation(newRule, 'post');
+      
       return newRule;
     } catch (error) {
       spinner.fail('Failed to create rule');
@@ -444,6 +460,40 @@ export class GatewayRuleManager {
     } catch (error) {
       spinner.fail('Failed to fetch categories');
       throw error;
+    }
+  }
+
+  /**
+   * Verify rule implementation with comprehensive before/after testing
+   */
+  private async verifyRuleImplementation(rule: CreateGatewayRuleRequest | GatewayRule, phase: 'pre' | 'post' = 'post'): Promise<void> {
+    try {
+      // Extract domains from the rule's filters or traffic
+      let domains: string[] = [];
+      
+      if ('traffic' in rule && rule.traffic) {
+        // For existing rules, use traffic field
+        domains = this.domainVerifier.extractDomainsFromFilters([rule.traffic]);
+      } else if ('filters' in rule && rule.filters) {
+        // For new rules, use filters field
+        domains = this.domainVerifier.extractDomainsFromFilters(rule.filters);
+      }
+      
+      if (domains.length === 0) {
+        console.log(chalk.gray(`\n🔍 No domains found in rule "${rule.name}" for verification`));
+        return;
+      }
+
+      // Perform comprehensive verification
+      await this.domainVerifier.verifyRuleImplementation({
+        ruleName: rule.name,
+        action: rule.action,
+        domains,
+        phase
+      });
+      
+    } catch (error) {
+      console.log(chalk.red('\n❌ Domain verification failed:'), error instanceof Error ? error.message : error);
     }
   }
 
