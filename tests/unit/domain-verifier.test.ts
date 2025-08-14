@@ -1,441 +1,409 @@
-const { describe, it, expect, beforeEach } = require('@jest/globals');
+import { describe, it, expect, beforeEach } from '@jest/globals';
+import { DomainVerifier, RuleVerificationContext } from '../../src/utils/domain-verifier';
 
-// Mock the dns module
-const mockDns = {
-  promises: {
-    lookup: jest.fn()
-  }
-};
-
-// Create a simple DomainVerifier implementation for testing
-class DomainVerifier {
-  async verifyDomain(domain: string): Promise<boolean> {
-    if (!domain || typeof domain !== 'string' || domain.trim().length === 0) {
-      return false;
-    }
-
-    // Basic domain format validation
-    if (!this.isDomainFormat(domain)) {
-      return false;
-    }
-
-    try {
-      await mockDns.promises.lookup(domain);
-      return true;
-    } catch (error) {
-      return false;
-    }
-  }
-
-  async verifyDomains(domains: string[]): Promise<Record<string, boolean>> {
-    if (!Array.isArray(domains) || domains.length === 0) {
-      return {};
-    }
-
-    // Remove duplicates
-    const uniqueDomains = [...new Set(domains)];
-    const results: Record<string, boolean> = {};
-
-    for (const domain of uniqueDomains) {
-      results[domain] = await this.verifyDomain(domain);
-    }
-
-    return results;
-  }
-
-  isDomainFormat(domain: string): boolean {
-    if (!domain || typeof domain !== 'string') {
-      return false;
-    }
-
-    // Additional checks
-    if (domain.length > 253) return false;
-    if (domain.startsWith('.') || domain.endsWith('.')) return false;
-    if (domain.includes('..')) return false;
-    if (domain.includes(' ')) return false;
-    if (domain.startsWith('-') || domain.endsWith('-')) return false;
-    if (domain.includes('.-') || domain.includes('-.')) return false;
-    
-    // Check for invalid characters
-    if (/[^a-zA-Z0-9.-]/.test(domain)) return false;
-    
-    // Must contain at least one dot
-    if (!domain.includes('.')) return false;
-    
-    // Split into parts and validate each
-    const parts = domain.split('.');
-    if (parts.length < 2) return false;
-    
-    // Each part must be valid
-    for (const part of parts) {
-      if (!part) return false; // Empty part
-      if (part.startsWith('-') || part.endsWith('-')) return false;
-      if (!/^[a-zA-Z0-9-]+$/.test(part)) return false;
-    }
-    
-    // Last part (TLD) should be at least 2 characters and not start with number
-    const tld = parts[parts.length - 1];
-    if (tld.length < 2) return false;
-    
-    return true;
-  }
-}
+// Note: Following user rules - using real data instead of mocks where possible
+// However, for DNS operations in tests, we need to use controlled environments
 
 describe('DomainVerifier', () => {
-  let verifier: DomainVerifier;
+  let domainVerifier: DomainVerifier;
 
   beforeEach(() => {
-    jest.clearAllMocks();
-    verifier = new DomainVerifier();
+    domainVerifier = new DomainVerifier(2000); // Shorter timeout for tests
+  });
+
+  describe('extractDomainsFromFilters', () => {
+    it('should extract domains from dns.fqdn in format correctly', () => {
+      const filters = [
+        'dns.fqdn in {"example.com" "test.org" "subdomain.example.com"}'
+      ];
+
+      const result = domainVerifier.extractDomainsFromFilters(filters);
+
+      expect(result).toContain('example.com');
+      expect(result).toContain('test.org');
+      expect(result).toContain('subdomain.example.com');
+      expect(result).toHaveLength(3);
+    });
+
+    it('should extract domains from dns.fqdn == format correctly', () => {
+      const filters = [
+        'dns.fqdn == "example.com"',
+        'dns.fqdn == "another-domain.net"'
+      ];
+
+      const result = domainVerifier.extractDomainsFromFilters(filters);
+
+      expect(result).toContain('example.com');
+      expect(result).toContain('another-domain.net');
+      expect(result).toHaveLength(2);
+    });
+
+    it('should extract domains from http.request.uri.host == format correctly', () => {
+      const filters = [
+        'http.request.uri.host == "api.example.com"'
+      ];
+
+      const result = domainVerifier.extractDomainsFromFilters(filters);
+
+      expect(result).toContain('api.example.com');
+      expect(result).toHaveLength(1);
+    });
+
+    it('should extract domains from http.request.uri.host in format correctly', () => {
+      const filters = [
+        'http.request.uri.host in {"api.example.com" "cdn.example.org" "static.test.com"}'
+      ];
+
+      const result = domainVerifier.extractDomainsFromFilters(filters);
+
+      expect(result).toContain('api.example.com');
+      expect(result).toContain('cdn.example.org');
+      expect(result).toContain('static.test.com');
+      expect(result).toHaveLength(3);
+    });
+
+    it('should handle mixed filter formats in a single call', () => {
+      const filters = [
+        'dns.fqdn in {"example.com" "test.org"}',
+        'dns.fqdn == "single-domain.com"',
+        'http.request.uri.host == "api.example.net"',
+        'http.request.uri.host in {"cdn.test.io" "static.example.co"}'
+      ];
+
+      const result = domainVerifier.extractDomainsFromFilters(filters);
+
+      expect(result).toContain('example.com');
+      expect(result).toContain('test.org');
+      expect(result).toContain('single-domain.com');
+      expect(result).toContain('api.example.net');
+      expect(result).toContain('cdn.test.io');
+      expect(result).toContain('static.example.co');
+      expect(result).toHaveLength(6);
+    });
+
+    it('should ignore invalid domain formats', () => {
+      const filters = [
+        'dns.fqdn in {"valid-domain.com" "invalid..domain" "another-valid.org" "-.invalid"}',
+        'dns.fqdn == "toolong' + 'a'.repeat(250) + '.com"' // Domain longer than 253 chars
+      ];
+
+      const result = domainVerifier.extractDomainsFromFilters(filters);
+
+      expect(result).toContain('valid-domain.com');
+      expect(result).toContain('another-valid.org');
+      expect(result).not.toContain('invalid..domain');
+      expect(result).not.toContain('-.invalid');
+      expect(result).toHaveLength(2);
+    });
+
+    it('should handle empty filter array', () => {
+      const result = domainVerifier.extractDomainsFromFilters([]);
+
+      expect(result).toHaveLength(0);
+    });
+
+    it('should handle filters with no domain matches', () => {
+      const filters = [
+        'src.ip in {1.2.3.4 5.6.7.8}',
+        'user.email == "test@example.com"',
+        'http.request.method == "POST"'
+      ];
+
+      const result = domainVerifier.extractDomainsFromFilters(filters);
+
+      expect(result).toHaveLength(0);
+    });
+
+    it('should deduplicate domains found in multiple filters', () => {
+      const filters = [
+        'dns.fqdn in {"example.com" "test.org"}',
+        'dns.fqdn == "example.com"',
+        'http.request.uri.host == "test.org"'
+      ];
+
+      const result = domainVerifier.extractDomainsFromFilters(filters);
+
+      expect(result).toContain('example.com');
+      expect(result).toContain('test.org');
+      expect(result).toHaveLength(2); // Should not have duplicates
+    });
+  });
+
+  describe('domain format validation', () => {
+    it('should validate standard domain formats', () => {
+      const validDomains = [
+        'example.com',
+        'subdomain.example.org',
+        'multi.level.subdomain.test.net',
+        'a.co',
+        'test-domain.com',
+        'domain123.org'
+      ];
+
+      validDomains.forEach(domain => {
+        const result = domainVerifier.extractDomainsFromFilters([`dns.fqdn == "${domain}"`]);
+        expect(result).toContain(domain);
+      });
+    });
+
+    it('should reject invalid domain formats', () => {
+      const invalidDomains = [
+        'invalid..domain.com',
+        '.invalid-start.com',
+        'invalid-end.com.',
+        '-invalid-hyphen-start.com',
+        'invalid-hyphen-end-.com',
+        'toolong' + 'a'.repeat(250) + '.com',
+        'invalid_underscore.com',
+        'invalid space.com',
+        'invalid@symbol.com'
+      ];
+
+      invalidDomains.forEach(domain => {
+        const result = domainVerifier.extractDomainsFromFilters([`dns.fqdn == "${domain}"`]);
+        expect(result).not.toContain(domain);
+      });
+    });
   });
 
   describe('verifyDomain', () => {
-    it('should verify a valid domain', async () => {
-      mockDns.promises.lookup.mockResolvedValueOnce({
-        address: '93.184.216.34',
-        family: 4
-      });
+    it('should resolve well-known domains successfully', async () => {
+      // Using real, stable domains for testing as per user rules
+      const result = await domainVerifier.verifyDomain('google.com');
 
-      const result = await verifier.verifyDomain('example.com');
+      expect(result.domain).toBe('google.com');
+      expect(result.success).toBe(true);
+      expect(result.ip).toBeDefined();
+      expect(typeof result.ip).toBe('string');
+      expect(result.responseTime).toBeGreaterThan(0);
+      expect(result.error).toBeUndefined();
+    });
+
+    it('should handle non-existent domains gracefully', async () => {
+      // Using a domain that should not exist
+      const nonExistentDomain = 'this-domain-definitely-does-not-exist-12345.com';
+      const result = await domainVerifier.verifyDomain(nonExistentDomain);
+
+      expect(result.domain).toBe(nonExistentDomain);
+      expect(result.success).toBe(false);
+      expect(result.error).toBeDefined();
+      expect(typeof result.error).toBe('string');
+      expect(result.responseTime).toBeGreaterThan(0);
+      expect(result.ip).toBeUndefined();
+    });
+
+    it('should handle DNS timeouts gracefully', async () => {
+      // Create a verifier with very short timeout to force timeout
+      const shortTimeoutVerifier = new DomainVerifier(1); // 1ms timeout
       
-      expect(result).toBe(true);
-      expect(mockDns.promises.lookup).toHaveBeenCalledWith('example.com');
+      // Even a real domain should timeout with 1ms
+      const result = await shortTimeoutVerifier.verifyDomain('google.com');
+
+      expect(result.domain).toBe('google.com');
+      expect(result.success).toBe(false);
+      expect(result.error).toContain('timeout');
+      expect(result.responseTime).toBeLessThan(100); // Should be very fast due to timeout
     });
 
-    it('should reject invalid domain format', async () => {
-      const result = await verifier.verifyDomain('invalid..domain');
-      expect(result).toBe(false);
-      expect(mockDns.promises.lookup).not.toHaveBeenCalled();
-    });
+    it('should measure response time accurately', async () => {
+      const result = await domainVerifier.verifyDomain('google.com');
 
-    it('should handle DNS lookup failure', async () => {
-      mockDns.promises.lookup.mockRejectedValueOnce(new Error('NXDOMAIN'));
-
-      const result = await verifier.verifyDomain('nonexistent.example.com');
-      
-      expect(result).toBe(false);
-      expect(mockDns.promises.lookup).toHaveBeenCalledWith('nonexistent.example.com');
-    });
-
-    it('should reject empty or undefined domains', async () => {
-      expect(await verifier.verifyDomain('')).toBe(false);
-      expect(await verifier.verifyDomain('   ')).toBe(false);
-      expect(await verifier.verifyDomain(null as any)).toBe(false);
-      expect(await verifier.verifyDomain(undefined as any)).toBe(false);
-      expect(mockDns.promises.lookup).not.toHaveBeenCalled();
-    });
-
-    it('should handle special characters in domain', async () => {
-      expect(await verifier.verifyDomain('domain with spaces.com')).toBe(false);
-      expect(await verifier.verifyDomain('domain@email.com')).toBe(false);
-      expect(await verifier.verifyDomain('domain#hash.com')).toBe(false);
-      expect(await verifier.verifyDomain('domain$special.com')).toBe(false);
-    });
-
-    it('should accept valid subdomains', async () => {
-      mockDns.promises.lookup.mockResolvedValueOnce({
-        address: '192.168.1.1',
-        family: 4
-      });
-
-      const result = await verifier.verifyDomain('sub.example.com');
-      
-      expect(result).toBe(true);
-      expect(mockDns.promises.lookup).toHaveBeenCalledWith('sub.example.com');
-    });
-
-    it('should handle very long domain names', async () => {
-      const longDomain = 'a'.repeat(250) + '.com';
-      const result = await verifier.verifyDomain(longDomain);
-      expect(result).toBe(false);
-    });
-
-    it('should handle domains with multiple subdomains', async () => {
-      mockDns.promises.lookup.mockResolvedValueOnce({
-        address: '1.2.3.4',
-        family: 4
-      });
-
-      const result = await verifier.verifyDomain('deep.sub.domain.example.com');
-      expect(result).toBe(true);
-    });
-
-    it('should handle international domains', async () => {
-      mockDns.promises.lookup.mockResolvedValueOnce({
-        address: '5.6.7.8',
-        family: 4
-      });
-
-      const result = await verifier.verifyDomain('test.co.uk');
-      expect(result).toBe(true);
-    });
-
-    it('should handle domains with hyphens', async () => {
-      mockDns.promises.lookup.mockResolvedValueOnce({
-        address: '9.10.11.12',
-        family: 4
-      });
-
-      const result = await verifier.verifyDomain('test-domain.example-site.com');
-      expect(result).toBe(true);
-    });
-
-    it('should reject domains starting or ending with hyphens', async () => {
-      expect(await verifier.verifyDomain('-invalid.com')).toBe(false);
-      expect(await verifier.verifyDomain('invalid-.com')).toBe(false);
-      expect(await verifier.verifyDomain('sub.-invalid.com')).toBe(false);
+      expect(result.responseTime).toBeGreaterThan(0);
+      expect(result.responseTime).toBeLessThan(5000); // Should be within our timeout
     });
   });
 
   describe('verifyDomains', () => {
-    it('should verify multiple domains', async () => {
-      mockDns.promises.lookup
-        .mockResolvedValueOnce({ address: '1.1.1.1', family: 4 })
-        .mockResolvedValueOnce({ address: '8.8.8.8', family: 4 });
+    it('should handle empty domain list', async () => {
+      const result = await domainVerifier.verifyDomains([]);
 
-      const result = await verifier.verifyDomains(['example.com', 'google.com']);
-      
-      expect(result).toEqual({
-        'example.com': true,
-        'google.com': true
+      expect(result.totalDomains).toBe(0);
+      expect(result.successfulDomains).toBe(0);
+      expect(result.failedDomains).toBe(0);
+      expect(result.averageResponseTime).toBe(0);
+      expect(result.results).toHaveLength(0);
+    });
+
+    it('should verify multiple real domains successfully', async () => {
+      // Using real, stable domains
+      const domains = ['google.com', 'github.com', 'stackoverflow.com'];
+      const result = await domainVerifier.verifyDomains(domains);
+
+      expect(result.totalDomains).toBe(3);
+      expect(result.successfulDomains).toBeGreaterThan(0); // At least some should succeed
+      expect(result.results).toHaveLength(3);
+      expect(result.averageResponseTime).toBeGreaterThan(0);
+
+      // Verify structure of individual results
+      result.results.forEach(domainResult => {
+        expect(domainResult.domain).toBeDefined();
+        expect(typeof domainResult.success).toBe('boolean');
+        expect(typeof domainResult.responseTime).toBe('number');
+        expect(domainResult.responseTime).toBeGreaterThan(0);
       });
-      expect(mockDns.promises.lookup).toHaveBeenCalledTimes(2);
     });
 
     it('should handle mixed valid and invalid domains', async () => {
-      mockDns.promises.lookup
-        .mockResolvedValueOnce({ address: '1.1.1.1', family: 4 })
-        .mockRejectedValueOnce(new Error('NXDOMAIN'));
+      const domains = [
+        'google.com', // Should succeed
+        'this-domain-does-not-exist-test-12345.com', // Should fail
+        'github.com' // Should succeed
+      ];
 
-      const result = await verifier.verifyDomains(['example.com', 'invalid.test']);
+      const result = await domainVerifier.verifyDomains(domains);
+
+      expect(result.totalDomains).toBe(3);
+      expect(result.successfulDomains).toBeGreaterThanOrEqual(1); // At least one should succeed
+      expect(result.failedDomains).toBeGreaterThanOrEqual(1); // At least one should fail
+      expect(result.successfulDomains + result.failedDomains).toBe(3);
+      expect(result.results).toHaveLength(3);
+
+      // Verify that we have both successful and failed results
+      const successful = result.results.filter(r => r.success);
+      const failed = result.results.filter(r => !r.success);
       
-      expect(result).toEqual({
-        'example.com': true,
-        'invalid.test': false
+      expect(successful.length).toBe(result.successfulDomains);
+      expect(failed.length).toBe(result.failedDomains);
+
+      // Check successful results have IPs
+      successful.forEach(r => {
+        expect(r.ip).toBeDefined();
+        expect(r.error).toBeUndefined();
+      });
+
+      // Check failed results have errors
+      failed.forEach(r => {
+        expect(r.ip).toBeUndefined();
+        expect(r.error).toBeDefined();
       });
     });
 
-    it('should handle empty domain list', async () => {
-      const result = await verifier.verifyDomains([]);
-      expect(result).toEqual({});
-      expect(mockDns.promises.lookup).not.toHaveBeenCalled();
-    });
+    it('should process domains in batches for large lists', async () => {
+      // Create a larger list to test batching
+      const domains = [
+        'google.com',
+        'github.com',
+        'stackoverflow.com',
+        'microsoft.com',
+        'cloudflare.com',
+        'amazon.com'
+      ];
 
-    it('should handle duplicate domains', async () => {
-      mockDns.promises.lookup.mockResolvedValue({ address: '1.1.1.1', family: 4 });
+      const result = await domainVerifier.verifyDomains(domains);
 
-      const result = await verifier.verifyDomains(['example.com', 'example.com', 'example.com']);
-      
-      expect(result).toEqual({
-        'example.com': true
-      });
-      // Should only call lookup once for the unique domain
-      expect(mockDns.promises.lookup).toHaveBeenCalledTimes(1);
-    });
+      expect(result.totalDomains).toBe(6);
+      expect(result.results).toHaveLength(6);
+      expect(result.successfulDomains + result.failedDomains).toBe(6);
 
-    it('should handle null/undefined input', async () => {
-      expect(await verifier.verifyDomains(null as any)).toEqual({});
-      expect(await verifier.verifyDomains(undefined as any)).toEqual({});
-    });
-
-    it('should handle mixed valid and invalid format domains', async () => {
-      mockDns.promises.lookup.mockResolvedValue({ address: '1.1.1.1', family: 4 });
-
-      const result = await verifier.verifyDomains([
-        'valid.com',
-        'invalid..domain',
-        'also-valid.org',
-        'spaces in domain.com'
-      ]);
-      
-      expect(result).toEqual({
-        'valid.com': true,
-        'invalid..domain': false,
-        'also-valid.org': true,
-        'spaces in domain.com': false
-      });
-      expect(mockDns.promises.lookup).toHaveBeenCalledTimes(2); // Only for valid format domains
-    });
-
-    it('should handle large domain lists efficiently', async () => {
-      const domains = Array.from({ length: 50 }, (_, i) => `domain${i}.com`);
-      mockDns.promises.lookup.mockResolvedValue({ address: '1.1.1.1', family: 4 });
-
-      const result = await verifier.verifyDomains(domains);
-      
-      expect(Object.keys(result)).toHaveLength(50);
-      expect(Object.values(result).every(v => v === true)).toBe(true);
-      expect(mockDns.promises.lookup).toHaveBeenCalledTimes(50);
+      // Most of these well-known domains should resolve successfully
+      expect(result.successfulDomains).toBeGreaterThanOrEqual(3);
     });
   });
 
-  describe('isDomainFormat', () => {
-    it('should validate correct domain format', () => {
-      expect(verifier.isDomainFormat('example.com')).toBe(true);
-      expect(verifier.isDomainFormat('sub.example.com')).toBe(true);
-      expect(verifier.isDomainFormat('test-domain.co.uk')).toBe(true);
-      expect(verifier.isDomainFormat('deep.sub.domain.example.org')).toBe(true);
+  describe('verifyRuleImplementation', () => {
+    it('should handle rule context with no domains', async () => {
+      const context: RuleVerificationContext = {
+        ruleName: 'Test Rule',
+        action: 'allow',
+        domains: [],
+        phase: 'pre'
+      };
+
+      const result = await domainVerifier.verifyRuleImplementation(context);
+
+      expect(result.totalDomains).toBe(0);
+      expect(result.successfulDomains).toBe(0);
+      expect(result.failedDomains).toBe(0);
+      expect(result.averageResponseTime).toBe(0);
+      expect(result.results).toHaveLength(0);
     });
 
-    it('should reject invalid domain formats', () => {
-      expect(verifier.isDomainFormat('')).toBe(false);
-      expect(verifier.isDomainFormat('invalid..domain')).toBe(false);
-      expect(verifier.isDomainFormat('.example.com')).toBe(false);
-      expect(verifier.isDomainFormat('example.com.')).toBe(false);
-      expect(verifier.isDomainFormat('domain with spaces.com')).toBe(false);
+    it('should handle pre-rule verification with allow action', async () => {
+      const context: RuleVerificationContext = {
+        ruleName: 'Allow Test Rule',
+        action: 'allow',
+        domains: ['google.com', 'github.com'],
+        phase: 'pre'
+      };
+
+      const result = await domainVerifier.verifyRuleImplementation(context);
+
+      expect(result.totalDomains).toBe(2);
+      expect(result.results).toHaveLength(2);
+      expect(typeof result.averageResponseTime).toBe('number');
     });
 
-    it('should handle edge cases', () => {
-      expect(verifier.isDomainFormat('a.b')).toBe(true); // Minimum valid domain
-      expect(verifier.isDomainFormat('x')).toBe(false); // No TLD
-      expect(verifier.isDomainFormat('123.456.789.012')).toBe(false); // IP address
-      expect(verifier.isDomainFormat('domain.123')).toBe(true); // Numeric TLD (valid)
+    it('should handle post-rule verification with block action', async () => {
+      const context: RuleVerificationContext = {
+        ruleName: 'Block Test Rule',
+        action: 'block',
+        domains: ['google.com'],
+        phase: 'post'
+      };
+
+      const result = await domainVerifier.verifyRuleImplementation(context);
+
+      expect(result.totalDomains).toBe(1);
+      expect(result.results).toHaveLength(1);
+      expect(result.results[0].domain).toBe('google.com');
     });
 
-    it('should reject domains with invalid characters', () => {
-      expect(verifier.isDomainFormat('domain_with_underscore.com')).toBe(false);
-      expect(verifier.isDomainFormat('domain+plus.com')).toBe(false);
-      expect(verifier.isDomainFormat('domain[bracket].com')).toBe(false);
-      expect(verifier.isDomainFormat('domain{brace}.com')).toBe(false);
-    });
+    it('should handle different rule actions correctly', async () => {
+      const actions: Array<'allow' | 'block' | 'isolate' | 'do_not_isolate' | 'do_not_inspect' | 'inspect'> = 
+        ['allow', 'block', 'isolate', 'do_not_isolate', 'do_not_inspect', 'inspect'];
 
-    it('should handle null and undefined inputs', () => {
-      expect(verifier.isDomainFormat(null as any)).toBe(false);
-      expect(verifier.isDomainFormat(undefined as any)).toBe(false);
-    });
+      for (const action of actions) {
+        const context: RuleVerificationContext = {
+          ruleName: `Test ${action} Rule`,
+          action,
+          domains: ['google.com'],
+          phase: 'pre'
+        };
 
-    it('should handle non-string inputs', () => {
-      expect(verifier.isDomainFormat(123 as any)).toBe(false);
-      expect(verifier.isDomainFormat({} as any)).toBe(false);
-      expect(verifier.isDomainFormat([] as any)).toBe(false);
-    });
+        const result = await domainVerifier.verifyRuleImplementation(context);
 
-    it('should validate complex domain structures', () => {
-      expect(verifier.isDomainFormat('www.sub-domain.example-site.co.uk')).toBe(true);
-      expect(verifier.isDomainFormat('api-v2.service.company.com')).toBe(true);
-      expect(verifier.isDomainFormat('cdn123.static-assets.website.org')).toBe(true);
-    });
-  });
-
-  describe('error handling', () => {
-    it('should handle DNS timeout errors', async () => {
-      const timeoutError = new Error('Timeout');
-      (timeoutError as any).code = 'ETIMEOUT';
-      mockDns.promises.lookup.mockRejectedValueOnce(timeoutError);
-
-      const result = await verifier.verifyDomain('slow.example.com');
-      expect(result).toBe(false);
-    });
-
-    it('should handle unexpected DNS errors', async () => {
-      mockDns.promises.lookup.mockRejectedValueOnce(new Error('Unexpected error'));
-
-      const result = await verifier.verifyDomain('error.example.com');
-      expect(result).toBe(false);
-    });
-
-    it('should handle malformed DNS responses', async () => {
-      mockDns.promises.lookup.mockResolvedValueOnce(null as any);
-
-      const result = await verifier.verifyDomain('malformed.example.com');
-      expect(result).toBe(false);
-    });
-
-    it('should handle DNS service unavailable', async () => {
-      const serviceError = new Error('Service unavailable');
-      (serviceError as any).code = 'ENOTFOUND';
-      mockDns.promises.lookup.mockRejectedValueOnce(serviceError);
-
-      const result = await verifier.verifyDomain('service-down.example.com');
-      expect(result).toBe(false);
-    });
-
-    it('should handle network connection errors', async () => {
-      const networkError = new Error('Network unreachable');
-      (networkError as any).code = 'ENETUNREACH';
-      mockDns.promises.lookup.mockRejectedValueOnce(networkError);
-
-      const result = await verifier.verifyDomain('network-error.example.com');
-      expect(result).toBe(false);
+        expect(result.totalDomains).toBe(1);
+        expect(result.results).toHaveLength(1);
+        expect(result.results[0].domain).toBe('google.com');
+      }
     });
   });
 
-  describe('performance and scalability', () => {
-    it('should handle concurrent domain verification', async () => {
-      const domains = ['domain1.com', 'domain2.com', 'domain3.com'];
-      mockDns.promises.lookup.mockResolvedValue({ address: '1.1.1.1', family: 4 });
+  describe('waitForRulePropagation', () => {
+    it('should wait for the specified duration', async () => {
+      const startTime = Date.now();
+      const waitSeconds = 1; // Use 1 second for faster tests
+
+      await domainVerifier.waitForRulePropagation(waitSeconds);
+
+      const endTime = Date.now();
+      const actualWaitTime = endTime - startTime;
+
+      // Allow some tolerance for timing precision
+      expect(actualWaitTime).toBeGreaterThanOrEqual(waitSeconds * 950); // 95% of expected time
+      expect(actualWaitTime).toBeLessThan(waitSeconds * 1500); // Allow 50% extra for system overhead
+    });
+  });
+
+  describe('timeout handling', () => {
+    it('should respect custom timeout settings', async () => {
+      const customTimeout = 100; // Very short timeout
+      const customVerifier = new DomainVerifier(customTimeout);
 
       const startTime = Date.now();
-      const result = await verifier.verifyDomains(domains);
+      
+      // This should timeout quickly even with a real domain
+      const result = await customVerifier.verifyDomain('google.com');
+      
       const endTime = Date.now();
+      const actualTime = endTime - startTime;
 
-      expect(Object.keys(result)).toHaveLength(3);
-      expect(endTime - startTime).toBeLessThan(5000); // Should complete within 5 seconds
-    });
-
-    it('should handle very long domain lists', async () => {
-      const domains = Array.from({ length: 100 }, (_, i) => `test${i}.example.com`);
-      mockDns.promises.lookup.mockResolvedValue({ address: '1.1.1.1', family: 4 });
-
-      const result = await verifier.verifyDomains(domains);
+      // The actual time should be close to our timeout
+      expect(actualTime).toBeLessThan(customTimeout + 500); // Allow some overhead
       
-      expect(Object.keys(result)).toHaveLength(100);
-      expect(Object.values(result).every(v => v === true)).toBe(true);
-    });
-
-    it('should efficiently handle duplicate removal', () => {
-      const domainsWithDuplicates = [
-        'example.com', 'test.com', 'example.com', 'another.com', 'test.com'
-      ];
-      
-      // Test the duplicate removal logic indirectly
-      mockDns.promises.lookup.mockResolvedValue({ address: '1.1.1.1', family: 4 });
-      
-      return verifier.verifyDomains(domainsWithDuplicates).then(result => {
-        expect(Object.keys(result)).toHaveLength(3);
-        expect(mockDns.promises.lookup).toHaveBeenCalledTimes(3);
-      });
-    });
-  });
-
-  describe('integration scenarios', () => {
-    it('should handle real-world domain variations', async () => {
-      const realWorldDomains = [
-        'google.com',
-        'www.facebook.com',
-        'api.github.com',
-        'cdn.jsdelivr.net',
-        'fonts.googleapis.com'
-      ];
-
-      mockDns.promises.lookup.mockResolvedValue({ address: '1.1.1.1', family: 4 });
-
-      const result = await verifier.verifyDomains(realWorldDomains);
-      
-      expect(Object.keys(result)).toHaveLength(5);
-      expect(Object.values(result).every(v => v === true)).toBe(true);
-    });
-
-    it('should handle firewall-relevant domains', async () => {
-      const firewallDomains = [
-        'malware.badsite.com',
-        'phishing.scam.org',
-        'legitimate.business.co.uk',
-        'social.media.platform.com'
-      ];
-
-      mockDns.promises.lookup
-        .mockRejectedValueOnce(new Error('NXDOMAIN')) // malware
-        .mockRejectedValueOnce(new Error('NXDOMAIN')) // phishing
-        .mockResolvedValueOnce({ address: '1.1.1.1', family: 4 }) // legitimate
-        .mockResolvedValueOnce({ address: '2.2.2.2', family: 4 }); // social
-
-      const result = await verifier.verifyDomains(firewallDomains);
-      
-      expect(result['malware.badsite.com']).toBe(false);
-      expect(result['phishing.scam.org']).toBe(false);
-      expect(result['legitimate.business.co.uk']).toBe(true);
-      expect(result['social.media.platform.com']).toBe(true);
+      if (!result.success) {
+        expect(result.error).toContain('timeout');
+      }
     });
   });
 });

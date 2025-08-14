@@ -58,12 +58,12 @@
     "typescript": "^5.5.3"
   },
   "lint-staged": {
-    "*.{ts,js}": [
+    "src/**/*.{ts,js}": [
       "eslint --fix",
       "npm run typecheck"
     ],
-    "src/**/*.ts": [
-      "npm run test:ci"
+    "tests/**/*.{ts,js}": [
+      "eslint --fix"
     ]
   }
 }

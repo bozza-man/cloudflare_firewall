@@ -41,7 +41,8 @@ module.exports = {
     '!src/**/*.spec.ts',
     '!src/cli/**', // Exclude CLI files temporarily
     '!src/rules/rule-optimizer.ts', // Exclude temporarily due to import issues
-    '!src/rules/conflict-resolver.ts' // Exclude temporarily due to type issues
+    '!src/rules/conflict-resolver.ts', // Exclude temporarily due to type issues
+    '!src/utils/domain-verifier.ts' // Exclude temporarily due to ESM dependencies
   ],
   
   // Coverage thresholds (temporarily disabled for initial setup)
@@ -59,6 +60,17 @@ module.exports = {
   
   // Clear mocks between tests
   clearMocks: true,
+  
+  // Module name mappings for problematic ESM modules
+  moduleNameMapper: {
+    '^chalk$': '<rootDir>/node_modules/chalk/source/index.js',
+    '^ora$': '<rootDir>/node_modules/ora/index.js'
+  },
+  
+  // Transform ESM modules
+  transformIgnorePatterns: [
+    'node_modules/(?!(chalk|ora|cli-spinners|cli-cursor|restore-cursor|ansi-escapes|ansi-styles|strip-ansi|ansi-regex|log-symbols|figures|#ansi-styles)/)',
+  ],
   
   // Verbose output
   verbose: true,

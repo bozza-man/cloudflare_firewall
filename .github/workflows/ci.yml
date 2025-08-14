@@ -34,14 +34,8 @@ jobs:
     - name: Run linting
       run: npm run lint
       
-    - name: Run unit tests
-      run: npm run test:unit
-      
-    - name: Run integration tests
-      run: npm run test:integration
-      
-    - name: Generate test coverage
-      run: npm run test:coverage
+    - name: Run tests with coverage
+      run: npm run test:ci
       
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
