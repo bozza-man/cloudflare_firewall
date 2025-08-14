@@ -10,9 +10,22 @@
     "start": "node dist/index.js",
     "lint": "eslint src --ext .ts",
     "typecheck": "tsc --noEmit",
-    "generate-token": "tsx scripts/generate-token.ts"
+    "test": "jest",
+    "test:unit": "jest tests/unit",
+    "test:integration": "jest tests/integration",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:verbose": "jest --verbose",
+    "test:ci": "jest --coverage --watchAll=false --passWithNoTests",
+    "generate-token": "tsx scripts/generate-token.ts",
+    "prepare": "husky"
   },
-  "keywords": ["cloudflare", "firewall", "api", "llm"],
+  "keywords": [
+    "cloudflare",
+    "firewall",
+    "api",
+    "llm"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {
@@ -25,12 +38,32 @@
     "ora": "^8.0.1"
   },
   "devDependencies": {
+    "@jest/globals": "^30.0.5",
     "@types/inquirer": "^9.0.7",
+    "@types/jest": "^30.0.0",
     "@types/node": "^20.14.9",
+    "@types/supertest": "^6.0.3",
     "@typescript-eslint/eslint-plugin": "^7.14.1",
     "@typescript-eslint/parser": "^7.14.1",
     "eslint": "^8.57.0",
+    "husky": "^9.1.6",
+    "jest": "^30.0.5",
+    "jest-environment-node": "^30.0.5",
+    "lint-staged": "^15.2.10",
+    "nock": "^14.0.10",
+    "supertest": "^7.1.4",
+    "ts-jest": "^29.4.1",
+    "ts-node": "^10.9.2",
     "tsx": "^4.16.0",
     "typescript": "^5.5.3"
+  },
+  "lint-staged": {
+    "*.{ts,js}": [
+      "eslint --fix",
+      "npm run typecheck"
+    ],
+    "src/**/*.ts": [
+      "npm run test:ci"
+    ]
   }
 }

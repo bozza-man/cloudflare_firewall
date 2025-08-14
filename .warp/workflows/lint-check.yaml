@@ -1,0 +1,12 @@
+name: "Quick Lint Check"
+command: |
+  echo "🔍 Running quick lint check..."
+  npm run lint
+  
+  if [ $? -eq 0 ]; then
+    echo "✅ No linting issues found!"
+  else
+    echo "❌ Linting issues detected. Run 'lint-fix' workflow to auto-fix."
+  fi
+description: "Quick check for linting issues without fixing"
+tags: ["lint", "check", "quick"]

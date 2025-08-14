@@ -1,0 +1,20 @@
+name: "Lint & Fix Code"
+command: |
+  echo "🔍 Running ESLint with auto-fix..."
+  npm run lint -- --fix
+  echo "✅ Linting complete!"
+  
+  echo "🔧 Running TypeScript type check..."
+  npm run typecheck
+  echo "✅ Type checking complete!"
+  
+  echo "📋 Checking for any remaining issues..."
+  npm run lint
+  
+  if [ $? -eq 0 ]; then
+    echo "🎉 All linting checks passed!"
+  else
+    echo "⚠️  Some issues still remain. Check output above."
+  fi
+description: "Automatically fix linting issues and run type checking"
+tags: ["lint", "fix", "typescript"]

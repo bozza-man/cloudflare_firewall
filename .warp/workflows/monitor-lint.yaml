@@ -1,0 +1,72 @@
+name: "Monitor & Auto-Lint"
+command: |
+  monitor_and_lint() {
+    local duration=${1:-300}  # Default 5 minutes
+    local temp_file=$(mktemp)
+    local start_time=$(date +%s)
+    
+    echo "🔍 Starting file monitoring for $duration seconds..."
+    echo "📁 Monitoring TypeScript files in src/ and scripts/"
+    echo "⏱️  Will auto-terminate after $duration seconds"
+    echo "🛑 Press Ctrl+C to stop manually"
+    echo ""
+    
+    # Cleanup function
+    cleanup() {
+      echo ""
+      echo "🧹 Cleaning up..."
+      rm -f "$temp_file" 2>/dev/null
+      echo "✅ Monitoring stopped"
+      exit 0
+    }
+    
+    # Set up signal handlers
+    trap cleanup INT TERM EXIT
+    
+    # Initial lint check
+    echo "🔍 Running initial lint check..."
+    npm run lint --silent
+    if [ $? -eq 0 ]; then
+      echo "✅ Initial check: No issues found"
+    else
+      echo "⚠️  Initial check: Issues detected"
+    fi
+    echo ""
+    
+    # Monitor loop with timeout
+    while true; do
+      current_time=$(date +%s)
+      elapsed=$((current_time - start_time))
+      
+      if [ $elapsed -ge $duration ]; then
+        echo "⏰ Time limit reached ($duration seconds). Stopping monitor."
+        break
+      fi
+      
+      # Find modified TypeScript files in the last 10 seconds
+      find src scripts -name "*.ts" -newermt "10 seconds ago" 2>/dev/null > "$temp_file"
+      
+      if [ -s "$temp_file" ]; then
+        echo "📝 Changes detected at $(date '+%H:%M:%S'):"
+        while IFS= read -r file; do
+          echo "   • $file"
+        done < "$temp_file"
+        
+        echo "🔧 Running lint fix..."
+        npm run lint -- --fix --quiet
+        if [ $? -eq 0 ]; then
+          echo "✅ Auto-fix complete"
+        else
+          echo "⚠️  Some issues require manual attention"
+        fi
+        echo ""
+      fi
+      
+      sleep 5
+    done
+  }
+  
+  # Run the monitor
+  monitor_and_lint ${1:-300}
+description: "Monitor files and automatically lint changes"
+tags: ["monitor", "watch", "auto-lint"]

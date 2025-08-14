@@ -255,14 +255,14 @@ export class GatewayClient {
     return maxPrecedence + 1000;
   }
 
-  private handleError(error: any): Error {
+  private handleError(error: unknown): Error {
     if (axios.isAxiosError(error)) {
-      const response = error.response?.data as CloudflareResponse<any>;
+      const response = error.response?.data as CloudflareResponse<unknown>;
       if (response?.errors?.length > 0) {
         return new Error(`Cloudflare API Error: ${response.errors[0].message}`);
       }
       return new Error(`API Request failed: ${error.message}`);
     }
-    return error;
+    return error instanceof Error ? error : new Error(String(error));
   }
 }

@@ -1,7 +1,7 @@
 import { promisify } from 'util';
 import { lookup as dnsLookup } from 'dns';
 import chalk from 'chalk';
-import ora, { Ora } from 'ora';
+import ora from 'ora';
 
 const lookupAsync = promisify(dnsLookup);
 

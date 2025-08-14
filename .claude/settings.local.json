@@ -8,7 +8,8 @@
       "Bash(rm:*)",
       "Bash(npm run tsx:*)",
       "Bash(npx tsx:*)",
-      "Bash(npm run generate-token:*)"
+      "Bash(npm run generate-token:*)",
+      "Bash(npm run lint)"
     ],
     "deny": []
   }

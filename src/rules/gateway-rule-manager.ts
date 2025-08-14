@@ -1,13 +1,12 @@
 import { GatewayClient } from '../api/gateway-client.js';
 import { GatewayAIAssistant } from '../llm/gateway-ai-assistant.js';
 import { ConflictResolver } from './conflict-resolver.js';
-import { DomainConflictDetector, type DomainConflict } from './domain-conflict-detector.js';
+import { DomainConflictDetector } from './domain-conflict-detector.js';
 import { DomainVerifier } from '../utils/domain-verifier.js';
 import type { 
   GatewayRule, 
   CreateGatewayRuleRequest, 
   UpdateGatewayRuleRequest,
-  RuleConflict,
   GatewayList,
   GatewayLocation,
   GatewayCategory 
@@ -272,7 +271,11 @@ export class GatewayRuleManager {
       console.log(chalk.cyan('\nGenerated filters:'));
       filters.forEach(filter => console.log(`  - ${filter}`));
 
-      let answers: any;
+      let answers: {
+        name: string;
+        action: 'allow' | 'block' | 'isolate' | 'do_not_isolate' | 'do_not_inspect';
+        confirm: boolean;
+      };
       
       // Check if stdin is a TTY (interactive terminal)
       if (process.stdin.isTTY) {

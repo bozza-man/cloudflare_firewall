@@ -1,0 +1,220 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: Test Suite
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Run TypeScript compiler
+      run: npm run typecheck
+      
+    - name: Run linting
+      run: npm run lint
+      
+    - name: Run unit tests
+      run: npm run test:unit
+      
+    - name: Run integration tests
+      run: npm run test:integration
+      
+    - name: Generate test coverage
+      run: npm run test:coverage
+      
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage/lcov.info
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: false
+
+  build:
+    name: Build Check
+    runs-on: ubuntu-latest
+    needs: test
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build project
+      run: npm run build
+      
+    - name: Check build artifacts
+      run: |
+        if [ ! -d "dist" ]; then
+          echo "Build failed: dist directory not found"
+          exit 1
+        fi
+        if [ ! -f "dist/index.js" ]; then
+          echo "Build failed: main entry point not found"
+          exit 1
+        fi
+        echo "Build completed successfully"
+
+  security:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Run security audit
+      run: npm audit --audit-level high
+      
+    - name: Run dependency check
+      run: |
+        npm ls --depth=0 || true
+        echo "Checking for known vulnerabilities..."
+
+  performance:
+    name: Performance Tests
+    runs-on: ubuntu-latest
+    needs: test
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Run performance tests
+      run: |
+        echo "Running performance benchmarks..."
+        npm test -- --testNamePattern="performance"
+        
+    - name: Bundle size check
+      run: |
+        npm run build
+        du -sh dist/
+        echo "Bundle size analysis completed"
+
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: [test, build, security]
+    if: github.ref == 'refs/heads/develop'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build for staging
+      run: npm run build
+      
+    - name: Deploy to staging environment
+      run: |
+        echo "Would deploy to staging environment here"
+        echo "Build artifacts ready for staging deployment"
+
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    needs: [test, build, security, performance]
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build production
+      run: npm run build
+      
+    - name: Create release artifacts
+      run: |
+        tar -czf cloudflare-firewall-manager.tar.gz dist/ package.json README.md
+        echo "Release artifacts created"
+        
+    - name: Generate changelog
+      id: changelog
+      run: |
+        echo "CHANGELOG<<EOF" >> $GITHUB_OUTPUT
+        git log --pretty=format:"- %s (%h)" $(git describe --tags --abbrev=0)..HEAD >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+        
+    - name: Create GitHub Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ github.run_number }}
+        release_name: Release v${{ github.run_number }}
+        body: |
+          ## Changes in this Release
+          ${{ steps.changelog.outputs.CHANGELOG }}
+          
+          ## Installation
+          ```bash
+          npm install cloudflare-firewall-manager
+          ```
+        draft: false
+        prerelease: false

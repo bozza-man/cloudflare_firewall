@@ -78,7 +78,13 @@ export class ConflictResolver {
 
   private async promptForResolution(
     resolutions: ConflictResolution[],
-    newRule: any
+    _newRule: {
+      name: string;
+      filters: string[];
+      action: string;
+      traffic?: string;
+      description?: string;
+    }
   ): Promise<ConflictResolution | null> {
     console.log('\n' + chalk.cyan('📋 Resolution Options:'));
 
@@ -144,9 +150,22 @@ export class ConflictResolver {
 
   private async applyResolution(
     resolution: ConflictResolution,
-    newRule: any,
+    newRule: {
+      name: string;
+      filters: string[];
+      action: string;
+      traffic?: string;
+      description?: string;
+    },
     conflicts: RuleConflict[]
-  ): Promise<any> {
+  ): Promise<{
+    action: 'create' | 'modify' | 'skip';
+    ruleToCreate?: typeof newRule;
+    rulesToModify?: Array<{
+      ruleId: string;
+      updates: Partial<GatewayRule>;
+    }>;
+  }> {
     switch (resolution.type) {
       case 'modify_existing':
         return await this.applyModifyExisting(resolution, newRule);
@@ -170,8 +189,21 @@ export class ConflictResolver {
 
   private async applyModifyExisting(
     resolution: ConflictResolution,
-    newRule: any
-  ): Promise<any> {
+    newRule: {
+      name: string;
+      filters: string[];
+      action: string;
+      traffic?: string;
+      description?: string;
+    }
+  ): Promise<{
+    action: 'create' | 'modify' | 'skip';
+    ruleToCreate?: typeof newRule;
+    rulesToModify?: Array<{
+      ruleId: string;
+      updates: Partial<GatewayRule>;
+    }>;
+  }> {
     if (!resolution.details.ruleId) {
       throw new Error('No rule ID provided for modification');
     }
@@ -232,8 +264,21 @@ export class ConflictResolver {
 
   private async applyCreateNew(
     resolution: ConflictResolution,
-    newRule: any
-  ): Promise<any> {
+    newRule: {
+      name: string;
+      filters: string[];
+      action: string;
+      traffic?: string;
+      description?: string;
+    }
+  ): Promise<{
+    action: 'create' | 'modify' | 'skip';
+    ruleToCreate?: typeof newRule;
+    rulesToModify?: Array<{
+      ruleId: string;
+      updates: Partial<GatewayRule>;
+    }>;
+  }> {
     const modifiedRule = { ...newRule };
     
     if (resolution.details.suggestedFilters) {
@@ -253,7 +298,7 @@ export class ConflictResolver {
     console.log(`Name: ${chalk.bold(modifiedRule.name)}`);
     console.log(`Action: ${modifiedRule.action}`);
     console.log('Filters:');
-    modifiedRule.filters.forEach((f: string) => console.log(`  - ${f}`));
+    modifiedRule.filters.forEach((f) => console.log(`  - ${f}`));
     
     if (resolution.details.suggestedPrecedence) {
       console.log(`Precedence: ${resolution.details.suggestedPrecedence}`);
@@ -277,9 +322,22 @@ export class ConflictResolver {
 
   private async applyMergeRules(
     resolution: ConflictResolution,
-    newRule: any,
+    newRule: {
+      name: string;
+      filters: string[];
+      action: string;
+      traffic?: string;
+      description?: string;
+    },
     conflicts: RuleConflict[]
-  ): Promise<any> {
+  ): Promise<{
+    action: 'create' | 'modify' | 'skip';
+    ruleToCreate?: typeof newRule;
+    rulesToModify?: Array<{
+      ruleId: string;
+      updates: Partial<GatewayRule>;
+    }>;
+  }> {
     // Find the rule to merge with
     const targetRule = conflicts[0]?.conflictingRule;
     if (!targetRule) {
@@ -321,8 +379,21 @@ export class ConflictResolver {
 
   private async applyReorder(
     resolution: ConflictResolution,
-    newRule: any
-  ): Promise<any> {
+    newRule: {
+      name: string;
+      filters: string[];
+      action: string;
+      traffic?: string;
+      description?: string;
+    }
+  ): Promise<{
+    action: 'create' | 'modify' | 'skip';
+    ruleToCreate?: typeof newRule;
+    rulesToModify?: Array<{
+      ruleId: string;
+      updates: Partial<GatewayRule>;
+    }>;
+  }> {
     const modifiedRule = { ...newRule };
     
     if (resolution.details.suggestedPrecedence) {

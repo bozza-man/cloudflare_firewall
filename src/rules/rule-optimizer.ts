@@ -2,6 +2,20 @@ import { GatewayClient } from '../api/gateway-client.js';
 import { GatewayAIAssistant } from '../llm/gateway-ai-assistant.js';
 import { RuleAnalyzer } from './rule-analyzer.js';
 import type { GatewayRule } from '../types/gateway.js';
+import type {
+  AIAnalysisResponse,
+  AIIssue,
+  AIRecommendation,
+  AIOptimizedRule,
+  LocalAnalysis,
+  LocalAnalysisIssue,
+  ProposedRuleOrder
+} from '../types/ai-responses.js';
+import {
+  extractIssueText,
+  castToAIAnalysisResponse,
+  isAIRecommendation
+} from '../types/ai-responses.js';
 import chalk from 'chalk';
 import ora from 'ora';
 import inquirer from 'inquirer';
@@ -75,11 +89,8 @@ export class RuleOptimizer {
       
       if (aiAnalysis.criticalIssues.length > 0) {
         console.log(chalk.red('\n🚨 Critical Issues:'));
-        aiAnalysis.criticalIssues.forEach((issue: any, index: number) => {
-          // Handle both string and object formats
-          const issueText = typeof issue === 'string' ? issue : 
-                           (issue?.description || issue?.message || 
-                           issue?.reason || JSON.stringify(issue));
+        aiAnalysis.criticalIssues.forEach((issue: AIIssue | string, index: number) => {
+          const issueText = extractIssueText(issue);
           console.log(`   ${index + 1}. ${issueText}`);
         });
       }
@@ -122,9 +133,11 @@ export class RuleOptimizer {
 
   private async generateOptimizationPlan(
     rules: GatewayRule[],
-    localAnalysis: any,
-    aiAnalysis: any
+    localAnalysis: LocalAnalysis,
+    aiAnalysisRaw: unknown
   ): Promise<OptimizationPlan> {
+    // Cast and validate the AI analysis response
+    const aiAnalysis: AIAnalysisResponse = castToAIAnalysisResponse(aiAnalysisRaw);
     const plan: OptimizationPlan = {
       rulesToUpdate: [],
       rulesToDelete: [],
@@ -137,7 +150,11 @@ export class RuleOptimizer {
 
     // Process AI recommendations (with null checks)
     if (aiAnalysis.recommendations && Array.isArray(aiAnalysis.recommendations)) {
-      aiAnalysis.recommendations.forEach((rec: any) => {
+      aiAnalysis.recommendations.forEach((recRaw: unknown) => {
+        // Type guard to ensure recommendation has proper structure
+        if (!isAIRecommendation(recRaw)) return;
+        const rec = recRaw as AIRecommendation;
+        
         if (rec.priority === 'high' || rec.priority === 'medium') {
           if (rec.affectedRules && Array.isArray(rec.affectedRules)) {
             rec.affectedRules.forEach((ruleId: string) => {
@@ -153,14 +170,17 @@ export class RuleOptimizer {
                   // Find corresponding optimized rule from AI (with null check)
                   if (aiAnalysis.optimizedRuleset && Array.isArray(aiAnalysis.optimizedRuleset)) {
                     const optimized = aiAnalysis.optimizedRuleset.find(
-                      (opt: any) => opt.rule && opt.rule.id === ruleId
+                      (optRaw: unknown) => {
+                        const opt = optRaw as AIOptimizedRule;
+                        return opt.rule && opt.rule.id === ruleId;
+                      }
                     );
                     if (optimized) {
                       const alreadyMarked = plan.rulesToUpdate.some(u => u.rule.id === ruleId);
                       if (!alreadyMarked) {
                         plan.rulesToUpdate.push({
                           rule,
-                          updates: this.extractUpdates(rule, optimized),
+                          updates: this.extractUpdates(rule, optimized as AIOptimizedRule),
                           reason: rec.reason
                         });
                       }
@@ -176,7 +196,7 @@ export class RuleOptimizer {
 
     // Process reordering suggestions (with null checks)
     if (localAnalysis.proposedOrder && Array.isArray(localAnalysis.proposedOrder)) {
-      localAnalysis.proposedOrder.forEach((proposal: any) => {
+      localAnalysis.proposedOrder.forEach((proposal: ProposedRuleOrder) => {
         if (proposal.rule && proposal.rule.id) {
           plan.reorderingPlan.push({
             ruleId: proposal.rule.id,
@@ -190,7 +210,8 @@ export class RuleOptimizer {
 
     // Add AI-suggested reordering (with null checks)
     if (aiAnalysis.optimizedRuleset && Array.isArray(aiAnalysis.optimizedRuleset)) {
-      aiAnalysis.optimizedRuleset.forEach((opt: any) => {
+      aiAnalysis.optimizedRuleset.forEach((optRaw: unknown) => {
+        const opt = optRaw as AIOptimizedRule;
         if (opt.rule && opt.newPrecedence && opt.newPrecedence !== opt.rule.precedence) {
           const existing = plan.reorderingPlan.find(r => r.ruleId === opt.rule.id);
           if (!existing) {
@@ -210,21 +231,21 @@ export class RuleOptimizer {
 
   private processLocalAnalysisFindings(
     rules: GatewayRule[], 
-    localAnalysis: any, 
+    localAnalysis: LocalAnalysis, 
     plan: OptimizationPlan
   ): void {
     if (!localAnalysis.issues || !Array.isArray(localAnalysis.issues)) return;
 
     // Group redundant rules for potential deletion
     const redundantRules = localAnalysis.issues.filter(
-      (issue: any) => issue.category === 'redundancy' && issue.type === 'warning'
+      (issue: LocalAnalysisIssue) => issue.category === 'redundancy' && issue.type === 'warning'
     );
 
     // Track rules that have been processed to avoid conflicts
     const processedRules = new Set<string>();
     
     // For each redundant rule, consider it for deletion
-    redundantRules.forEach((issue: any) => {
+    redundantRules.forEach((issue: LocalAnalysisIssue) => {
       if (processedRules.has(issue.ruleId)) return;
       
       const rule = rules.find(r => r.id === issue.ruleId);
@@ -252,10 +273,10 @@ export class RuleOptimizer {
 
     // Handle conflict errors by suggesting consolidation
     const conflictRules = localAnalysis.issues.filter(
-      (issue: any) => issue.category === 'conflict' && issue.type === 'error'
+      (issue: LocalAnalysisIssue) => issue.category === 'conflict' && issue.type === 'error'
     );
 
-    conflictRules.forEach((issue: any) => {
+    conflictRules.forEach((issue: LocalAnalysisIssue) => {
       const rule = rules.find(r => r.id === issue.ruleId);
       if (!rule || processedRules.has(rule.id)) return;
 
@@ -265,18 +286,18 @@ export class RuleOptimizer {
     });
   }
 
-  private extractUpdates(original: GatewayRule, optimized: any): any {
-    const updates: any = {};
+  private extractUpdates(_original: GatewayRule, optimized: AIOptimizedRule): OptimizationPlan['rulesToUpdate'][0]['updates'] {
+    const updates: OptimizationPlan['rulesToUpdate'][0]['updates'] = {};
     
-    if (optimized.changes) {
+    if (optimized.changes && Array.isArray(optimized.changes)) {
       optimized.changes.forEach((change: string) => {
-        if (change.includes('filters')) {
+        if (change.includes('filters') && optimized.rule.filters) {
           updates.filters = optimized.rule.filters;
         }
-        if (change.includes('name')) {
+        if (change.includes('name') && optimized.rule.name) {
           updates.name = optimized.rule.name;
         }
-        if (change.includes('description')) {
+        if (change.includes('description') && optimized.rule.description) {
           updates.description = optimized.rule.description;
         }
       });
@@ -346,7 +367,7 @@ export class RuleOptimizer {
     }
   }
 
-  private async confirmExecution(plan: OptimizationPlan): Promise<boolean> {
+  private async confirmExecution(_plan: OptimizationPlan): Promise<boolean> {
     const { proceed } = await inquirer.prompt([
       {
         type: 'confirm',

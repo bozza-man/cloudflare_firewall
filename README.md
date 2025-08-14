@@ -292,6 +292,63 @@ npm run dev
 # Run linting
 npm run lint
 
+## Testing
+
+This project includes a comprehensive testing framework with Jest.
+
+### Running Tests
+
+```bash
+# Run all tests
+npm test
+
+# Run unit tests only
+npm run test:unit
+
+# Run integration tests only
+npm run test:integration
+
+# Run tests in watch mode (for development)
+npm run test:watch
+
+# Generate test coverage report
+npm run test:coverage
+
+# Run tests with verbose output
+npm run test:verbose
+
+# Run tests in CI mode
+npm run test:ci
+```
+
+### Test Structure
+
+```
+tests/
+├── unit/           # Unit tests for individual components
+├── integration/    # Integration tests for complete workflows
+├── fixtures/       # Test data and mock objects
+├── utils/          # Testing utilities and helpers
+└── setup.ts        # Global test configuration
+```
+
+### Writing Tests
+
+Example unit test:
+
+```typescript
+import { describe, it, expect } from '@jest/globals';
+
+describe('MyComponent', () => {
+  it('should handle basic functionality', () => {
+    const result = myFunction('test input');
+    expect(result).toBe('expected output');
+  });
+});
+```
+
+For detailed testing information, see [TESTING.md](./TESTING.md).
+
 # Run type checking
 npm run typecheck
 ```

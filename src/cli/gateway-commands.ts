@@ -78,7 +78,14 @@ export function createGatewayCommands(): Command {
     .option('-p, --precedence <precedence>', 'New precedence value')
     .action(async (ruleId, options) => {
       try {
-        const updateData: any = { id: ruleId };
+        const updateData: {
+          id: string;
+          name?: string;
+          filters?: string[];
+          action?: string;
+          enabled?: boolean;
+          precedence?: number;
+        } = { id: ruleId };
         
         if (options.name) updateData.name = options.name;
         if (options.filters) updateData.filters = options.filters;
@@ -314,7 +321,12 @@ function displayCategories(categories: GatewayCategory[], filterClass?: string):
   console.log('');
 }
 
-function displayLocations(locations: any[]): void {
+function displayLocations(locations: {
+  id: string;
+  name: string;
+  client_default?: boolean;
+  networks?: { network: string }[];
+}[]): void {
   if (locations.length === 0) {
     console.log(chalk.yellow('No locations found'));
     return;
@@ -327,13 +339,25 @@ function displayLocations(locations: any[]): void {
     console.log(`\n${index + 1}. ${defaultIcon} ${chalk.bold(location.name)}`);
     console.log(`   ID: ${chalk.gray(location.id)}`);
     if (location.networks && location.networks.length > 0) {
-      console.log(`   Networks: ${location.networks.map((n: any) => n.network).join(', ')}`);
+      console.log(`   Networks: ${location.networks.map((n) => n.network).join(', ')}`);
     }
   });
   console.log('');
 }
 
-async function promptRuleCreation(defaults: any): Promise<any> {
+async function promptRuleCreation(defaults: {
+  name?: string;
+  filters?: string[];
+  action?: string;
+  traffic?: string;
+  description?: string;
+}): Promise<{
+  name: string;
+  filters: string[];
+  action: string;
+  traffic: string;
+  description?: string;
+}> {
   const actions = ['block', 'allow', 'isolate', 'do_not_isolate', 'do_not_inspect'];
   const trafficTypes = ['http', 'dns', 'l4'];
   
@@ -384,7 +408,10 @@ async function promptRuleCreation(defaults: any): Promise<any> {
   };
 }
 
-async function analyzeRuleConflicts(ruleManager: GatewayRuleManager, options: any): Promise<void> {
+async function analyzeRuleConflicts(ruleManager: GatewayRuleManager, options: {
+  showRedundant?: boolean;
+  fixSuggestions?: boolean;
+}): Promise<void> {
   const spinner = ora('Fetching Gateway rules...').start();
   
   try {
@@ -456,7 +483,7 @@ async function analyzeRuleConflicts(ruleManager: GatewayRuleManager, options: an
     // Group conflicts by severity
     const highPriorityConflicts = allConflicts.filter(c => c.severity === 'high');
     const mediumPriorityConflicts = allConflicts.filter(c => c.severity === 'medium');
-    const lowPriorityConflicts = allConflicts.filter(c => c.severity === 'low');
+    // Removed unused variable lowPriorityConflicts
     
     console.log(chalk.bold.red(`\n🚨 Found ${allConflicts.length} potential conflicts:`));
     

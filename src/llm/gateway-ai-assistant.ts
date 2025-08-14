@@ -100,12 +100,18 @@ Respond with JSON containing:
       // Clean up JSON string to handle control characters
       let jsonStr = jsonMatch[0];
       // Remove control characters that might break JSON parsing
-      jsonStr = jsonStr.replace(/[\x00-\x1F\x7F-\x9F]/g, '');
+      // eslint-disable-next-line no-control-regex
+      jsonStr = jsonStr.replace(/[\u0000-\u001F\u007F-\u009F]/g, '');
       
       const result = JSON.parse(jsonStr);
       
       // Map conflicts to include the rule objects
-      const conflicts = (result.conflicts || []).map((conflict: any) => {
+      const conflicts = (result.conflicts || []).map((conflict: {
+        conflictingRuleId: string;
+        reason: string;
+        severity: 'high' | 'medium' | 'low';
+        suggestion: string;
+      }) => {
         const conflictingRule = existingRules.find(r => r.id === conflict.conflictingRuleId);
         if (!conflictingRule) return null;
 
@@ -196,7 +202,12 @@ If there are no conflicts, return an empty array.`;
 
       const conflicts = JSON.parse(jsonMatch[0]);
       
-      return conflicts.map((conflict: any) => {
+      return conflicts.map((conflict: {
+        conflictingRuleId: string;
+        reason: string;
+        severity: 'high' | 'medium' | 'low';
+        suggestion: string;
+      }) => {
         const conflictingRule = existingRules.find(r => r.id === conflict.conflictingRuleId);
         if (!conflictingRule) return null;
 
@@ -383,9 +394,9 @@ Correct filter syntax examples:
 - Allow multiple domains (DNS): dns.fqdn in {"snapchat.com" "snap.com" "sc-cdn.net"}
 - Block social media category (DNS): any(dns.content_category[*] in {23}) 
 - Block malware category (DNS): any(dns.security_category[*] in {80})
-- Match subdomain pattern (DNS): dns.fqdn matches "^.*\.snapchat\.com$"
+- Match subdomain pattern (DNS): dns.fqdn matches "^.*\\.snapchat\\.com$"
 - HTTP host matching (HTTP): http.request.host == "example.com"
-- HTTP subdomain matching (HTTP): http.request.host matches "^.*\.snapchat\.com$"
+- HTTP subdomain matching (HTTP): http.request.host matches "^.*\\.snapchat\\.com$"
 - Block by country (L4): net.src.geo.country in {"CN" "RU"}
 
 IMPORTANT: For \`in\` operators, use SPACES between quoted domains, NOT commas! Example: {"domain1.com" "domain2.com"} not {"domain1.com", "domain2.com"}

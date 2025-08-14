@@ -378,7 +378,7 @@ export class RuleAnalyzer {
 
   private isGenuineSubset(rule1: GatewayRule, rule2: GatewayRule): boolean {
     // Only consider it a subset if rule2 is truly covered by rule1's broader scope
-    const rule1Domains = this.extractDomains(rule1);
+    // const _rule1Domains = this.extractDomains(rule1);
     const rule2Domains = this.extractDomains(rule2);
     
     // If rule1 has broader patterns and rule2 has specific domains that match
