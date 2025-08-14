@@ -132,7 +132,7 @@ export class GatewayRuleManager {
               if (existingRule && suggestion.modifiedFilters.length > 0) {
                 spinner.start('Extending existing rule...');
                 const updatedRule = await this.gateway.updateGatewayRule({
-                  id: suggestion.ruleId,
+                  id: suggestion.ruleId || existingRule.id,
                   filters: [...existingRule.filters, ...suggestion.modifiedFilters]
                 });
                 spinner.succeed(`Extended rule "${existingRule.name}" with new domains`);

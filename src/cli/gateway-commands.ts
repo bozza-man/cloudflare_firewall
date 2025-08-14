@@ -55,7 +55,7 @@ export function createGatewayCommands(): Command {
           rule = await ruleManager.createRule({
             name: options.name,
             filters: options.filters,
-            action: options.action,
+            action: options.action as 'allow' | 'block' | 'isolate' | 'do_not_isolate' | 'do_not_inspect' | 'inspect',
             traffic: options.traffic
           });
         }
@@ -82,14 +82,14 @@ export function createGatewayCommands(): Command {
           id: string;
           name?: string;
           filters?: string[];
-          action?: string;
+          action?: 'allow' | 'block' | 'isolate' | 'do_not_isolate' | 'do_not_inspect' | 'inspect';
           enabled?: boolean;
           precedence?: number;
         } = { id: ruleId };
         
         if (options.name) updateData.name = options.name;
         if (options.filters) updateData.filters = options.filters;
-        if (options.action) updateData.action = options.action;
+        if (options.action) updateData.action = options.action as 'allow' | 'block' | 'isolate' | 'do_not_isolate' | 'do_not_inspect' | 'inspect';
         if (options.enabled !== undefined) updateData.enabled = options.enabled === 'true';
         if (options.precedence) updateData.precedence = parseInt(options.precedence);
 
@@ -354,7 +354,7 @@ async function promptRuleCreation(defaults: {
 }): Promise<{
   name: string;
   filters: string[];
-  action: string;
+  action: 'allow' | 'block' | 'isolate' | 'do_not_isolate' | 'do_not_inspect' | 'inspect';
   traffic: string;
   description?: string;
 }> {

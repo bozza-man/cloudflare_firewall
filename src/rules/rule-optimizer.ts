@@ -98,11 +98,33 @@ export class RuleOptimizer {
       // Display local analysis
       this.analyzer.displayAnalysis(localAnalysis);
 
+      // Convert RuleAnalysis to LocalAnalysis format
+      const convertedLocalAnalysis: LocalAnalysis = {
+        issues: localAnalysis.issues.map(issue => ({
+          ruleId: issue.ruleId || '',
+          category: issue.category === 'redundancy' ? 'redundancy' : 
+                   issue.category === 'conflict' ? 'conflict' : 
+                   issue.category === 'ordering' ? 'ordering' : 'performance',
+          type: issue.type,
+          message: issue.message,
+          relatedRules: issue.relatedRules,
+          severity: issue.type === 'error' ? 'high' : 
+                   issue.type === 'warning' ? 'medium' : 'low'
+        })),
+        proposedOrder: localAnalysis.proposedOrder,
+        summary: {
+          totalRules: localAnalysis.totalRules,
+          errors: localAnalysis.issues.filter(i => i.type === 'error').length,
+          warnings: localAnalysis.issues.filter(i => i.type === 'warning').length,
+          suggestions: localAnalysis.issues.filter(i => i.type === 'info').length
+        }
+      };
+
       // Generate optimization plan
       spinner.start('Generating optimization plan...');
       const plan = await this.generateOptimizationPlan(
         sortedRules, 
-        localAnalysis, 
+        convertedLocalAnalysis, 
         aiAnalysis
       );
       spinner.succeed('Optimization plan ready');

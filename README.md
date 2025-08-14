@@ -1,5 +1,9 @@
 # Cloudflare Zero Trust Gateway Manager
 
+[![CI/CD Pipeline](https://github.com/yourusername/cloudflare_firewall/actions/workflows/ci.yml/badge.svg)](https://github.com/yourusername/cloudflare_firewall/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/yourusername/cloudflare_firewall/branch/main/graph/badge.svg)](https://codecov.io/gh/yourusername/cloudflare_firewall)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 An intelligent CLI tool for managing Cloudflare Zero Trust Gateway rules with AI-powered conflict detection, rule optimization, and natural language rule generation.
 
 ## Features

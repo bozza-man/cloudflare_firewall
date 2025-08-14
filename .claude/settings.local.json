@@ -9,7 +9,21 @@
       "Bash(npm run tsx:*)",
       "Bash(npx tsx:*)",
       "Bash(npm run generate-token:*)",
-      "Bash(npm run lint)"
+      "Bash(npm run lint)",
+      "Bash(npm run test:ci:*)",
+      "Bash(NODE_OPTIONS='--experimental-vm-modules' npx jest --config jest.config.mjs tests/simple.test.js --no-coverage)",
+      "Bash(npm run test:unit:*)",
+      "Bash(touch:*)",
+      "Bash(npm run test:coverage:*)",
+      "Bash(NODE_OPTIONS='--experimental-vm-modules' npx jest --config jest.config.mjs tests/unit/gateway-rule-manager.test.ts --no-coverage)",
+      "Bash(npm run test:*)",
+      "Bash(NODE_OPTIONS='--experimental-vm-modules' npx jest --config jest.config.mjs tests/integration --no-coverage)",
+      "Bash(NODE_OPTIONS='--experimental-vm-modules' npx jest --config jest.config.mjs tests/unit/config.unit.test.ts tests/unit/domain-conflict-detector.test.ts --no-coverage)",
+      "Bash(NODE_OPTIONS='--experimental-vm-modules' npx jest --config jest.config.mjs tests/unit/config.test.ts tests/unit/domain-parser.test.ts --no-coverage)",
+      "Bash(NODE_OPTIONS='--experimental-vm-modules' npx jest --config jest.config.mjs tests/unit/domain-conflict-detector.test.ts --no-coverage)",
+      "Bash(NODE_OPTIONS='--experimental-vm-modules' npx jest --config jest.config.mjs tests/unit/domain-conflict-detector.test.ts::DomainConflictDetector::detectConflicts --no-coverage)",
+      "Bash(node:*)",
+      "Bash(git add:*)"
     ],
     "deny": []
   }

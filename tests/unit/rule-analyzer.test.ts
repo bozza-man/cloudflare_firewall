@@ -175,16 +175,22 @@ class RuleAnalyzer {
     // Simple overlap detection based on traffic patterns
     if (rule1.traffic === rule2.traffic) return true;
     
+    // Check for domain overlap in filter expressions
+    const rule1Domains = this.extractDomains(rule1.traffic);
+    const rule2Domains = this.extractDomains(rule2.traffic);
+    
+    // If both rules target the same domain(s), they overlap
+    // This should catch DNS vs HTTP rules targeting same domain
+    if (rule1Domains.length > 0 && rule2Domains.length > 0) {
+      return rule1Domains.some(domain => rule2Domains.includes(domain));
+    }
+    
     // Check if both rules target DNS traffic
     if (rule1.traffic.includes('dns') && rule2.traffic.includes('dns')) {
       return true;
     }
     
-    // Check for domain overlap in filter expressions
-    const rule1Domains = this.extractDomains(rule1.traffic);
-    const rule2Domains = this.extractDomains(rule2.traffic);
-    
-    return rule1Domains.some(domain => rule2Domains.includes(domain));
+    return false;
   }
 
   private isRedundant(rule1: GatewayRule, rule2: GatewayRule): boolean {
@@ -195,6 +201,15 @@ class RuleAnalyzer {
 
   private isMoreGeneral(rule1: GatewayRule, rule2: GatewayRule): boolean {
     // A rule is more general if it has fewer specific conditions
+    // Check if traffic expressions show one is more general
+    if (rule1.traffic && rule2.traffic) {
+      // Check for contains vs exact match
+      if (rule1.traffic.includes('contains') && rule2.traffic.includes('==')) {
+        // rule1 uses contains (more general) and rule2 uses exact match (more specific)
+        return true;
+      }
+    }
+    
     const rule1Specificity = this.calculateSpecificity(rule1);
     const rule2Specificity = this.calculateSpecificity(rule2);
     

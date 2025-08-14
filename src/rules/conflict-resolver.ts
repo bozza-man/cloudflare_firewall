@@ -273,13 +273,13 @@ export class ConflictResolver {
     }
   ): Promise<{
     action: 'create' | 'modify' | 'skip';
-    ruleToCreate?: typeof newRule;
+    ruleToCreate?: typeof newRule & { precedence?: number };
     rulesToModify?: Array<{
       ruleId: string;
       updates: Partial<GatewayRule>;
     }>;
   }> {
-    const modifiedRule = { ...newRule };
+    const modifiedRule: typeof newRule & { precedence?: number } = { ...newRule };
     
     if (resolution.details.suggestedFilters) {
       modifiedRule.filters = resolution.details.suggestedFilters;
@@ -388,20 +388,20 @@ export class ConflictResolver {
     }
   ): Promise<{
     action: 'create' | 'modify' | 'skip';
-    ruleToCreate?: typeof newRule;
+    ruleToCreate?: typeof newRule & { precedence?: number };
     rulesToModify?: Array<{
       ruleId: string;
       updates: Partial<GatewayRule>;
     }>;
   }> {
-    const modifiedRule = { ...newRule };
+    const modifiedRule: typeof newRule & { precedence?: number } = { ...newRule };
     
     if (resolution.details.suggestedPrecedence) {
       modifiedRule.precedence = resolution.details.suggestedPrecedence;
     }
 
     console.log('\n' + chalk.cyan('🔄 Create Rule with Different Priority:'));
-    console.log(`The rule will be created with precedence ${modifiedRule.precedence}`);
+    console.log(`The rule will be created with precedence ${modifiedRule.precedence || 'default'}`);
     console.log('This will ensure it is evaluated in the correct order.');
 
     const { confirm } = await inquirer.prompt([
