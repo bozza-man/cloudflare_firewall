@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install)",
+      "Bash(mkdir:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm run typecheck:*)",
+      "Bash(rm:*)",
+      "Bash(npm run tsx:*)",
+      "Bash(npx tsx:*)",
+      "Bash(npm run generate-token:*)"
+    ],
+    "deny": []
+  }
+}
