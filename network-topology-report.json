@@ -1,0 +1,21 @@
+{
+  "timestamp": "2025-08-15T05:13:10.542Z",
+  "platform": "darwin",
+  "topology": "behind_cloudflare_router",
+  "cloudflarePresent": true,
+  "gatewayInfo": {
+    "ip": "10.50.50.1",
+    "isRouter": true
+  },
+  "dnsServers": [
+    "2001:8003:e036:a003::1",
+    "10.50.50.1"
+  ],
+  "recommendations": [
+    "Device is behind a router already connected to Cloudflare",
+    "WARP can be configured in \"Split Tunnel\" mode",
+    "Consider \"Gateway with WARP\" for additional protection",
+    "Monitor for double-NAT or routing conflicts"
+  ],
+  "warpInstalled": false
+}
