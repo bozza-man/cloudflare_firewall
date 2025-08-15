@@ -6,14 +6,14 @@
 - **ID:** `13cc67a0-b26b-4e8c-9960-45ba24301531`
 - **Current Precedence:** 500 (MUST be low number - high priority)
 - **Position:** FIRST rule (position #1)
-- **Critical Function:** Ensures essential DNS services always work (59 domains including Warp.dev, Anthropic, ChatGPT/OpenAI, Google Workspace, Google Cloud, Apple, Cloudflare, SimpleMDM, Ubiquiti, Microsoft)
+- **Critical Function:** Ensures essential DNS services always work (84 domains including Warp.dev, Anthropic, ChatGPT/OpenAI, Google Workspace, Google Cloud, Apple, Cloudflare, SimpleMDM, Ubiquiti, Microsoft, Google & Apple Mail services)
 - **⚠️ WARNING:** This rule MUST be evaluated FIRST or critical services may be blocked
 
 ### 2. CRITICAL INFRASTRUCTURE: Essential Services (HTTP)
 - **ID:** `0ff5bbfa-88cb-46cc-a860-4b34091198e8`
 - **Current Precedence:** 501 (MUST be low number - high priority)
 - **Position:** SECOND rule (position #2)
-- **Critical Function:** Ensures essential HTTP/HTTPS services always work (same 59 domains as DNS rule)
+- **Critical Function:** Ensures essential HTTP/HTTPS services always work (same 84 domains as DNS rule including Google & Apple Mail services)
 - **⚠️ WARNING:** This rule MUST be evaluated early or critical web services may be blocked
 
 ### 3. Security: Block Unknown DNS Queries
@@ -165,7 +165,7 @@ Before approving any auto-fix changes:
 - [ ] Critical Infrastructure DNS rule is still position #1 (precedence 500)
 - [ ] Critical Infrastructure HTTP rule is still position #2 (precedence 501)
 - [ ] Both critical infrastructure rules are ENABLED
-- [ ] Critical infrastructure rules include all essential domains (Warp.dev, Anthropic, ChatGPT/OpenAI, Google Workspace, Google Cloud, Apple, Cloudflare, SimpleMDM, Ubiquiti, Microsoft)
+- [ ] Critical infrastructure rules include all essential domains (Warp.dev, Anthropic, ChatGPT/OpenAI, Google Workspace, Google Cloud, Apple, Cloudflare, SimpleMDM, Ubiquiti, Microsoft, Google & Apple Mail services)
 
 **DNS Catch-All Rule:**
 - [ ] DNS blocking rule is still LAST position (#65)
