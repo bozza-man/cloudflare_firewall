@@ -1,8 +1,8 @@
-# Cloudflare WARP Agent Deployment Guide
+# Cloudflare WARP Zero Trust Deployment Guide
 
 ## 🎯 Overview
 
-This guide covers the deployment and testing of Cloudflare WARP clients with automatic network topology detection and testing-friendly configuration.
+This guide covers the deployment and testing of Cloudflare WARP Zero Trust clients for the **bruteforcegroup** organization with automatic network topology detection and testing-friendly configuration.
 
 ## 📋 Prerequisites
 
@@ -114,16 +114,17 @@ sudo yum install cloudflare-warp
 
 ## ⚙️ Step 3: Configure for Testing
 
-Run the WARP testing configuration:
+Run the WARP Zero Trust testing configuration:
 
 ```bash
-node manage-warp-testing.js setup
+node manage-warp-zerotrust.js setup
 ```
 
 ### Configuration Applied
-- ✅ Device registered with Cloudflare
-- ✅ Mode set to: Gateway with WARP
-- ✅ Manual control enabled (no auto-reconnect)
+- ✅ Device registered to bruteforcegroup Zero Trust organization
+- ✅ Mode set to: WARP + DoH (Zero Trust Gateway)
+- ✅ Gateway DNS filtering enabled
+- ✅ Manual control enabled for testing
 - ✅ Easy toggle on/off capability  
 - ✅ No connection timeouts during testing
 
@@ -131,23 +132,26 @@ node manage-warp-testing.js setup
 
 ### Basic Commands
 ```bash
-# Check WARP installation
-node manage-warp-testing.js check
+# Check WARP installation and Zero Trust registration
+node manage-warp-zerotrust.js check
 
-# Show detailed status
-node manage-warp-testing.js status
+# Show detailed Zero Trust status
+node manage-warp-zerotrust.js status
 
-# Enable WARP
-node manage-warp-testing.js on
+# Enable WARP Zero Trust connection
+node manage-warp-zerotrust.js on
 
-# Disable WARP  
-node manage-warp-testing.js off
+# Disable WARP
+node manage-warp-zerotrust.js off
 
 # Toggle WARP on/off
-node manage-warp-testing.js toggle
+node manage-warp-zerotrust.js toggle
 
-# Test connectivity
-node manage-warp-testing.js test
+# Test Zero Trust connectivity and Gateway rules
+node manage-warp-zerotrust.js test
+
+# Register with enrollment token (if needed)
+node manage-warp-zerotrust.js register --token <your-token>
 ```
 
 ### Quick Toggle Scripts
@@ -156,10 +160,10 @@ Create these aliases for easy testing:
 
 ```bash
 # Add to ~/.zshrc or ~/.bashrc
-alias warp-on="node manage-warp-testing.js on"
-alias warp-off="node manage-warp-testing.js off"
-alias warp-toggle="node manage-warp-testing.js toggle"
-alias warp-status="node manage-warp-testing.js status"
+alias warp-on="node manage-warp-zerotrust.js on"
+alias warp-off="node manage-warp-zerotrust.js off"
+alias warp-toggle="node manage-warp-zerotrust.js toggle"
+alias warp-status="node manage-warp-zerotrust.js status"
 ```
 
 ## 📊 Step 5: Verify Gateway Rules
@@ -190,31 +194,43 @@ Expected output:
 warp-off
 
 # 2. Test baseline connectivity  
-node manage-warp-testing.js test
+node manage-warp-zerotrust.js test
 
 # 3. Turn on WARP
 warp-on
 
-# 4. Test with WARP enabled
-node manage-warp-testing.js test
+# 4. Test with WARP enabled and Gateway rules active
+node manage-warp-zerotrust.js test
 
 # 5. Compare results
 ```
 
 ### Scenario 2: Critical Services
 ```bash
-# With WARP enabled, test critical infrastructure
+# With WARP enabled, test critical infrastructure (should be allowed)
 curl -I https://anthropic.com
 curl -I https://warp.dev  
 curl -I https://gmail.com
 curl -I https://grindr.com
 ```
 
-### Scenario 3: Blocked Content
+### Scenario 3: Gateway Rules Testing
 ```bash
-# Test that security rules still work
-curl -I https://malicious-site.example
-# Should be blocked by Gateway rules
+# Test that Gateway DNS filtering works
+nslookup malware-site.example  # Should be blocked
+nslookup google.com  # Should resolve normally
+
+# Test HTTP filtering
+curl -I https://blocked-category-site.example  # Should be blocked by rules
+```
+
+### Scenario 4: Zero Trust Organization Verification
+```bash
+# Verify Zero Trust connection
+node manage-warp-zerotrust.js status | grep "bruteforcegroup"
+
+# Test DNS resolution through Gateway
+dig @1.1.1.1 cloudflare.com
 ```
 
 ## 🔧 Troubleshooting

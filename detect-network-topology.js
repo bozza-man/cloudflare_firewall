@@ -159,21 +159,46 @@ class NetworkTopologyDetector {
     try {
       let warpCommand;
       if (process.platform === 'darwin') {
-        warpCommand = 'warp-cli status';
+        warpCommand = 'warp-cli';
       } else if (process.platform === 'linux') {
-        warpCommand = 'warp-cli status';
+        warpCommand = 'warp-cli';
       } else if (process.platform === 'win32') {
-        warpCommand = 'warp-cli.exe status';
+        warpCommand = 'warp-cli.exe';
       }
       
-      const warpOutput = execSync(warpCommand, { encoding: 'utf8' }).trim();
+      const warpOutput = execSync(`${warpCommand} status`, { encoding: 'utf8' }).trim();
       this.results.warpInstalled = true;
       this.results.warpStatus = warpOutput;
       
       console.log(`   ✅ WARP installed`);
       console.log(`   Status: ${warpOutput}`);
+      
+      // Check for Zero Trust registration
+      try {
+        const regOutput = execSync(`${warpCommand} registration show`, { encoding: 'utf8' }).trim();
+        if (regOutput.includes('Account type: Team')) {
+          this.results.isZeroTrust = true;
+          console.log('   ✅ Zero Trust (Team) account detected');
+          
+          // Get organization name
+          try {
+            const orgOutput = execSync(`${warpCommand} registration organization`, { encoding: 'utf8' }).trim();
+            this.results.zeroTrustOrg = orgOutput;
+            console.log(`   Organization: ${orgOutput}`);
+          } catch (error) {
+            console.log('   Organization: Unknown');
+          }
+        } else {
+          this.results.isZeroTrust = false;
+          console.log('   Consumer WARP account');
+        }
+      } catch (error) {
+        this.results.isZeroTrust = false;
+        console.log('   Registration status: Unknown');
+      }
     } catch (error) {
       this.results.warpInstalled = false;
+      this.results.isZeroTrust = false;
       console.log('   ⚠️  WARP not installed or not accessible');
     }
     
@@ -220,6 +245,12 @@ class NetworkTopologyDetector {
     console.log(`🌐 Detected Topology: ${this.results.topology.replace(/_/g, ' ').toUpperCase()}`);
     console.log(`☁️  Cloudflare Present: ${this.results.cloudflarePresent ? '✅ Yes' : '❌ No'}`);
     console.log(`🛡️  WARP Installed: ${this.results.warpInstalled ? '✅ Yes' : '❌ No'}`);
+    if (this.results.warpInstalled) {
+      console.log(`🏢 Zero Trust: ${this.results.isZeroTrust ? '✅ Yes' : '❌ No (Consumer)'}`);
+      if (this.results.isZeroTrust && this.results.zeroTrustOrg) {
+        console.log(`🏢 Organization: ${this.results.zeroTrustOrg}`);
+      }
+    }
     console.log();
     
     console.log('📡 Network Details:');
@@ -237,13 +268,23 @@ class NetworkTopologyDetector {
     console.log('🚀 Next Steps:');
     if (!this.results.warpInstalled) {
       console.log('   1. Install Cloudflare WARP client');
-      console.log('   2. Run WARP configuration script');
+      console.log('   2. Register to bruteforcegroup Zero Trust organization');
+      console.log('   3. Run WARP configuration script');
+    } else if (this.results.isZeroTrust && this.results.zeroTrustOrg === 'bruteforcegroup') {
+      console.log('   1. Use node manage-warp-zerotrust.js for testing');
+      console.log('   2. Configure Zero Trust testing mode');
+      console.log('   3. Test Gateway rule enforcement');
+    } else if (this.results.isZeroTrust) {
+      console.log('   1. Verify Zero Trust organization registration');
+      console.log('   2. Use node manage-warp-zerotrust.js for testing');
+      console.log('   3. Configure Zero Trust testing mode');
     } else {
-      console.log('   1. Configure WARP for testing mode');
-      console.log('   2. Set up easy toggle controls');
+      console.log('   1. Register to bruteforcegroup Zero Trust organization');
+      console.log('   2. Use node manage-warp-zerotrust.js for testing');
+      console.log('   3. Configure Zero Trust testing mode');
     }
-    console.log('   3. Test connectivity and performance');
-    console.log('   4. Document configuration for deployment');
+    console.log('   4. Test connectivity and Gateway rule performance');
+    console.log('   5. Document configuration for deployment');
     console.log();
   }
 

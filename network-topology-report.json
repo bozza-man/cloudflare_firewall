@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-08-15T05:13:10.542Z",
+  "timestamp": "2025-08-15T05:21:13.523Z",
   "platform": "darwin",
   "topology": "behind_cloudflare_router",
   "cloudflarePresent": true,
@@ -8,8 +8,10 @@
     "isRouter": true
   },
   "dnsServers": [
-    "2001:8003:e036:a003::1",
-    "10.50.50.1"
+    "127.0.2.2",
+    "127.0.2.3",
+    "::ffff:7f00:202",
+    "::ffff:7f00:203"
   ],
   "recommendations": [
     "Device is behind a router already connected to Cloudflare",
@@ -17,5 +19,8 @@
     "Consider \"Gateway with WARP\" for additional protection",
     "Monitor for double-NAT or routing conflicts"
   ],
-  "warpInstalled": false
+  "warpInstalled": true,
+  "warpStatus": "Status update: Connected",
+  "isZeroTrust": true,
+  "zeroTrustOrg": "bruteforcegroup"
 }
