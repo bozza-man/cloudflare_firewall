@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 import { GatewayClient } from '../api/gateway-client.js';
 import type { GatewayLog, LogLevel } from '../types/streaming.js';
-import type { GatewayRule } from '../types/gateway.js';
+// import type { GatewayRule } from '../types/gateway.js';
 import chalk from 'chalk';
 
 interface LogCollectorOptions {
@@ -185,7 +185,7 @@ export class GatewayLogCollector extends EventEmitter {
     }
   }
 
-  private processLog(rawLog: any, logType: string): void {
+  private processLog(rawLog: unknown, logType: string): void {
     try {
       // Generate unique ID for deduplication
       const logId = this.generateLogId(rawLog);
@@ -215,13 +215,13 @@ export class GatewayLogCollector extends EventEmitter {
     }
   }
 
-  private generateLogId(log: any): string {
+  private generateLogId(log: unknown): string {
     // Generate a unique ID based on log content
     const key = `${log.timestamp || Date.now()}_${log.id || ''}_${log.action || ''}_${log.ruleId || ''}`;
     return key;
   }
 
-  private transformLog(rawLog: any, logType: string): GatewayLog {
+  private transformLog(rawLog: unknown, logType: string): GatewayLog {
     const level = this.determineLogLevel(rawLog);
     
     return {
@@ -259,9 +259,10 @@ export class GatewayLogCollector extends EventEmitter {
     };
   }
 
-  private determineLogLevel(log: any): LogLevel {
+  private determineLogLevel(log: unknown): LogLevel {
     // Determine log level based on action and other factors
-    const action = (log.action || log.decision || '').toLowerCase();
+    const logData = log as Record<string, unknown>;
+    const action = ((logData.action || logData.decision || '') as string).toLowerCase();
     
     if (action === 'block' || action === 'deny') {
       return 'warning';

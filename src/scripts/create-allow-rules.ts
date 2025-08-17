@@ -227,7 +227,7 @@ class AllowRuleCreator {
         
         spinner.succeed(`Created: ${group.name} (${group.domains.length} domains)`);
         
-      } catch (error: any) {
+      } catch (error) {
         failedRules.push({
           name: group.name,
           error: error.message
@@ -325,7 +325,7 @@ class AllowRuleCreator {
     }
   }
 
-  private findPotentialConflicts(allowRules: any[], blockRules: any[]): string[] {
+  private findPotentialConflicts(allowRules: unknown[], blockRules: unknown[]): string[] {
     const conflicts: string[] = [];
     
     // Check for overlapping precedence
@@ -358,7 +358,7 @@ async function main() {
     console.log(chalk.gray('\nNote: These rules allow common legitimate services.'));
     console.log(chalk.gray('Review and adjust based on your specific security requirements.'));
     
-  } catch (error: any) {
+  } catch (error) {
     console.error(chalk.red('\n❌ Error:'), error.message);
     process.exit(1);
   }

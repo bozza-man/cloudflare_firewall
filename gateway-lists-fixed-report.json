@@ -1,0 +1,50 @@
+{
+  "timestamp": "2025-08-17T02:13:35.392Z",
+  "apiConstraints": {
+    "putOperationsBlocked": true,
+    "createOperationsWorking": true,
+    "manualPopulationRequired": true,
+    "reason": "Cloudflare API returns \"resource already exists\" for all PUT operations on Gateway Lists"
+  },
+  "summary": {
+    "totalLists": 3,
+    "successful": 2,
+    "failed": 1,
+    "manualRequired": 1,
+    "apiRequests": 10,
+    "durationSeconds": 5.72
+  },
+  "operations": [
+    {
+      "success": true,
+      "listName": "Critical Infrastructure Domains",
+      "listId": "fa64ba26-c470-4273-b251-c75ce17280b6",
+      "operation": "update",
+      "itemsProcessed": 42,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "success": false,
+      "listName": "Development Tools Domains",
+      "listId": "a7325f43-68ce-404f-b50d-0bfc9eb4ee5e",
+      "operation": "manual_clear",
+      "itemsProcessed": 0,
+      "errors": [
+        "List contains existing items - automated update blocked by API constraints"
+      ],
+      "warnings": [
+        "Manual clearing and population required via Dashboard"
+      ]
+    },
+    {
+      "success": true,
+      "listName": "AI and ML Platforms",
+      "listId": "fe4bf9b5-0afb-40bb-b713-474f7323b3f9",
+      "operation": "update",
+      "itemsProcessed": 16,
+      "errors": [],
+      "warnings": []
+    }
+  ]
+}

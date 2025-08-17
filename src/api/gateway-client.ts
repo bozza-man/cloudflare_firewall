@@ -270,12 +270,12 @@ export class GatewayClient {
    * Fetch logs from Cloudflare Gateway
    * Note: This is a placeholder - actual implementation depends on Cloudflare's log API
    */
-  public async fetchLogs(options: {
+  public async fetchLogs(_options: {
     type: 'audit' | 'gateway_activity' | 'dns' | 'http';
     since?: string;
     until?: string;
     limit?: number;
-  }): Promise<any[]> {
+  }): Promise<unknown[]> {
     // Cloudflare Zero Trust logs are typically accessed through:
     // 1. Logpush to external destinations
     // 2. GraphQL Analytics API

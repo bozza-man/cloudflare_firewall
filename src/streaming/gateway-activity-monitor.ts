@@ -18,8 +18,8 @@ interface ActivityEvent {
   ruleName: string;
   ruleId?: string;
   details: {
-    before?: any;
-    after?: any;
+    before?: unknown;
+    after?: unknown;
     changes?: string[];
   };
   summary: string;
@@ -322,7 +322,7 @@ export class GatewayActivityMonitor extends EventEmitter {
     return [...this.activityLog];
   }
 
-  public async testRuleImpact(ruleId: string): Promise<any> {
+  public async testRuleImpact(ruleId: string): Promise<unknown> {
     // This would analyze what a rule might be blocking/allowing
     // based on its filters and precedence
     const rules = this.lastSnapshot?.rules || [];
@@ -350,7 +350,7 @@ export class GatewayActivityMonitor extends EventEmitter {
     };
   }
 
-  private findConflictingRules(rule: GatewayRule, allRules: GatewayRule[]): any[] {
+  private findConflictingRules(rule: GatewayRule, allRules: GatewayRule[]): unknown[] {
     // Simple conflict detection based on overlapping filters
     const conflicts = [];
     

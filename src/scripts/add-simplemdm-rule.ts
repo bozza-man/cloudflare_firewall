@@ -64,7 +64,7 @@ async function addSimpleMDMRule() {
     console.log('  • deviceservices-external.apple.com');
     console.log('  • gdmf.apple.com (MDM feedback)');
     
-  } catch (error: any) {
+  } catch (error) {
     const errorMessage = error.response?.data?.errors?.[0]?.message || error.message;
     
     if (errorMessage.includes('already exists') || errorMessage.includes('duplicate')) {

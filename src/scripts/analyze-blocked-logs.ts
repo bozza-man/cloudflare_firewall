@@ -23,16 +23,16 @@ interface BlockedDomain {
   recommendation: 'allow' | 'block' | 'review';
 }
 
-interface LogEntry {
-  timestamp: string;
-  action: string;
-  user?: string;
-  source?: { ip: string };
-  destination?: { hostname: string; port?: number };
-  rule?: string;
-  category?: string;
-  userAgent?: string;
-}
+// interface LogEntry {
+//   timestamp: string;
+//   action: string;
+//   user?: string;
+//   source?: { ip: string };
+//   destination?: { hostname: string; port?: number };
+//   rule?: string;
+//   category?: string;
+//   userAgent?: string;
+// }
 
 class BlockedTrafficAnalyzer {
   private gateway: GatewayClient;
@@ -157,7 +157,7 @@ class BlockedTrafficAnalyzer {
     }
   }
 
-  private analyzeBlockingRules(blockRules: any[]): void {
+  private analyzeBlockingRules(blockRules: unknown[]): void {
     // Analyze what categories and domains are being blocked
     for (const rule of blockRules) {
       // Check if rule blocks by category
@@ -371,9 +371,9 @@ class BlockedTrafficAnalyzer {
         // Log the domains included
         console.log(chalk.gray(`  Includes: ${domains.map(d => d.domain).join(', ')}`));
         
-      } catch (error: any) {
+      } catch (error) {
         spinner.fail(`Failed to create rule for ${category}`);
-        console.error(chalk.red(`  Error: ${error.message}`));
+        console.error(chalk.red(`  Error: ${(error instanceof Error ? error.message : String(error))}`));
       }
     }
     
@@ -415,8 +415,8 @@ async function main() {
     console.log(chalk.gray('For real-time log analysis, use the Chrome extension while viewing'));
     console.log(chalk.gray('the Gateway logs in your Cloudflare dashboard.'));
     
-  } catch (error: any) {
-    console.error(chalk.red('\n❌ Analysis failed:'), error.message);
+  } catch (error) {
+    console.error(chalk.red('\n❌ Analysis failed:'), (error instanceof Error ? error.message : String(error)));
     process.exit(1);
   }
 }

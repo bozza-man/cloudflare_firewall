@@ -106,7 +106,7 @@ async function createAllowRules() {
       createdRules.push(rule);
       spinner.succeed(`Created: ${ruleConfig.name} (precedence: ${ruleConfig.precedence})`);
       
-    } catch (error: any) {
+    } catch (error) {
       failedRules.push({ name: ruleConfig.name, error: error.message });
       
       if (error.message.includes('already exists') || error.message.includes('duplicate')) {

@@ -2,7 +2,8 @@ import { WebSocketServer, WebSocket } from 'ws';
 import { createServer } from 'http';
 import { EventEmitter } from 'events';
 import chalk from 'chalk';
-import type { GatewayLog, LogLevel, LogFilter } from '../types/streaming.js';
+import type { GatewayLog, LogFilter } from '../types/streaming.js';
+// import type { LogLevel } from '../types/streaming.js';
 
 export class LogStreamServer extends EventEmitter {
   private wss: WebSocketServer;
@@ -87,7 +88,7 @@ export class LogStreamServer extends EventEmitter {
     });
   }
 
-  private handleClientMessage(ws: WebSocket, message: any): void {
+  private handleClientMessage(ws: WebSocket, message: { type: string; data?: unknown }): void {
     switch (message.type) {
       case 'filter':
         // Client wants to filter logs

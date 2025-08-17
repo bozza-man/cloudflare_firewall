@@ -4,6 +4,7 @@ import axios from 'axios';
 import chalk from 'chalk';
 import { config } from '../utils/config.js';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function testEndpoint(name: string, url: string, params?: any): Promise<any> {
   const headers = {
     'Authorization': `Bearer ${config.cloudflare.apiToken}`,
@@ -26,7 +27,7 @@ async function testEndpoint(name: string, url: string, params?: any): Promise<an
       console.log(chalk.yellow(`⚠ ${name} - Returned but not successful`));
       return null;
     }
-  } catch (error: any) {
+  } catch (error) {
     if (error.response?.status === 404) {
       console.log(chalk.red(`✗ ${name} - Not found (404)`));
     } else if (error.response?.status === 403) {

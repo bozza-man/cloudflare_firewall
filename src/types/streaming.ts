@@ -29,9 +29,9 @@ export interface GatewayLog {
     statusCode?: number;
     category?: string;
     threat?: string;
-    [key: string]: any;
+    [key: string]: string | number | boolean | undefined;
   };
-  raw?: any;
+  raw?: unknown;
 }
 
 export interface LogFilter {

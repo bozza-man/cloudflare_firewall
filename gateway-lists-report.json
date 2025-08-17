@@ -1,0 +1,61 @@
+{
+  "timestamp": "2025-08-17T02:10:18.648Z",
+  "summary": {
+    "totalLists": 4,
+    "successful": 1,
+    "failed": 3,
+    "totalDomains": 17,
+    "apiRequests": 14,
+    "durationSeconds": 20.452
+  },
+  "operations": [
+    {
+      "success": false,
+      "listName": "Critical Infrastructure Domains",
+      "listId": "87094a93-876b-44fe-800c-257561e3f37c",
+      "operation": "skip",
+      "itemsProcessed": 0,
+      "errors": [
+        "Cloudflare API Error: A resource with this identifier already exists."
+      ],
+      "warnings": []
+    },
+    {
+      "success": false,
+      "listName": "Development Tools Domains",
+      "listId": "a7325f43-68ce-404f-b50d-0bfc9eb4ee5e",
+      "operation": "skip",
+      "itemsProcessed": 0,
+      "errors": [
+        "Cloudflare API Error: A resource with this identifier already exists."
+      ],
+      "warnings": []
+    },
+    {
+      "success": false,
+      "listName": "AI and ML Platforms",
+      "listId": "bddcac3e-c1b8-42a8-89af-bce7f783cfc7",
+      "operation": "skip",
+      "itemsProcessed": 0,
+      "errors": [
+        "Cloudflare API Error: A resource with this identifier already exists."
+      ],
+      "warnings": []
+    },
+    {
+      "success": true,
+      "listName": "Social Media Sites",
+      "listId": "0df15f7f-dc35-46cb-8ac6-8a827bdbf559",
+      "operation": "create",
+      "itemsProcessed": 17,
+      "errors": [],
+      "warnings": []
+    }
+  ],
+  "configuration": {
+    "accountId": "0b0ee2b5eaf1fb8a2612e40ab6488052",
+    "batchSize": 100,
+    "rateLimitDelay": 200,
+    "maxRetries": 3
+  }
+}

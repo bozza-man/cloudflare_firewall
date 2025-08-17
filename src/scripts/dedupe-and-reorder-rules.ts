@@ -10,8 +10,8 @@ import ora from 'ora';
 import Table from 'cli-table3';
 
 interface RuleGroup {
-  primary: any;
-  duplicates: any[];
+  primary: unknown;
+  duplicates: unknown[];
   mergedTraffic?: string;
 }
 
@@ -58,7 +58,7 @@ class RuleDeduplicator {
     }
   }
 
-  private identifyDuplicates(rules: any[]): Map<string, RuleGroup> {
+  private identifyDuplicates(rules: unknown[]): Map<string, RuleGroup> {
     const groups = new Map<string, RuleGroup>();
     
     // Group rules by service/category
@@ -121,7 +121,7 @@ class RuleDeduplicator {
     return groups;
   }
 
-  private mergeTrafficRules(rules: any[]): string {
+  private mergeTrafficRules(rules: unknown[]): string {
     // Extract all domains/patterns from traffic rules
     const allDomains = new Set<string>();
     const allPatterns = new Set<string>();
@@ -182,7 +182,7 @@ class RuleDeduplicator {
   private async deleteDuplicates(groups: Map<string, RuleGroup>): Promise<number> {
     let deleted = 0;
     
-    for (const [service, group] of groups) {
+    for (const group of groups.values()) {
       for (const dup of group.duplicates) {
         const spinner = ora(`Deleting: ${dup.name}`).start();
         try {
@@ -200,7 +200,7 @@ class RuleDeduplicator {
     return deleted;
   }
 
-  private async reorderRules(rules: any[]): Promise<void> {
+  private async reorderRules(rules: unknown[]): Promise<void> {
     // Define proper precedence ranges for each category
     const categoryRanges = [
       { name: 'Critical Auth & Certs', pattern: /Authentication|Certificate|OCSP/, range: [990, 999], spacing: 1 },
@@ -307,7 +307,7 @@ async function main() {
     console.log(chalk.cyan('Monitor your dashboard to verify everything is working:'));
     console.log(chalk.gray('http://localhost:3001\n'));
     
-  } catch (error: any) {
+  } catch (error) {
     console.error(chalk.red('❌ Error:'), error.message);
     process.exit(1);
   }

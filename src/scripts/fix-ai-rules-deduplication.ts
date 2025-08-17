@@ -152,7 +152,7 @@ async function fixAIRulesDuplication() {
       });
       
       updateSpinner.succeed('Updated AI rule successfully');
-    } catch (error: any) {
+    } catch (error) {
       updateSpinner.fail(`Failed to update: ${error.message}`);
       return;
     }

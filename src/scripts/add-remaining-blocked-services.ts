@@ -145,16 +145,16 @@ async function addRemainingBlockedServices() {
     const spinner = ora(`Creating: ${ruleData.name}`).start();
     
     try {
-      const response = await gateway.api.post(
+      await gateway.api.post(
         `/accounts/${gateway.accountId}/gateway/rules`,
         ruleData
       );
       
-      const createdRule = response.data.result;
+      // const createdRule = response.data.result;
       results.success.push(ruleData.name);
       spinner.succeed(`✅ Created: ${ruleData.name} (precedence: ${ruleData.precedence})`);
       
-    } catch (error: any) {
+    } catch (error) {
       const errorMessage = error.response?.data?.errors?.[0]?.message || error.message;
       
       if (errorMessage.includes('already exists') || 

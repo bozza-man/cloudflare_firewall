@@ -15,7 +15,7 @@ import inquirer from 'inquirer';
 
 interface RuleGroup {
   category: string;
-  rules: any[];
+  rules: unknown[];
   suggestedRange: [number, number];
   priority: number;
 }
@@ -73,7 +73,7 @@ class ComprehensiveRuleOptimizer {
     }
   }
 
-  private categorizeRules(rules: any[]): Map<string, RuleGroup> {
+  private categorizeRules(rules: unknown[]): Map<string, RuleGroup> {
     const categories = new Map<string, RuleGroup>();
     
     // Define category patterns and priority ranges
@@ -133,11 +133,11 @@ class ComprehensiveRuleOptimizer {
     return categories;
   }
 
-  private findConsolidationOpportunities(rules: any[]): any[] {
+  private findConsolidationOpportunities(rules: unknown[]): unknown[] {
     const opportunities = [];
     
     // Group rules by similar patterns
-    const groups = new Map<string, any[]>();
+    const groups = new Map<string, unknown[]>();
     
     for (const rule of rules) {
       if (rule.action !== 'allow') continue;
@@ -172,7 +172,7 @@ class ComprehensiveRuleOptimizer {
     return opportunities;
   }
 
-  private canConsolidateRules(rules: any[]): boolean {
+  private canConsolidateRules(rules: unknown[]): boolean {
     // Check if all rules have same action and similar filters
     const firstAction = rules[0].action;
     const firstFilters = rules[0].filters.join(',');
@@ -183,7 +183,7 @@ class ComprehensiveRuleOptimizer {
     );
   }
 
-  private analyzePrecedence(rules: any[]): any[] {
+  private analyzePrecedence(rules: unknown[]): unknown[] {
     const issues = [];
     
     // Sort by precedence
@@ -223,7 +223,7 @@ class ComprehensiveRuleOptimizer {
     return issues;
   }
 
-  private detectConflicts(rules: any[]): any[] {
+  private detectConflicts(rules: unknown[]): unknown[] {
     const conflicts = [];
     
     for (let i = 0; i < rules.length; i++) {
@@ -274,16 +274,16 @@ class ComprehensiveRuleOptimizer {
   }
 
   private generateOptimizationPlan(
-    rules: any[],
+    rules: unknown[],
     categorized: Map<string, RuleGroup>,
-    consolidation: any[],
-    orderingIssues: any[]
-  ): any {
+    consolidation: unknown[],
+    _orderingIssues: unknown[]
+  ): { reorder: unknown[]; consolidate: unknown[]; remove: unknown[]; update: unknown[] } {
     const plan = {
-      reorder: [] as any[],
-      consolidate: [] as any[],
-      remove: [] as any[],
-      update: [] as any[]
+      reorder: [] as unknown[],
+      consolidate: [] as unknown[],
+      remove: [] as unknown[],
+      update: [] as unknown[]
     };
 
     // Plan reordering based on categories
@@ -337,7 +337,7 @@ class ComprehensiveRuleOptimizer {
     console.log(table.toString());
   }
 
-  private async displayConsolidation(opportunities: any[]): Promise<void> {
+  private async displayConsolidation(opportunities: unknown[]): Promise<void> {
     if (opportunities.length === 0) {
       console.log(chalk.green('✅ No consolidation opportunities found'));
       return;
@@ -352,7 +352,7 @@ class ComprehensiveRuleOptimizer {
     }
   }
 
-  private displayOrderingIssues(issues: any[]): void {
+  private displayOrderingIssues(issues: unknown[]): void {
     if (issues.length === 0) {
       console.log(chalk.green('✅ Precedence ordering is reasonable'));
       return;
@@ -372,7 +372,7 @@ class ComprehensiveRuleOptimizer {
     }
   }
 
-  private displayConflicts(conflicts: any[]): void {
+  private displayConflicts(conflicts: unknown[]): void {
     if (conflicts.length === 0) {
       console.log(chalk.green('✅ No rule conflicts detected'));
       return;
@@ -483,7 +483,7 @@ async function main() {
     console.log('• Free of conflicts and duplicates');
     console.log('• Optimized for performance\n');
     
-  } catch (error: any) {
+  } catch (error) {
     console.error(chalk.red('❌ Error:'), error.message);
     process.exit(1);
   }

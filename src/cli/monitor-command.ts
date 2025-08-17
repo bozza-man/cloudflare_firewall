@@ -7,13 +7,15 @@ import { GatewayClient } from '../api/gateway-client.js';
 import { GatewayActivityMonitor } from '../streaming/gateway-activity-monitor.js';
 import { LogStreamServer } from '../streaming/log-stream-server.js';
 import express from 'express';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { Server } from 'http';
+// import path from 'path';
+// import { fileURLToPath } from 'url';
 import open from 'open';
 import Table from 'cli-table3';
+import type { GatewayRule } from '../types/gateway.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
 
 interface MonitorOptions {
   interval?: number;
@@ -23,11 +25,36 @@ interface MonitorOptions {
   consoleOnly?: boolean;
 }
 
+interface ActivityEvent {
+  timestamp: string;
+  severity: string;
+  type: string;
+  summary: string;
+  details: {
+    changes?: string[];
+    [key: string]: unknown;
+  };
+}
+
+interface MonitorStats {
+  rules: {
+    total: number;
+    enabled: number;
+    disabled: number;
+    byAction: {
+      block: number;
+      allow: number;
+      isolate: number;
+    };
+  };
+  [key: string]: unknown;
+}
+
 export class MonitorCommand {
   private monitor: GatewayActivityMonitor | null = null;
   private streamServer: LogStreamServer | null = null;
   private expressApp: express.Application | null = null;
-  private expressServer: any = null;
+  private expressServer: Server | null = null;
   private gateway: GatewayClient | null = null;
   private wsPort: number = 8080;
 
@@ -115,7 +142,7 @@ export class MonitorCommand {
 
   private async startConsoleMode(): Promise<void> {
     console.log(chalk.cyan.bold('\n📊 Gateway Monitor - Console Mode\n'));
-    const interval = this.monitor ? (this.monitor as any).pollInterval / 1000 : 30;
+    const interval = 30; // Default to 30 seconds
     console.log(chalk.gray(`Polling every ${interval} seconds...`));
     console.log(chalk.gray('Press Ctrl+C to stop\n'));
   }
@@ -186,7 +213,7 @@ export class MonitorCommand {
     }
   }
 
-  private displayActivity(event: any): void {
+  private displayActivity(event: ActivityEvent): void {
     const timestamp = new Date(event.timestamp).toLocaleTimeString();
     const severity = this.colorizeSeverity(event.severity);
     const type = this.colorizeType(event.type);
@@ -200,7 +227,7 @@ export class MonitorCommand {
     }
   }
 
-  private displaySnapshot(stats: any): void {
+  private displaySnapshot(stats: MonitorStats): void {
     const table = new Table({
       head: ['Rules', 'Enabled', 'Disabled', 'Block', 'Allow', 'Isolate'],
       style: { head: ['cyan'] }
@@ -218,7 +245,7 @@ export class MonitorCommand {
     console.log('\n' + table.toString());
   }
 
-  private groupByAction(rules: any[]): Record<string, number> {
+  private groupByAction(rules: GatewayRule[]): Record<string, number> {
     const groups: Record<string, number> = {};
     for (const rule of rules) {
       groups[rule.action] = (groups[rule.action] || 0) + 1;

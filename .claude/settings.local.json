@@ -26,8 +26,15 @@
       "Bash(git add:*)",
       "Bash(npm install:*)",
       "Bash(npm run start:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(npm run lint:*)",
+      "Bash(chmod:*)",
+      "Bash(./fix-any-types.sh:*)",
+      "Bash(./fix-remaining-any.sh:*)",
+      "Bash(find:*)",
+      "Bash(npm test:*)"
     ],
-    "deny": []
+    "deny": [],
+    "defaultMode": "acceptEdits"
   }
 }

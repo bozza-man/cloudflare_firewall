@@ -3,6 +3,7 @@
 import { Command } from 'commander';
 import chalk from 'chalk';
 import express from 'express';
+import { Server } from 'http';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { LogStreamServer } from '../streaming/log-stream-server.js';
@@ -30,7 +31,7 @@ export class StreamLogsCommand {
   private streamServer: LogStreamServer | null = null;
   private logCollector: GatewayLogCollector | null = null;
   private expressApp: express.Application | null = null;
-  private expressServer: any = null;
+  private expressServer: Server | null = null;
 
   public getCommand(): Command {
     const command = new Command('stream');
@@ -178,7 +179,7 @@ export class StreamLogsCommand {
       const log = {
         id: `log-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         timestamp: new Date().toISOString(),
-        level: randomElement(levels) as any,
+        level: randomElement(levels) as 'info' | 'warn' | 'error' | 'debug',
         type: 'activity',
         action: randomElement(actions),
         ruleId: randomElement(rules).id,

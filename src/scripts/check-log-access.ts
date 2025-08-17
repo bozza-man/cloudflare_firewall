@@ -57,7 +57,7 @@ class CloudflareLogAccessChecker implements LogAccessChecker {
         spinner.fail('GraphQL Analytics API returned no data');
         return false;
       }
-    } catch (error: any) {
+    } catch (error) {
       spinner.fail(`GraphQL Analytics API not accessible: ${error.message}`);
       return false;
     }
@@ -79,7 +79,7 @@ class CloudflareLogAccessChecker implements LogAccessChecker {
         spinner.fail('Logpush API returned unsuccessful response');
         return false;
       }
-    } catch (error: any) {
+    } catch (error) {
       if (error.response?.status === 403) {
         spinner.fail('Logpush API not available (requires Enterprise plan)');
       } else {
@@ -112,7 +112,7 @@ class CloudflareLogAccessChecker implements LogAccessChecker {
         spinner.fail('Analytics API returned unsuccessful response');
         return false;
       }
-    } catch (error: any) {
+    } catch (error) {
       spinner.fail(`Analytics API not accessible: ${error.message}`);
       return false;
     }
@@ -166,7 +166,7 @@ class CloudflareLogAccessChecker implements LogAccessChecker {
         spinner.fail('Gateway API returned unsuccessful response');
         return false;
       }
-    } catch (error: any) {
+    } catch (error) {
       spinner.fail(`Gateway API not accessible: ${error.message}`);
       return false;
     }

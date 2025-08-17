@@ -1,0 +1,134 @@
+{
+  "timestamp": "2025-08-17T02:43:05.544Z",
+  "summary": {
+    "totalRulesProcessed": 6,
+    "successful": 0,
+    "failed": 6,
+    "totalCharactersSaved": 0,
+    "listsUsed": [
+      "Business Applications",
+      "Critical Infrastructure Domains",
+      "AI and ML Platforms",
+      "ITNC IoC Domains",
+      "Essential Development Services",
+      "DLP_DLP_-_Block_Personal_Email_Domains",
+      "Google Cloud SDK Downloads",
+      "Development Tools Domains",
+      "Social Media Sites"
+    ],
+    "apiRequests": 39,
+    "durationSeconds": 55.42
+  },
+  "results": [
+    {
+      "ruleId": "13e9b12a-215c-4363-8e57-ba39d08892df",
+      "ruleName": "AI Services: Complete Coverage (Anthropic/Claude Critical)",
+      "success": false,
+      "originalTraffic": "http.request.host in {\"openai.com\" \"api.openai.com\" \"chat.openai.com\" \"platform.openai.com\" \"ab.chatgpt.com\" \"anthropic.com\" \"api.anthropic.com\" \"claude.ai\" \"console.anthropic.com\" \"docs.anthropic.com\" \"statsig.anthropic.com\" \"telemetry.anthropic.com\" \"gemini.google.com\" \"makersuite.google.com\" \"ai.google.com\" \"bard.google.com\" \"huggingface.co\" \"ollama.ai\" \"ollama.com\" \"api.perplexity.ai\" \"perplexity.ai\" \"poe.com\" \"midjourney.com\" \"replicate.com\" \"stability.ai\" \"leonardo.ai\" \"character.ai\" \"janitorai.com\" \"meta.ai\" \"copilot.microsoft.com\" \"jasper.ai\" \"copy.ai\" \"writesonic.com\" \"grammarly.com\" \"warp.dev\" \"app.warp.dev\" \"rtc.app.warp.dev\"}",
+      "optimizedTraffic": "http.request.host in $ai-and-ml-platforms",
+      "listsUsed": [
+        "Business Applications",
+        "Critical Infrastructure Domains",
+        "AI and ML Platforms"
+      ],
+      "charactersSaved": 604,
+      "error": "Cloudflare API Error: Filter parsing error (1:23):\nhttp.request.host in $ai-and-ml-platforms\n                      ^^^^^^^^^^^^^^^^^^^ invalid list name \"ai-and-ml-platforms\"\n"
+    },
+    {
+      "ruleId": "13cc67a0-b26b-4e8c-9960-45ba24301531",
+      "ruleName": "CRITICAL INFRASTRUCTURE: Essential Services",
+      "success": false,
+      "originalTraffic": "dns.fqdn in {\"warp.dev\" \"app.warp.dev\" \"rtc.app.warp.dev\" \"anthropic.com\" \"api.anthropic.com\" \"claude.ai\" \"console.anthropic.com\" \"openai.com\" \"api.openai.com\" \"chat.openai.com\" \"platform.openai.com\" \"ab.chatgpt.com\" \"apple.com\" \"icloud.com\" \"appleid.apple.com\" \"idmsa.apple.com\" \"deviceenrollment.apple.com\" \"deviceservices-external.apple.com\" \"gdmf.apple.com\" \"mdmenrollment.apple.com\" \"cloudflare.com\" \"dash.cloudflare.com\" \"api.cloudflare.com\" \"simplemdm.com\" \"a.simplemdm.com\" \"api.simplemdm.com\" \"ui.com\" \"unifi.ui.com\" \"account.ui.com\" \"sso.ui.com\" \"login.microsoftonline.com\" \"login.microsoft.com\" \"microsoft.com\" \"google.com\" \"gmail.com\" \"accounts.google.com\" \"workspace.google.com\" \"admin.google.com\" \"drive.google.com\" \"docs.google.com\" \"sheets.google.com\" \"slides.google.com\" \"calendar.google.com\" \"meet.google.com\" \"chat.google.com\" \"googleapis.com\" \"googleusercontent.com\" \"gstatic.com\" \"console.cloud.google.com\" \"cloud.google.com\" \"gcp.goog\" \"googledomains.com\" \"one.one.one.one\" \"1.1.1.1\" \"quad9.net\" \"ocsp.apple.com\" \"valid.apple.com\" \"ocsp2.g.aaplimg.com\" \"valid-apple.g.aaplimg.com\" \"mail.google.com\" \"googlemail.com\" \"inbox.google.com\" \"smtp.gmail.com\" \"imap.gmail.com\" \"pop.gmail.com\" \"mail-settings.google.com\" \"mail.me.com\" \"mail.icloud.com\" \"smtp.mail.me.com\" \"imap.mail.me.com\" \"p01-smtp.mail.me.com\" \"p02-smtp.mail.me.com\" \"p03-smtp.mail.me.com\" \"p01-imap.mail.me.com\" \"p02-imap.mail.me.com\" \"p03-imap.mail.me.com\" \"p01-contacts.icloud.com\" \"p02-contacts.icloud.com\" \"p03-contacts.icloud.com\" \"p01-caldav.icloud.com\" \"p02-caldav.icloud.com\" \"p03-caldav.icloud.com\" \"push.apple.com\" \"gateway.push.apple.com\" \"geolocation.onetrust.com\" \"gateway.fe2.apple-dns.net\" \"p43-imap.mail.me.com\" \"mask-h2.icloud.com\" \"mask-canary.icloud.com\" \"n.connections.brother.com\" \"ota.onecloud.harman.com\" \"netcts.cdn-apple.com\" \"log.tailscale.com\" \"connections.brother.com\" \"imap.mail.me.com.akadns.net\" \"mask-api.icloud.com\" \"canary.mask.apple-dns.net\" \"mask.apple-dns.net\" \"build-cloud.docker.com\"}",
+      "optimizedTraffic": "dns.fqdn in $critical-infrastructure-domains",
+      "listsUsed": [
+        "ITNC IoC Domains",
+        "Essential Development Services",
+        "Business Applications",
+        "DLP_DLP_-_Block_Personal_Email_Domains",
+        "Google Cloud SDK Downloads",
+        "Critical Infrastructure Domains",
+        "AI and ML Platforms",
+        "Development Tools Domains"
+      ],
+      "charactersSaved": 1963,
+      "error": "Cloudflare API Error: Filter parsing error (1:14):\ndns.fqdn in $critical-infrastructure-domains\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ invalid list name \"critical-infrastructure-domains\"\n"
+    },
+    {
+      "ruleId": "0ff5bbfa-88cb-46cc-a860-4b34091198e8",
+      "ruleName": "CRITICAL INFRASTRUCTURE: Essential Services (HTTP)",
+      "success": false,
+      "originalTraffic": "http.request.host in {\"warp.dev\" \"app.warp.dev\" \"rtc.app.warp.dev\" \"anthropic.com\" \"api.anthropic.com\" \"claude.ai\" \"console.anthropic.com\" \"openai.com\" \"api.openai.com\" \"chat.openai.com\" \"platform.openai.com\" \"ab.chatgpt.com\" \"apple.com\" \"icloud.com\" \"appleid.apple.com\" \"idmsa.apple.com\" \"deviceenrollment.apple.com\" \"deviceservices-external.apple.com\" \"gdmf.apple.com\" \"mdmenrollment.apple.com\" \"cloudflare.com\" \"dash.cloudflare.com\" \"api.cloudflare.com\" \"simplemdm.com\" \"a.simplemdm.com\" \"api.simplemdm.com\" \"ui.com\" \"unifi.ui.com\" \"account.ui.com\" \"sso.ui.com\" \"login.microsoftonline.com\" \"login.microsoft.com\" \"microsoft.com\" \"google.com\" \"gmail.com\" \"accounts.google.com\" \"workspace.google.com\" \"admin.google.com\" \"drive.google.com\" \"docs.google.com\" \"sheets.google.com\" \"slides.google.com\" \"calendar.google.com\" \"meet.google.com\" \"chat.google.com\" \"googleapis.com\" \"googleusercontent.com\" \"gstatic.com\" \"console.cloud.google.com\" \"cloud.google.com\" \"gcp.goog\" \"googledomains.com\" \"one.one.one.one\" \"1.1.1.1\" \"quad9.net\" \"ocsp.apple.com\" \"valid.apple.com\" \"ocsp2.g.aaplimg.com\" \"valid-apple.g.aaplimg.com\" \"mail.google.com\" \"googlemail.com\" \"inbox.google.com\" \"smtp.gmail.com\" \"imap.gmail.com\" \"pop.gmail.com\" \"mail-settings.google.com\" \"mail.me.com\" \"mail.icloud.com\" \"smtp.mail.me.com\" \"imap.mail.me.com\" \"p01-smtp.mail.me.com\" \"p02-smtp.mail.me.com\" \"p03-smtp.mail.me.com\" \"p01-imap.mail.me.com\" \"p02-imap.mail.me.com\" \"p03-imap.mail.me.com\" \"p01-contacts.icloud.com\" \"p02-contacts.icloud.com\" \"p03-contacts.icloud.com\" \"p01-caldav.icloud.com\" \"p02-caldav.icloud.com\" \"p03-caldav.icloud.com\" \"push.apple.com\" \"gateway.push.apple.com\"}",
+      "optimizedTraffic": "http.request.host in $critical-infrastructure-domains",
+      "listsUsed": [
+        "ITNC IoC Domains",
+        "Essential Development Services",
+        "Business Applications",
+        "DLP_DLP_-_Block_Personal_Email_Domains",
+        "Google Cloud SDK Downloads",
+        "Critical Infrastructure Domains",
+        "AI and ML Platforms",
+        "Development Tools Domains"
+      ],
+      "charactersSaved": 1590,
+      "error": "Cloudflare API Error: Filter parsing error (1:23):\nhttp.request.host in $critical-infrastructure-domains\n                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ invalid list name \"critical-infrastructure-domains\"\n"
+    },
+    {
+      "ruleId": "cf06d3d7-754b-4a34-9206-6bd0ceecb478",
+      "ruleName": "Apple: Core DNS Services",
+      "success": false,
+      "originalTraffic": "dns.fqdn matches \".*\\.apple\\.com$\" or dns.fqdn == \"apple.com\" or dns.fqdn in {\"ausyd2.icloud-content.com\" \"gateway.icloud.com\" \"updates.cdn-apple.com\" \"api.apple-cloudkit.com\" \"api.apple-cloudkit.fe2.apple-dns.net\" \"us-sandbox-courier-4.push-apple.com.akadns.net\" \"setup.icloud.com\" \"token.safebrowsing.apple\" \"ausyd2.ce.apple-dns.net\" \"metrics-config.icloud.com\"}",
+      "optimizedTraffic": "dns.fqdn matches \".*\\.apple\\.com$\" or dns.fqdn in $critical-infrastructure-domains or dns.fqdn in $critical-infrastructure-domains",
+      "listsUsed": [
+        "Critical Infrastructure Domains"
+      ],
+      "charactersSaved": 234,
+      "error": "Cloudflare API Error: Filter parsing error (1:52):\ndns.fqdn matches \".*\\.apple\\.com$\" or dns.fqdn in $critical-infrastructure-domains or dns.fqdn in $critical-infrastructure-domains\n                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ invalid list name \"critical-infrastructure-domains\"\n"
+    },
+    {
+      "ruleId": "eabdfcbe-d4d6-4327-820e-deb2849dada4",
+      "ruleName": "Social: Allow Grindr (DNS)",
+      "success": false,
+      "originalTraffic": "dns.fqdn in {\"grindr.com\" \"www.grindr.com\" \"api.grindr.com\" \"app.grindr.com\" \"chat.grindr.com\" \"media.grindr.com\" \"images.grindr.com\" \"cdn.grindr.com\" \"push.grindr.com\" \"analytics.grindr.com\" \"static.grindr.com\" \"assets.grindr.com\"}",
+      "optimizedTraffic": "dns.fqdn in $social-media-sites",
+      "listsUsed": [
+        "Social Media Sites"
+      ],
+      "charactersSaved": 201,
+      "error": "Cloudflare API Error: Filter parsing error (1:14):\ndns.fqdn in $social-media-sites\n             ^^^^^^^^^^^^^^^^^^ invalid list name \"social-media-sites\"\n"
+    },
+    {
+      "ruleId": "dd7a23e2-c728-42d2-8e48-1b5ae94a9769",
+      "ruleName": "Social: Allow Grindr (HTTP)",
+      "success": false,
+      "originalTraffic": "http.request.host in {\"grindr.com\" \"www.grindr.com\" \"api.grindr.com\" \"app.grindr.com\" \"chat.grindr.com\" \"media.grindr.com\" \"images.grindr.com\" \"cdn.grindr.com\" \"push.grindr.com\" \"analytics.grindr.com\" \"static.grindr.com\" \"assets.grindr.com\"}",
+      "optimizedTraffic": "http.request.host in $social-media-sites",
+      "listsUsed": [
+        "Social Media Sites"
+      ],
+      "charactersSaved": 201,
+      "error": "Cloudflare API Error: Filter parsing error (1:23):\nhttp.request.host in $social-media-sites\n                      ^^^^^^^^^^^^^^^^^^ invalid list name \"social-media-sites\"\n"
+    }
+  ],
+  "listMappings": {
+    "Authorised Users": "authorised-users",
+    "ITNC IoC Domains": "itnc-ioc-domains",
+    "Essential Development Services": "essential-development-services",
+    "Business Applications": "business-applications",
+    "Cloud Services": "cloud-services",
+    "Streaming Services": "streaming-services",
+    "File Sharing Services": "file-sharing-services",
+    "Security Tools": "security-tools",
+    "DLP_DLP_-_Block_File_Sharing_Sites_Domains": "dlp-dlp---block-file-sharing-sites-domains",
+    "DLP_DLP_-_Block_Pastebin_Sites_Domains": "dlp-dlp---block-pastebin-sites-domains",
+    "DLP_DLP_-_Block_Personal_Email_Domains": "dlp-dlp---block-personal-email-domains",
+    "DLP_DLP_-_Allow_Business_Services_Domains": "dlp-dlp---allow-business-services-domains",
+    "Google Cloud SDK Downloads": "google-cloud-sdk-downloads",
+    "Social Media Sites": "social-media-sites",
+    "Critical Infrastructure Domains": "critical-infrastructure-domains",
+    "AI and ML Platforms": "ai-and-ml-platforms",
+    "Development Tools Domains": "development-tools-domains",
+    "Streaming and Entertainment": "streaming-and-entertainment",
+    "E-commerce Sites": "e-commerce-sites"
+  },
+  "backupNote": "Original traffic filters are preserved in rule descriptions for rollback purposes"
+}

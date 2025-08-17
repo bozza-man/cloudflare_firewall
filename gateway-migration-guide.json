@@ -1,0 +1,364 @@
+{
+  "timestamp": "2025-08-17T02:19:59.053Z",
+  "summary": {
+    "totalRules": 80,
+    "totalLists": 17,
+    "optimizableRules": 27,
+    "estimatedSavings": 3999
+  },
+  "listReferences": {
+    "Authorised Users": "dns.fqdn in $authorised-users",
+    "ITNC IoC Domains": "dns.fqdn in $itnc-ioc-domains",
+    "Essential Development Services": "dns.fqdn in $essential-development-services",
+    "Business Applications": "dns.fqdn in $business-applications",
+    "Cloud Services": "dns.fqdn in $cloud-services",
+    "": "dns.fqdn in $",
+    "Streaming Services": "dns.fqdn in $streaming-services",
+    "File Sharing Services": "dns.fqdn in $file-sharing-services",
+    "Security Tools": "dns.fqdn in $security-tools",
+    "DLP_DLP_-_Block_File_Sharing_Sites_Domains": "dns.fqdn in $dlp-dlp---block-file-sharing-sites-domains",
+    "DLP_DLP_-_Block_Pastebin_Sites_Domains": "dns.fqdn in $dlp-dlp---block-pastebin-sites-domains",
+    "DLP_DLP_-_Block_Personal_Email_Domains": "dns.fqdn in $dlp-dlp---block-personal-email-domains",
+    "DLP_DLP_-_Allow_Business_Services_Domains": "dns.fqdn in $dlp-dlp---allow-business-services-domains",
+    "Google Cloud SDK Downloads": "dns.fqdn in $google-cloud-sdk-downloads",
+    "Social Media Sites": "dns.fqdn in $social-media-sites",
+    "Critical Infrastructure Domains": "dns.fqdn in $critical-infrastructure-domains",
+    "AI and ML Platforms": "dns.fqdn in $ai-and-ml-platforms"
+  },
+  "ruleOptimizations": [
+    {
+      "ruleId": "13cc67a0-b26b-4e8c-9960-45ba24301531",
+      "ruleName": "CRITICAL INFRASTRUCTURE: Essential Services",
+      "currentTraffic": "dns.fqdn in {\"warp.dev\" \"app.warp.dev\" \"rtc.app.warp.dev\" \"anthropic.com\" \"api.anthropic.com\" \"claude.ai\" \"console.anthropic.com\" \"openai.com\" \"api.openai.com\" \"chat.openai.com\" \"platform.openai.com\" \"ab.chatgpt.com\" \"apple.com\" \"icloud.com\" \"appleid.apple.com\" \"idmsa.apple.com\" \"deviceenrollment.apple.com\" \"deviceservices-external.apple.com\" \"gdmf.apple.com\" \"mdmenrollment.apple.com\" \"cloudflare.com\" \"dash.cloudflare.com\" \"api.cloudflare.com\" \"simplemdm.com\" \"a.simplemdm.com\" \"api.simplemdm.com\" \"ui.com\" \"unifi.ui.com\" \"account.ui.com\" \"sso.ui.com\" \"login.microsoftonline.com\" \"login.microsoft.com\" \"microsoft.com\" \"google.com\" \"gmail.com\" \"accounts.google.com\" \"workspace.google.com\" \"admin.google.com\" \"drive.google.com\" \"docs.google.com\" \"sheets.google.com\" \"slides.google.com\" \"calendar.google.com\" \"meet.google.com\" \"chat.google.com\" \"googleapis.com\" \"googleusercontent.com\" \"gstatic.com\" \"console.cloud.google.com\" \"cloud.google.com\" \"gcp.goog\" \"googledomains.com\" \"one.one.one.one\" \"1.1.1.1\" \"quad9.net\" \"ocsp.apple.com\" \"valid.apple.com\" \"ocsp2.g.aaplimg.com\" \"valid-apple.g.aaplimg.com\" \"mail.google.com\" \"googlemail.com\" \"inbox.google.com\" \"smtp.gmail.com\" \"imap.gmail.com\" \"pop.gmail.com\" \"mail-settings.google.com\" \"mail.me.com\" \"mail.icloud.com\" \"smtp.mail.me.com\" \"imap.mail.me.com\" \"p01-smtp.mail.me.com\" \"p02-smtp.mail.me.com\" \"p03-smtp.mail.me.com\" \"p01-imap.mail.me.com\" \"p02-imap.mail.me.com\" \"p03-imap.mail.me.com\" \"p01-contacts.icloud.com\" \"p02-contacts.icloud.com\" \"p03-contacts.icloud.com\" \"p01-caldav.icloud.com\" \"p02-caldav.icloud.com\" \"p03-caldav.icloud.com\" \"push.apple.com\" \"gateway.push.apple.com\" \"geolocation.onetrust.com\" \"gateway.fe2.apple-dns.net\" \"p43-imap.mail.me.com\" \"mask-h2.icloud.com\" \"mask-canary.icloud.com\" \"n.connections.brother.com\" \"ota.onecloud.harman.com\" \"netcts.cdn-apple.com\" \"log.tailscale.com\" \"connections.brother.com\" \"imap.mail.me.com.akadns.net\" \"mask-api.icloud.com\" \"canary.mask.apple-dns.net\" \"mask.apple-dns.net\" \"build-cloud.docker.com\"}",
+      "optimizedTraffic": "dns.fqdn in {\"warp.dev\" \"app.warp.dev\" \"rtc.app.warp.dev\" \"anthropic.com\" \"api.anthropic.com\" \"claude.ai\" \"console.anthropic.com\" \"openai.com\" \"api.openai.com\" \"chat.openai.com\" \"platform.openai.com\" \"ab.chatgpt.com\" \"apple.com\" \"icloud.com\" \"appleid.apple.com\" \"idmsa.apple.com\" \"deviceenrollment.apple.com\" \"deviceservices-external.apple.com\" \"gdmf.apple.com\" \"mdmenrollment.apple.com\" \"cloudflare.com\" \"dash.cloudflare.com\" \"api.cloudflare.com\" \"simplemdm.com\" \"a.simplemdm.com\" \"api.simplemdm.com\" \"ui.com\" \"unifi.ui.com\" \"account.ui.com\" \"sso.ui.com\" \"login.microsoftonline.com\" \"login.microsoft.com\" \"microsoft.com\" \"google.com\" \"gmail.com\" \"accounts.google.com\" \"workspace.google.com\" \"admin.google.com\" \"drive.google.com\" \"docs.google.com\" \"sheets.google.com\" \"slides.google.com\" \"calendar.google.com\" \"meet.google.com\" \"chat.google.com\" \"googleapis.com\" \"googleusercontent.com\" \"gstatic.com\" \"console.cloud.google.com\" \"cloud.google.com\" \"gcp.goog\" \"googledomains.com\" \"one.one.one.one\" \"1.1.1.1\" \"quad9.net\" \"ocsp.apple.com\" \"valid.apple.com\" \"ocsp2.g.aaplimg.com\" \"valid-apple.g.aaplimg.com\" \"mail.google.com\" \"googlemail.com\" \"inbox.google.com\" \"smtp.gmail.com\" \"imap.gmail.com\" \"pop.gmail.com\" \"mail-settings.google.com\" \"mail.me.com\" \"mail.icloud.com\" \"smtp.mail.me.com\" \"imap.mail.me.com\" \"p01-smtp.mail.me.com\" \"p02-smtp.mail.me.com\" \"p03-smtp.mail.me.com\" \"p01-imap.mail.me.com\" \"p02-imap.mail.me.com\" \"p03-imap.mail.me.com\" \"p01-contacts.icloud.com\" \"p02-contacts.icloud.com\" \"p03-contacts.icloud.com\" \"p01-caldav.icloud.com\" \"p02-caldav.icloud.com\" \"p03-caldav.icloud.com\" \"push.apple.com\" \"gateway.push.apple.com\" \"geolocation.onetrust.com\" \"gateway.fe2.apple-dns.net\" \"p43-imap.mail.me.com\" \"mask-h2.icloud.com\" \"mask-canary.icloud.com\" \"n.connections.brother.com\" \"ota.onecloud.harman.com\" \"netcts.cdn-apple.com\" \"log.tailscale.com\" \"connections.brother.com\" \"imap.mail.me.com.akadns.net\" \"mask-api.icloud.com\" \"canary.mask.apple-dns.net\" \"mask.apple-dns.net\" \"build-cloud.docker.com\"}",
+      "listsUsed": [
+        "Critical Infrastructure Domains",
+        "Development Tools Domains",
+        "AI and ML Platforms",
+        "Streaming and Entertainment"
+      ],
+      "potentialSavings": 1024,
+      "confidence": "high"
+    },
+    {
+      "ruleId": "0ff5bbfa-88cb-46cc-a860-4b34091198e8",
+      "ruleName": "CRITICAL INFRASTRUCTURE: Essential Services (HTTP)",
+      "currentTraffic": "http.request.host in {\"warp.dev\" \"app.warp.dev\" \"rtc.app.warp.dev\" \"anthropic.com\" \"api.anthropic.com\" \"claude.ai\" \"console.anthropic.com\" \"openai.com\" \"api.openai.com\" \"chat.openai.com\" \"platform.openai.com\" \"ab.chatgpt.com\" \"apple.com\" \"icloud.com\" \"appleid.apple.com\" \"idmsa.apple.com\" \"deviceenrollment.apple.com\" \"deviceservices-external.apple.com\" \"gdmf.apple.com\" \"mdmenrollment.apple.com\" \"cloudflare.com\" \"dash.cloudflare.com\" \"api.cloudflare.com\" \"simplemdm.com\" \"a.simplemdm.com\" \"api.simplemdm.com\" \"ui.com\" \"unifi.ui.com\" \"account.ui.com\" \"sso.ui.com\" \"login.microsoftonline.com\" \"login.microsoft.com\" \"microsoft.com\" \"google.com\" \"gmail.com\" \"accounts.google.com\" \"workspace.google.com\" \"admin.google.com\" \"drive.google.com\" \"docs.google.com\" \"sheets.google.com\" \"slides.google.com\" \"calendar.google.com\" \"meet.google.com\" \"chat.google.com\" \"googleapis.com\" \"googleusercontent.com\" \"gstatic.com\" \"console.cloud.google.com\" \"cloud.google.com\" \"gcp.goog\" \"googledomains.com\" \"one.one.one.one\" \"1.1.1.1\" \"quad9.net\" \"ocsp.apple.com\" \"valid.apple.com\" \"ocsp2.g.aaplimg.com\" \"valid-apple.g.aaplimg.com\" \"mail.google.com\" \"googlemail.com\" \"inbox.google.com\" \"smtp.gmail.com\" \"imap.gmail.com\" \"pop.gmail.com\" \"mail-settings.google.com\" \"mail.me.com\" \"mail.icloud.com\" \"smtp.mail.me.com\" \"imap.mail.me.com\" \"p01-smtp.mail.me.com\" \"p02-smtp.mail.me.com\" \"p03-smtp.mail.me.com\" \"p01-imap.mail.me.com\" \"p02-imap.mail.me.com\" \"p03-imap.mail.me.com\" \"p01-contacts.icloud.com\" \"p02-contacts.icloud.com\" \"p03-contacts.icloud.com\" \"p01-caldav.icloud.com\" \"p02-caldav.icloud.com\" \"p03-caldav.icloud.com\" \"push.apple.com\" \"gateway.push.apple.com\"}",
+      "optimizedTraffic": "http.request.host in {\"warp.dev\" \"app.warp.dev\" \"rtc.app.warp.dev\" \"anthropic.com\" \"api.anthropic.com\" \"claude.ai\" \"console.anthropic.com\" \"openai.com\" \"api.openai.com\" \"chat.openai.com\" \"platform.openai.com\" \"ab.chatgpt.com\" \"apple.com\" \"icloud.com\" \"appleid.apple.com\" \"idmsa.apple.com\" \"deviceenrollment.apple.com\" \"deviceservices-external.apple.com\" \"gdmf.apple.com\" \"mdmenrollment.apple.com\" \"cloudflare.com\" \"dash.cloudflare.com\" \"api.cloudflare.com\" \"simplemdm.com\" \"a.simplemdm.com\" \"api.simplemdm.com\" \"ui.com\" \"unifi.ui.com\" \"account.ui.com\" \"sso.ui.com\" \"login.microsoftonline.com\" \"login.microsoft.com\" \"microsoft.com\" \"google.com\" \"gmail.com\" \"accounts.google.com\" \"workspace.google.com\" \"admin.google.com\" \"drive.google.com\" \"docs.google.com\" \"sheets.google.com\" \"slides.google.com\" \"calendar.google.com\" \"meet.google.com\" \"chat.google.com\" \"googleapis.com\" \"googleusercontent.com\" \"gstatic.com\" \"console.cloud.google.com\" \"cloud.google.com\" \"gcp.goog\" \"googledomains.com\" \"one.one.one.one\" \"1.1.1.1\" \"quad9.net\" \"ocsp.apple.com\" \"valid.apple.com\" \"ocsp2.g.aaplimg.com\" \"valid-apple.g.aaplimg.com\" \"mail.google.com\" \"googlemail.com\" \"inbox.google.com\" \"smtp.gmail.com\" \"imap.gmail.com\" \"pop.gmail.com\" \"mail-settings.google.com\" \"mail.me.com\" \"mail.icloud.com\" \"smtp.mail.me.com\" \"imap.mail.me.com\" \"p01-smtp.mail.me.com\" \"p02-smtp.mail.me.com\" \"p03-smtp.mail.me.com\" \"p01-imap.mail.me.com\" \"p02-imap.mail.me.com\" \"p03-imap.mail.me.com\" \"p01-contacts.icloud.com\" \"p02-contacts.icloud.com\" \"p03-contacts.icloud.com\" \"p01-caldav.icloud.com\" \"p02-caldav.icloud.com\" \"p03-caldav.icloud.com\" \"push.apple.com\" \"gateway.push.apple.com\"}",
+      "listsUsed": [
+        "Critical Infrastructure Domains",
+        "Development Tools Domains",
+        "AI and ML Platforms",
+        "Streaming and Entertainment"
+      ],
+      "potentialSavings": 923,
+      "confidence": "high"
+    },
+    {
+      "ruleId": "13e9b12a-215c-4363-8e57-ba39d08892df",
+      "ruleName": "AI Services: Complete Coverage (Anthropic/Claude Critical)",
+      "currentTraffic": "http.request.host in {\"openai.com\" \"api.openai.com\" \"chat.openai.com\" \"platform.openai.com\" \"ab.chatgpt.com\" \"anthropic.com\" \"api.anthropic.com\" \"claude.ai\" \"console.anthropic.com\" \"docs.anthropic.com\" \"statsig.anthropic.com\" \"telemetry.anthropic.com\" \"gemini.google.com\" \"makersuite.google.com\" \"ai.google.com\" \"bard.google.com\" \"huggingface.co\" \"ollama.ai\" \"ollama.com\" \"api.perplexity.ai\" \"perplexity.ai\" \"poe.com\" \"midjourney.com\" \"replicate.com\" \"stability.ai\" \"leonardo.ai\" \"character.ai\" \"janitorai.com\" \"meta.ai\" \"copilot.microsoft.com\" \"jasper.ai\" \"copy.ai\" \"writesonic.com\" \"grammarly.com\" \"warp.dev\" \"app.warp.dev\" \"rtc.app.warp.dev\"}",
+      "optimizedTraffic": "http.request.host in {\"openai.com\" \"api.openai.com\" \"chat.openai.com\" \"platform.openai.com\" \"ab.chatgpt.com\" \"anthropic.com\" \"api.anthropic.com\" \"claude.ai\" \"console.anthropic.com\" \"docs.anthropic.com\" \"statsig.anthropic.com\" \"telemetry.anthropic.com\" \"gemini.google.com\" \"makersuite.google.com\" \"ai.google.com\" \"bard.google.com\" \"huggingface.co\" \"ollama.ai\" \"ollama.com\" \"api.perplexity.ai\" \"perplexity.ai\" \"poe.com\" \"midjourney.com\" \"replicate.com\" \"stability.ai\" \"leonardo.ai\" \"character.ai\" \"janitorai.com\" \"meta.ai\" \"copilot.microsoft.com\" \"jasper.ai\" \"copy.ai\" \"writesonic.com\" \"grammarly.com\" \"warp.dev\" \"app.warp.dev\" \"rtc.app.warp.dev\"}",
+      "listsUsed": [
+        "Critical Infrastructure Domains",
+        "AI and ML Platforms"
+      ],
+      "potentialSavings": 434,
+      "confidence": "high"
+    },
+    {
+      "ruleId": "eabdfcbe-d4d6-4327-820e-deb2849dada4",
+      "ruleName": "Social: Allow Grindr (DNS)",
+      "currentTraffic": "dns.fqdn in {\"grindr.com\" \"www.grindr.com\" \"api.grindr.com\" \"app.grindr.com\" \"chat.grindr.com\" \"media.grindr.com\" \"images.grindr.com\" \"cdn.grindr.com\" \"push.grindr.com\" \"analytics.grindr.com\" \"static.grindr.com\" \"assets.grindr.com\"}",
+      "optimizedTraffic": "dns.fqdn in {\"grindr.com\" \"www.grindr.com\" \"api.grindr.com\" \"app.grindr.com\" \"chat.grindr.com\" \"media.grindr.com\" \"images.grindr.com\" \"cdn.grindr.com\" \"push.grindr.com\" \"analytics.grindr.com\" \"static.grindr.com\" \"assets.grindr.com\"}",
+      "listsUsed": [
+        "Social Media Sites"
+      ],
+      "potentialSavings": 183,
+      "confidence": "medium"
+    },
+    {
+      "ruleId": "dd7a23e2-c728-42d2-8e48-1b5ae94a9769",
+      "ruleName": "Social: Allow Grindr (HTTP)",
+      "currentTraffic": "http.request.host in {\"grindr.com\" \"www.grindr.com\" \"api.grindr.com\" \"app.grindr.com\" \"chat.grindr.com\" \"media.grindr.com\" \"images.grindr.com\" \"cdn.grindr.com\" \"push.grindr.com\" \"analytics.grindr.com\" \"static.grindr.com\" \"assets.grindr.com\"}",
+      "optimizedTraffic": "http.request.host in {\"grindr.com\" \"www.grindr.com\" \"api.grindr.com\" \"app.grindr.com\" \"chat.grindr.com\" \"media.grindr.com\" \"images.grindr.com\" \"cdn.grindr.com\" \"push.grindr.com\" \"analytics.grindr.com\" \"static.grindr.com\" \"assets.grindr.com\"}",
+      "listsUsed": [
+        "Social Media Sites"
+      ],
+      "potentialSavings": 183,
+      "confidence": "medium"
+    },
+    {
+      "ruleId": "3b11c848-68e2-42fc-97c0-e1d42916e7a4",
+      "ruleName": "Apple: MDM & Device Enrollment",
+      "currentTraffic": "http.request.host in {\"deviceenrollment.apple.com\" \"deviceservices-external.apple.com\" \"gdmf.apple.com\" \"mdmenrollment.apple.com\" \"school.apple.com\" \"business.apple.com\" \"dep.apple.com\" \"dep-client-downloads.apple.com\"}",
+      "optimizedTraffic": "http.request.host in {\"deviceenrollment.apple.com\" \"deviceservices-external.apple.com\" \"gdmf.apple.com\" \"mdmenrollment.apple.com\" \"school.apple.com\" \"business.apple.com\" \"dep.apple.com\" \"dep-client-downloads.apple.com\"}",
+      "listsUsed": [
+        "Critical Infrastructure Domains"
+      ],
+      "potentialSavings": 173,
+      "confidence": "medium"
+    },
+    {
+      "ruleId": "cf06d3d7-754b-4a34-9206-6bd0ceecb478",
+      "ruleName": "Apple: Core DNS Services",
+      "currentTraffic": "dns.fqdn matches \".*\\.apple\\.com$\" or dns.fqdn == \"apple.com\" or dns.fqdn in {\"ausyd2.icloud-content.com\" \"gateway.icloud.com\" \"updates.cdn-apple.com\" \"api.apple-cloudkit.com\" \"api.apple-cloudkit.fe2.apple-dns.net\" \"us-sandbox-courier-4.push-apple.com.akadns.net\" \"setup.icloud.com\" \"token.safebrowsing.apple\" \"ausyd2.ce.apple-dns.net\" \"metrics-config.icloud.com\"}",
+      "optimizedTraffic": "dns.fqdn matches \".*\\.apple\\.com$\" or dns.fqdn == \"apple.com\" or dns.fqdn in {\"ausyd2.icloud-content.com\" \"gateway.icloud.com\" \"updates.cdn-apple.com\" \"api.apple-cloudkit.com\" \"api.apple-cloudkit.fe2.apple-dns.net\" \"us-sandbox-courier-4.push-apple.com.akadns.net\" \"setup.icloud.com\" \"token.safebrowsing.apple\" \"ausyd2.ce.apple-dns.net\" \"metrics-config.icloud.com\"}",
+      "listsUsed": [
+        "Critical Infrastructure Domains",
+        "Streaming and Entertainment"
+      ],
+      "potentialSavings": 144,
+      "confidence": "high"
+    },
+    {
+      "ruleId": "d0dc8aa5-31e2-402f-abe4-58ce542175f2",
+      "ruleName": "Development: GitHub and NPM",
+      "currentTraffic": "dns.fqdn in {\"github.com\" \"api.github.com\" \"registry.npmjs.org\" \"raw.githubusercontent.com\" \"objects.githubusercontent.com\" \"ghcr.io\"} or dns.fqdn matches \".*\\.github\\.com$\" or dns.fqdn matches \".*\\.npmjs\\.org$\"",
+      "optimizedTraffic": "dns.fqdn in {\"github.com\" \"api.github.com\" \"registry.npmjs.org\" \"raw.githubusercontent.com\" \"objects.githubusercontent.com\" \"ghcr.io\"} or dns.fqdn matches \".*\\.github\\.com$\" or dns.fqdn matches \".*\\.npmjs\\.org$\"",
+      "listsUsed": [
+        "Development Tools Domains"
+      ],
+      "potentialSavings": 96,
+      "confidence": "medium"
+    },
+    {
+      "ruleId": "204d3a9b-9a27-468b-ab9d-78d219fa74b9",
+      "ruleName": "Apple: iCloud Services Extended",
+      "currentTraffic": "http.request.host in {\"gateway.icloud.com\" \"mask-canary.icloud.com\" \"mask-h2.icloud.com\" \"mask.icloud.com\" \"mask-api.icloud.com\"}",
+      "optimizedTraffic": "http.request.host in {\"gateway.icloud.com\" \"mask-canary.icloud.com\" \"mask-h2.icloud.com\" \"mask.icloud.com\" \"mask-api.icloud.com\"}",
+      "listsUsed": [
+        "Critical Infrastructure Domains"
+      ],
+      "potentialSavings": 92,
+      "confidence": "medium"
+    },
+    {
+      "ruleId": "e1abbb1e-18ce-4436-8e2e-ddb728362e91",
+      "ruleName": "Apple: Certificate Validation",
+      "currentTraffic": "http.request.host in {\"ocsp2.g.aaplimg.com\" \"valid-apple.g.aaplimg.com\" \"ocsp.apple.com\" \"valid.apple.com\"}",
+      "optimizedTraffic": "http.request.host in {\"ocsp2.g.aaplimg.com\" \"valid-apple.g.aaplimg.com\" \"ocsp.apple.com\" \"valid.apple.com\"}",
+      "listsUsed": [
+        "Critical Infrastructure Domains"
+      ],
+      "potentialSavings": 73,
+      "confidence": "medium"
+    },
+    {
+      "ruleId": "786f935b-10ff-4e47-9768-cd1d6e320e91",
+      "ruleName": "Allow Microsoft Online",
+      "currentTraffic": "dns.fqdn in {\"outlook.com\" \"office.com\" \"microsoft.com\" \"microsoftonline.com\" \"office365.com\" \"login.microsoftonline.com\"}",
+      "optimizedTraffic": "dns.fqdn in {\"outlook.com\" \"office.com\" \"microsoft.com\" \"microsoftonline.com\" \"office365.com\" \"login.microsoftonline.com\"}",
+      "listsUsed": [
+        "Critical Infrastructure Domains",
+        "Development Tools Domains"
+      ],
+      "potentialSavings": 70,
+      "confidence": "high"
+    },
+    {
+      "ruleId": "c2763df2-1b9c-49e5-bd03-e73787764794",
+      "ruleName": "Development: Package Managers",
+      "currentTraffic": "http.request.host in {\"npmjs.com\" \"registry.npmjs.org\" \"pypi.org\" \"files.pythonhosted.org\" \"rubygems.org\"}",
+      "optimizedTraffic": "http.request.host in {\"npmjs.com\" \"registry.npmjs.org\" \"pypi.org\" \"files.pythonhosted.org\" \"rubygems.org\"}",
+      "listsUsed": [
+        "Development Tools Domains"
+      ],
+      "potentialSavings": 69,
+      "confidence": "medium"
+    },
+    {
+      "ruleId": "e7655766-a8b6-4ac7-aa13-f31f9ba91250",
+      "ruleName": "Microsoft: Authentication Services",
+      "currentTraffic": "http.request.host in {\"login.microsoftonline.com\" \"login.microsoft.com\" \"login.live.com\" \"account.microsoft.com\"}",
+      "optimizedTraffic": "http.request.host in {\"login.microsoftonline.com\" \"login.microsoft.com\" \"login.live.com\" \"account.microsoft.com\"}",
+      "listsUsed": [
+        "Critical Infrastructure Domains"
+      ],
+      "potentialSavings": 65,
+      "confidence": "medium"
+    },
+    {
+      "ruleId": "3fbfc9ba-98db-4086-8b1f-69f474a95688",
+      "ruleName": "Apple: TLS Bypass Critical Services",
+      "currentTraffic": "http.conn.hostname in {\"appleid.apple.com\" \"idmsa.apple.com\" \"gsa.apple.com\" \"api.push.apple.com\" \"accounts.google.com\"}",
+      "optimizedTraffic": "http.conn.hostname in {\"appleid.apple.com\" \"idmsa.apple.com\" \"gsa.apple.com\" \"api.push.apple.com\" \"accounts.google.com\"}",
+      "listsUsed": [
+        "Critical Infrastructure Domains"
+      ],
+      "potentialSavings": 63,
+      "confidence": "medium"
+    },
+    {
+      "ruleId": "572f0a68-377f-4296-a6e7-ea51b21ee2d8",
+      "ruleName": "Authentication: AI Services Critical",
+      "currentTraffic": "dns.fqdn matches \".*\\.anthropic\\.com$\" or dns.fqdn == \"anthropic.com\" or dns.fqdn matches \".*\\.openai\\.com$\" or dns.fqdn == \"openai.com\" or dns.fqdn == \"claude.ai\" or dns.fqdn == \"ws.chatgpt.com\"",
+      "optimizedTraffic": "dns.fqdn matches \".*\\.anthropic\\.com$\" or dns.fqdn == \"anthropic.com\" or dns.fqdn matches \".*\\.openai\\.com$\" or dns.fqdn == \"openai.com\" or dns.fqdn == \"claude.ai\" or dns.fqdn == \"ws.chatgpt.com\"",
+      "listsUsed": [
+        "Critical Infrastructure Domains",
+        "AI and ML Platforms"
+      ],
+      "potentialSavings": 59,
+      "confidence": "high"
+    },
+    {
+      "ruleId": "34cb1f3c-6f90-4a29-bccf-d10d3cfa182f",
+      "ruleName": "Development: GitHub & Git Services",
+      "currentTraffic": "http.request.host in {\"github.com\" \"githubusercontent.com\" \"github.io\" \"githubassets.com\"}",
+      "optimizedTraffic": "http.request.host in {\"github.com\" \"githubusercontent.com\" \"github.io\" \"githubassets.com\"}",
+      "listsUsed": [
+        "Development Tools Domains"
+      ],
+      "potentialSavings": 56,
+      "confidence": "medium"
+    },
+    {
+      "ruleId": "e1deb9da-f7ca-4890-ac46-c48d1b0134ad",
+      "ruleName": "CDN: JavaScript Libraries",
+      "currentTraffic": "http.request.host in {\"cdn.jsdelivr.net\" \"unpkg.com\" \"cdnjs.cloudflare.com\" \"esm.sh\" \"skypack.dev\"}",
+      "optimizedTraffic": "http.request.host in {\"cdn.jsdelivr.net\" \"unpkg.com\" \"cdnjs.cloudflare.com\" \"esm.sh\" \"skypack.dev\"}",
+      "listsUsed": [
+        "Critical Infrastructure Domains",
+        "Development Tools Domains"
+      ],
+      "potentialSavings": 51,
+      "confidence": "high"
+    },
+    {
+      "ruleId": "bb1cca06-4e8a-461a-ba69-6f0060dd8f1e",
+      "ruleName": "Security: SimpleMDM Device Management",
+      "currentTraffic": "http.request.host in {\"simplemdm.com\" \"a.simplemdm.com\" \"api.simplemdm.com\" \"simplemdm.s3.amazonaws.com\"} or http.request.host matches \"^.*\\.simplemdm\\.com$\"",
+      "optimizedTraffic": "http.request.host in {\"simplemdm.com\" \"a.simplemdm.com\" \"api.simplemdm.com\" \"simplemdm.s3.amazonaws.com\"} or http.request.host matches \"^.*\\.simplemdm\\.com$\"",
+      "listsUsed": [
+        "Critical Infrastructure Domains"
+      ],
+      "potentialSavings": 45,
+      "confidence": "medium"
+    },
+    {
+      "ruleId": "573c9c70-689f-49b0-bcfe-7722f6a30935",
+      "ruleName": "Allow Apple Mail Servers",
+      "currentTraffic": "dns.fqdn in {\"imap.mail.me.com\" \"smtp.mail.me.com\" \"mail.me.com\" \"p58-imap.mail.me.com\" \"p58-smtp.mail.me.com\" \"p143-caldav.icloud.com\" \"p69-caldav.icloud.com\"}",
+      "optimizedTraffic": "dns.fqdn in {\"imap.mail.me.com\" \"smtp.mail.me.com\" \"mail.me.com\" \"p58-imap.mail.me.com\" \"p58-smtp.mail.me.com\" \"p143-caldav.icloud.com\" \"p69-caldav.icloud.com\"}",
+      "listsUsed": [
+        "Critical Infrastructure Domains"
+      ],
+      "potentialSavings": 43,
+      "confidence": "medium"
+    },
+    {
+      "ruleId": "4730cf05-cf07-481d-b7a0-e76bc139a4c1",
+      "ruleName": "Network: Ubiquiti/UniFi Management",
+      "currentTraffic": "dns.fqdn in {\"ui.com\" \"unifi.ui.com\" \"account.ui.com\" \"sso.ui.com\"} or dns.fqdn matches \".*\\.ui\\.com$\" or dns.fqdn matches \".*\\.ubnt\\.com$\"",
+      "optimizedTraffic": "dns.fqdn in {\"ui.com\" \"unifi.ui.com\" \"account.ui.com\" \"sso.ui.com\"} or dns.fqdn matches \".*\\.ui\\.com$\" or dns.fqdn matches \".*\\.ubnt\\.com$\"",
+      "listsUsed": [
+        "Critical Infrastructure Domains"
+      ],
+      "potentialSavings": 42,
+      "confidence": "medium"
+    },
+    {
+      "ruleId": "30867815-418f-413d-89f9-3a1572a90b0d",
+      "ruleName": "Allow Apple Homekit and Google Home Ecosystems",
+      "currentTraffic": "dns.fqdn in {\"apple-cloudkit.com\" \"apple-livephotoskit.com\" \"icloud.com\" \"apple.com\" \"googleapis.com\" \"nest.com\" \"google-home.com\" \"gstatic.com\" \"home.nest.com\" \"xmpp-qa.google.com\"} or dns.fqdn matches \"^.*\\.local\\.home$\"",
+      "optimizedTraffic": "dns.fqdn in {\"apple-cloudkit.com\" \"apple-livephotoskit.com\" \"icloud.com\" \"apple.com\" \"googleapis.com\" \"nest.com\" \"google-home.com\" \"gstatic.com\" \"home.nest.com\" \"xmpp-qa.google.com\"} or dns.fqdn matches \"^.*\\.local\\.home$\"",
+      "listsUsed": [
+        "Critical Infrastructure Domains",
+        "Streaming and Entertainment"
+      ],
+      "potentialSavings": 28,
+      "confidence": "high"
+    },
+    {
+      "ruleId": "6ca9c186-4be8-41d0-9a9d-663e47b3031a",
+      "ruleName": "Communication: Video Conferencing",
+      "currentTraffic": "http.request.host in {\"zoom.us\" \"zoom.com\" \"teams.microsoft.com\" \"teams.live.com\"}",
+      "optimizedTraffic": "http.request.host in {\"zoom.us\" \"zoom.com\" \"teams.microsoft.com\" \"teams.live.com\"}",
+      "listsUsed": [
+        "Critical Infrastructure Domains"
+      ],
+      "potentialSavings": 19,
+      "confidence": "medium"
+    },
+    {
+      "ruleId": "d12f1188-a1c7-4d22-aacd-f6f04f9723a5",
+      "ruleName": "Apple: Core HTTP Services",
+      "currentTraffic": "http.request.host matches \"^.*\\.apple\\.com$\" or http.request.host == \"apple.com\"",
+      "optimizedTraffic": "http.request.host matches \"^.*\\.apple\\.com$\" or http.request.host == \"apple.com\"",
+      "listsUsed": [
+        "Critical Infrastructure Domains",
+        "Streaming and Entertainment"
+      ],
+      "potentialSavings": 18,
+      "confidence": "high"
+    },
+    {
+      "ruleId": "f903f638-2d9a-4608-8f1f-eda33109d46b",
+      "ruleName": "Apple: Additional Services & CDN",
+      "currentTraffic": "http.request.host matches \"^.*\\.aaplimg\\.com$\" or http.request.host in {\"setup.icloud.com\" \"pancake.g.aaplimg.com\" \"smoot-api-safari-aapse2c.v.aaplimg.com\"}",
+      "optimizedTraffic": "http.request.host matches \"^.*\\.aaplimg\\.com$\" or http.request.host in {\"setup.icloud.com\" \"pancake.g.aaplimg.com\" \"smoot-api-safari-aapse2c.v.aaplimg.com\"}",
+      "listsUsed": [
+        "Critical Infrastructure Domains"
+      ],
+      "potentialSavings": 16,
+      "confidence": "medium"
+    },
+    {
+      "ruleId": "c5044065-43e7-4263-b1a9-9fb611810a9b",
+      "ruleName": "Infrastructure: Cloudflare Services",
+      "currentTraffic": "http.request.host matches \"^.*\\.cloudflare\\.com$\" or http.request.host == \"cloudflare.com\"",
+      "optimizedTraffic": "http.request.host matches \"^.*\\.cloudflare\\.com$\" or http.request.host == \"cloudflare.com\"",
+      "listsUsed": [
+        "Critical Infrastructure Domains"
+      ],
+      "potentialSavings": 14,
+      "confidence": "medium"
+    },
+    {
+      "ruleId": "59ceb190-0847-4095-b9ac-221e04adf372",
+      "ruleName": "High Priority: Allow Warp.dev",
+      "currentTraffic": "dns.fqdn == \"warp.dev\"",
+      "optimizedTraffic": "dns.fqdn == \"warp.dev\"",
+      "listsUsed": [
+        "Critical Infrastructure Domains"
+      ],
+      "potentialSavings": 8,
+      "confidence": "medium"
+    },
+    {
+      "ruleId": "1acaadb5-3454-46d9-bb1b-48056c9fb98d",
+      "ruleName": "Override: Allow Warp.dev (High Priority)",
+      "currentTraffic": "dns.fqdn matches \".*\\.warp\\.dev$\" or dns.fqdn == \"warp.dev\"",
+      "optimizedTraffic": "dns.fqdn matches \".*\\.warp\\.dev$\" or dns.fqdn == \"warp.dev\"",
+      "listsUsed": [
+        "Critical Infrastructure Domains"
+      ],
+      "potentialSavings": 8,
+      "confidence": "medium"
+    }
+  ],
+  "migrationSteps": [
+    "1. 🧪 Test list references in Gateway analytics before making changes",
+    "2. 📝 Create backup copies of critical rules before optimization",
+    "3. 🔄 Update rules one at a time, starting with lowest traffic rules",
+    "4. ✅ Verify each rule change in Zero Trust Dashboard",
+    "5. 📊 Monitor rule performance after each change",
+    "6. 🗑️ Clean up old inline domain arrays once verified",
+    "7. 🎯 Priority order for rule optimization:",
+    "   1. CRITICAL INFRASTRUCTURE: Essential Services (high confidence, ~1024 chars saved)",
+    "   2. CRITICAL INFRASTRUCTURE: Essential Services (HTTP) (high confidence, ~923 chars saved)",
+    "   3. AI Services: Complete Coverage (Anthropic/Claude Critical) (high confidence, ~434 chars saved)",
+    "   4. Social: Allow Grindr (DNS) (medium confidence, ~183 chars saved)",
+    "   5. Social: Allow Grindr (HTTP) (medium confidence, ~183 chars saved)"
+  ],
+  "testingGuidance": [
+    "🧪 Testing Best Practices:",
+    "• Start with rules that affect low-traffic or test domains",
+    "• Use Gateway Analytics to monitor rule hit rates before/after changes",
+    "• Test list references with curl or browser developer tools",
+    "• Verify DNS resolution for list domains in Gateway logs",
+    "• Keep original rule traffic filters commented in rule descriptions",
+    "• Test during low-traffic hours to minimize impact",
+    "• Have rollback plan ready for each rule change"
+  ]
+}

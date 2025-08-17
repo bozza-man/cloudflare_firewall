@@ -1,0 +1,81 @@
+{
+  "timestamp": "2025-08-17T03:19:34.023Z",
+  "version": "Production v1.0",
+  "syntax": "$listId (UUID format) - CONFIRMED WORKING",
+  "summary": {
+    "totalRulesProcessed": 3,
+    "successful": 3,
+    "failed": 0,
+    "totalCharactersSaved": 17,
+    "totalDomainsReplaced": 9,
+    "listsUsed": [
+      "AI and ML Platforms",
+      "Critical Infrastructure Domains"
+    ],
+    "apiRequests": 25,
+    "durationSeconds": 35.37
+  },
+  "results": [
+    {
+      "ruleId": "572f0a68-377f-4296-a6e7-ea51b21ee2d8",
+      "ruleName": "Authentication: AI Services Critical",
+      "success": true,
+      "originalTraffic": "dns.fqdn matches \".*\\.anthropic\\.com$\" or dns.fqdn == \"anthropic.com\" or dns.fqdn matches \".*\\.openai\\.com$\" or dns.fqdn == \"openai.com\" or dns.fqdn == \"claude.ai\" or dns.fqdn == \"ws.chatgpt.com\"",
+      "optimizedTraffic": "dns.fqdn matches \".*\\.anthropic\\.com$\" or dns.fqdn == \"anthropic.com\" or dns.fqdn matches \".*\\.openai\\.com$\" or dns.fqdn == \"openai.com\" or dns.fqdn == \"claude.ai\" or dns.fqdn == \"ws.chatgpt.com\"",
+      "listUsed": {
+        "name": "AI and ML Platforms",
+        "id": "fe4bf9b5-0afb-40bb-b713-474f7323b3f9"
+      },
+      "charactersSaved": 0,
+      "domainsReplaced": 4
+    },
+    {
+      "ruleId": "bb1cca06-4e8a-461a-ba69-6f0060dd8f1e",
+      "ruleName": "Security: SimpleMDM Device Management",
+      "success": true,
+      "originalTraffic": "http.request.host in {\"simplemdm.com\" \"a.simplemdm.com\" \"api.simplemdm.com\" \"simplemdm.s3.amazonaws.com\"} or http.request.host matches \"^.*\\.simplemdm\\.com$\"",
+      "optimizedTraffic": "http.request.host in $fa64ba26-c470-4273-b251-c75ce17280b6 or http.request.host matches \"^.*\\.simplemdm\\.com$\"",
+      "listUsed": {
+        "name": "Critical Infrastructure Domains",
+        "id": "fa64ba26-c470-4273-b251-c75ce17280b6"
+      },
+      "charactersSaved": 47,
+      "domainsReplaced": 3
+    },
+    {
+      "ruleId": "30867815-418f-413d-89f9-3a1572a90b0d",
+      "ruleName": "Allow Apple Homekit and Google Home Ecosystems",
+      "success": true,
+      "originalTraffic": "(dns.fqdn in $419dd8d5-b0a0-4892-ab87-9c663735727a or dns.fqdn in {\"apple-cloudkit.com\" \"apple-livephotoskit.com\" \"icloud.com\" \"apple.com\" \"nest.com\" \"google-home.com\" \"home.nest.com\"}) or dns.fqdn matches \"^.*\\.local\\.home$\"",
+      "optimizedTraffic": "(dns.fqdn in $419dd8d5-b0a0-4892-ab87-9c663735727a or (dns.fqdn in $fa64ba26-c470-4273-b251-c75ce17280b6 or dns.fqdn in {\"apple-cloudkit.com\" \"apple-livephotoskit.com\" \"nest.com\" \"google-home.com\" \"home.nest.com\"})) or dns.fqdn matches \"^.*\\.local\\.home$\"",
+      "listUsed": {
+        "name": "Critical Infrastructure Domains",
+        "id": "fa64ba26-c470-4273-b251-c75ce17280b6"
+      },
+      "charactersSaved": -30,
+      "domainsReplaced": 2
+    }
+  ],
+  "listMappings": {
+    "a46ce0e8-218c-4a89-8d1a-00fbf5ebf490": "ITNC IoC Domains",
+    "e8a1751b-6622-41fa-a1a3-e738448b695f": "Essential Development Services",
+    "419dd8d5-b0a0-4892-ab87-9c663735727a": "Business Applications",
+    "64707c35-833f-4ed5-aa1f-39e30a067e9e": "Cloud Services",
+    "567fd539-f71b-41f3-8812-da1992de69f0": "Streaming Services",
+    "332dcc88-0b0f-4c13-bb17-7058ffad4eef": "File Sharing Services",
+    "2af06e9e-cf45-451e-9c39-800c730c617b": "Security Tools",
+    "56090270-17f4-4514-88ff-18c98e7351b7": "DLP_DLP_-_Block_File_Sharing_Sites_Domains",
+    "2c7cb666-6cbb-42b1-9a75-5638de796152": "DLP_DLP_-_Block_Pastebin_Sites_Domains",
+    "6d92a1d6-574b-4e6a-887d-be6cd254863f": "DLP_DLP_-_Block_Personal_Email_Domains",
+    "eeda0311-d389-4717-803e-baaa44802296": "DLP_DLP_-_Allow_Business_Services_Domains",
+    "eabb91d0-2d22-48b1-910b-2444e1af000d": "Google Cloud SDK Downloads",
+    "0df15f7f-dc35-46cb-8ac6-8a827bdbf559": "Social Media Sites",
+    "fa64ba26-c470-4273-b251-c75ce17280b6": "Critical Infrastructure Domains",
+    "fe4bf9b5-0afb-40bb-b713-474f7323b3f9": "AI and ML Platforms",
+    "d8954bf1-0d77-42c7-b8b4-e9c7b507b961": "Development Tools Domains",
+    "412a5576-53d2-4224-b225-19a8fdb3d5a0": "Streaming and Entertainment",
+    "5167cd6c-ff48-4b92-a6ca-e886404a98e5": "E-commerce Sites"
+  },
+  "backupInstructions": "Original traffic filters are preserved in rule descriptions with timestamps",
+  "rollbackInstructions": "Copy original traffic filter from [BACKUP] section in rule description back to traffic field"
+}
