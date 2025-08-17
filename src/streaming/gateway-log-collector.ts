@@ -293,44 +293,6 @@ export class GatewayLogCollector extends EventEmitter {
     };
   }
 
-  // Simulate logs for testing (remove in production)
-  public async simulateLogs(): Promise<void> {
-    const mockLogs = [
-      {
-        id: `log-${Date.now()}-1`,
-        timestamp: new Date().toISOString(),
-        action: 'block',
-        ruleId: 'rule-123',
-        ruleName: 'Block Social Media',
-        sourceIp: '192.168.1.100',
-        hostname: 'facebook.com',
-        category: 'Social Media'
-      },
-      {
-        id: `log-${Date.now()}-2`,
-        timestamp: new Date().toISOString(),
-        action: 'allow',
-        ruleId: 'rule-456',
-        ruleName: 'Allow Business Sites',
-        sourceIp: '192.168.1.101',
-        hostname: 'github.com',
-        category: 'Development'
-      },
-      {
-        id: `log-${Date.now()}-3`,
-        timestamp: new Date().toISOString(),
-        action: 'isolate',
-        ruleId: 'rule-789',
-        ruleName: 'Isolate Threats',
-        sourceIp: '192.168.1.102',
-        hostname: 'malicious-site.com',
-        threat: 'malware',
-        category: 'Security Threat'
-      }
-    ];
-    
-    for (const log of mockLogs) {
-      this.processLog(log, 'activity');
-    }
-  }
+  // TODO: Implement real log simulation for testing if needed
+  // Should use proper testing framework data or external mock services
 }

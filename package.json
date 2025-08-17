@@ -18,6 +18,10 @@
     "test:verbose": "NODE_OPTIONS='--experimental-vm-modules' jest --config jest.config.mjs --verbose",
     "test:ci": "NODE_OPTIONS='--experimental-vm-modules' jest --config jest.config.mjs --coverage --watchAll=false --passWithNoTests",
     "generate-token": "tsx scripts/generate-token.ts",
+    "categorize-domains": "tsx src/scripts/smart-domain-categorizer.ts",
+    "gateway": "tsx src/cli/secure-natural-language-interface.ts",
+    "gateway-basic": "tsx src/cli/natural-language-interface.ts",
+    "security-scan": "tsx src/cli/security-scan-command.ts",
     "prepare": "husky"
   },
   "keywords": [

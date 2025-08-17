@@ -18,6 +18,7 @@ jest.mock('../../src/utils/config.js', () => ({
 
 describe('GatewayAIAssistant', () => {
   let assistant: GatewayAIAssistant;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockAnthropicClient: any;
 
   beforeEach(() => {
@@ -28,6 +29,7 @@ describe('GatewayAIAssistant', () => {
       }
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     MockedAnthropic.mockImplementation(() => mockAnthropicClient as any);
     assistant = new GatewayAIAssistant();
   });

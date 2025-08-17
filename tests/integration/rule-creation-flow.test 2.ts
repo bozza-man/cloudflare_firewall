@@ -31,7 +31,9 @@ describe('Rule Creation Flow Integration', () => {
     
     // Create rule manager
     ruleManager = new GatewayRuleManager();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (ruleManager as any).gateway = mockGatewayClient;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (ruleManager as any).ai = mockAIAssistant;
   });
 
@@ -140,6 +142,7 @@ describe('Rule Creation Flow Integration', () => {
       });
 
       // Mock conflict resolver to skip
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const mockConflictResolver = (ruleManager as any).conflictResolver;
       mockConflictResolver.resolveConflicts = jest.fn().mockResolvedValue({
         action: 'skip'

@@ -1,0 +1,50 @@
+{
+  "timestamp": "2025-08-17T05:04:19.731Z",
+  "summary": {
+    "totalDomains": 3,
+    "totalLists": 3,
+    "newLists": 0,
+    "updatedLists": 3
+  },
+  "assignments": [
+    {
+      "listName": "Development Tools Domains",
+      "action": "update",
+      "domainCount": 1,
+      "domains": [
+        {
+          "domain": "github.com",
+          "confidence": 1,
+          "businessCriticality": "critical",
+          "reasoning": "Matched patterns: github.com, *.github.io, gitlab.com, bitbucket.org, azure.com, visualstudio.com and keywords: git, dev, code, repo, ci, cd, azure, aws, gcp"
+        }
+      ]
+    },
+    {
+      "listName": "Communication Tools",
+      "action": "update",
+      "domainCount": 1,
+      "domains": [
+        {
+          "domain": "slack.com",
+          "confidence": 1,
+          "businessCriticality": "critical",
+          "reasoning": "Matched patterns: slack.com, zoom.us, teams.microsoft.com, discord.com, webex.com and keywords: chat, communication, meeting, conference, collaborate"
+        }
+      ]
+    },
+    {
+      "listName": "Streaming and Entertainment",
+      "action": "update",
+      "domainCount": 1,
+      "domains": [
+        {
+          "domain": "netflix.com",
+          "confidence": 1,
+          "businessCriticality": "low",
+          "reasoning": "Matched patterns: netflix.com, spotify.com, youtube.com, twitch.tv, hulu.com, disney.com and keywords: streaming, video, music, entertainment, netflix, spotify"
+        }
+      ]
+    }
+  ]
+}

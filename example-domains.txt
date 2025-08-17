@@ -1,0 +1,65 @@
+# Example domains for categorization testing
+# Business Critical Services
+github.com
+api.github.com
+raw.githubusercontent.com
+gitlab.com
+bitbucket.org
+
+# Microsoft Services  
+outlook.office365.com
+teams.microsoft.com
+graph.microsoft.com
+login.microsoftonline.com
+office.com
+
+# Google Services
+gmail.com
+docs.google.com
+drive.google.com
+meet.google.com
+apis.google.com
+
+# Apple Services
+apple.com
+icloud.com
+itunes.apple.com
+developer.apple.com
+
+# Social Media (typically lower priority)
+facebook.com
+instagram.com
+twitter.com
+linkedin.com
+tiktok.com
+
+# Streaming Services
+netflix.com
+spotify.com
+youtube.com
+twitch.tv
+hulu.com
+
+# E-commerce
+amazon.com
+shopify.com
+stripe.com
+paypal.com
+ebay.com
+
+# Communication Tools
+slack.com
+zoom.us
+discord.com
+webex.com
+
+# Cloud Infrastructure
+s3.amazonaws.com
+cloudfront.net
+storage.googleapis.com
+blob.core.windows.net
+
+# Unknown/Custom domains (will be categorized as uncategorized)
+mycustomapp.internal
+businesstool.example.com
+privateservice.local

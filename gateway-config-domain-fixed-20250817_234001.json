@@ -1,0 +1,2160 @@
+{
+  "timestamp": "2025-08-17T13:18:11.449Z",
+  "rules": [
+    {
+      "id": "13cc67a0-b26b-4e8c-9960-45ba24301531",
+      "name": "CRITICAL INFRASTRUCTURE: Essential Services",
+      "description": "\ud83d\udea8 CRITICAL INFRASTRUCTURE: This rule MUST remain at LOW precedence (early evaluation) to ensure essential services always work. Contains bare minimum domains needed for system operation, device management, authentication, and development tools. DO NOT disable or move this rule. (Updated: Added Google & Apple Mail services)\n\n[BACKUP 2025-08-17T02:57:02.485Z] Original traffic filter:\ndns.fqdn in {\"warp.dev\" \"app.warp.dev\" \"rtc.app.warp.dev\" \"anthropic.com\" \"api.anthropic.com\" \"claude.ai\" \"console.anthropic.com\" \"openai.com\" \"api.openai.com\" \"chat.openai.com\" \"platform.openai.com\" \"ab.chatgpt.com\" \"apple.com\" \"icloud.com\" \"appleid.apple.com\" \"idmsa.apple.com\" \"deviceenrollment.apple.com\" \"deviceservices-external.apple.com\" \"gdmf.apple.com\" \"mdmenrollment.apple.com\" \"cloudflare.com\" \"dash.cloudflare.com\" \"api.cloudflare.com\" \"simplemdm.com\" \"a.simplemdm.com\" \"api.simplemdm.com\" \"ui.com\" \"unifi.ui.com\" \"account.ui.com\" \"sso.ui.com\" \"login.microsoftonline.com\" \"login.microsoft.com\" \"microsoft.com\" \"google.com\" \"gmail.com\" \"accounts.google.com\" \"workspace.google.com\" \"admin.google.com\" \"drive.google.com\" \"docs.google.com\" \"sheets.google.com\" \"slides.google.com\" \"calendar.google.com\" \"meet.google.com\" \"chat.google.com\" \"googleapis.com\" \"googleusercontent.com\" \"gstatic.com\" \"console.cloud.google.com\" \"cloud.google.com\" \"gcp.goog\" \"googledomains.com\" \"one.one.one.one\" \"1.1.1.1\" \"quad9.net\" \"ocsp.apple.com\" \"valid.apple.com\" \"ocsp2.g.aaplimg.com\" \"valid-apple.g.aaplimg.com\" \"mail.google.com\" \"googlemail.com\" \"inbox.google.com\" \"smtp.gmail.com\" \"imap.gmail.com\" \"pop.gmail.com\" \"mail-settings.google.com\" \"mail.me.com\" \"mail.icloud.com\" \"smtp.mail.me.com\" \"imap.mail.me.com\" \"p01-smtp.mail.me.com\" \"p02-smtp.mail.me.com\" \"p03-smtp.mail.me.com\" \"p01-imap.mail.me.com\" \"p02-imap.mail.me.com\" \"p03-imap.mail.me.com\" \"p01-contacts.icloud.com\" \"p02-contacts.icloud.com\" \"p03-contacts.icloud.com\" \"p01-caldav.icloud.com\" \"p02-caldav.icloud.com\" \"p03-caldav.icloud.com\" \"push.apple.com\" \"gateway.push.apple.com\" \"geolocation.onetrust.com\" \"gateway.fe2.apple-dns.net\" \"p43-imap.mail.me.com\" \"mask-h2.icloud.com\" \"mask-canary.icloud.com\" \"n.connections.brother.com\" \"ota.onecloud.harman.com\" \"netcts.cdn-apple.com\" \"log.tailscale.com\" \"connections.brother.com\" \"imap.mail.me.com.akadns.net\" \"mask-api.icloud.com\" \"canary.mask.apple-dns.net\" \"mask.apple-dns.net\" \"build-cloud.docker.com\"}\n\nOptimized using list: Critical Infrastructure Domains (fa64ba26-c470-4273-b251-c75ce17280b6)\nDomains replaced: warp.dev, app.warp.dev, rtc.app.warp.dev, anthropic.com, api.anthropic.com, console.anthropic.com, apple.com, icloud.com, appleid.apple.com, idmsa.apple.com, deviceenrollment.apple.com, deviceservices-external.apple.com, gdmf.apple.com, mdmenrollment.apple.com, cloudflare.com, dash.cloudflare.com, api.cloudflare.com, simplemdm.com, a.simplemdm.com, api.simplemdm.com, ui.com, unifi.ui.com, account.ui.com, sso.ui.com, login.microsoftonline.com, login.microsoft.com, microsoft.com, one.one.one.one, quad9.net, ocsp.apple.com, valid.apple.com, ocsp2.g.aaplimg.com, valid-apple.g.aaplimg.com, mail.icloud.com, p01-contacts.icloud.com, p02-contacts.icloud.com, p03-contacts.icloud.com, p01-caldav.icloud.com, p02-caldav.icloud.com, p03-caldav.icloud.com, push.apple.com, gateway.push.apple.com, mask-h2.icloud.com, mask-canary.icloud.com, netcts.cdn-apple.com, mask-api.icloud.com\n\n[BACKUP 2025-08-17T03:00:00.886Z] Original traffic filter:\ndns.fqdn in $fa64ba26-c470-4273-b251-c75ce17280b6 or dns.fqdn in {\"claude.ai\" \"openai.com\" \"api.openai.com\" \"chat.openai.com\" \"platform.openai.com\" \"ab.chatgpt.com\" \"google.com\" \"gmail.com\" \"accounts.google.com\" \"workspace.google.com\" \"admin.google.com\" \"drive.google.com\" \"docs.google.com\" \"sheets.google.com\" \"slides.google.com\" \"calendar.google.com\" \"meet.google.com\" \"chat.google.com\" \"googleapis.com\" \"googleusercontent.com\" \"gstatic.com\" \"console.cloud.google.com\" \"cloud.google.com\" \"gcp.goog\" \"googledomains.com\" \"1.1.1.1\" \"mail.google.com\" \"googlemail.com\" \"inbox.google.com\" \"smtp.gmail.com\" \"imap.gmail.com\" \"pop.gmail.com\" \"mail-settings.google.com\" \"mail.me.com\" \"smtp.mail.me.com\" \"imap.mail.me.com\" \"p01-smtp.mail.me.com\" \"p02-smtp.mail.me.com\" \"p03-smtp.mail.me.com\" \"p01-imap.mail.me.com\" \"p02-imap.mail.me.com\" \"p03-imap.mail.me.com\" \"geolocation.onetrust.com\" \"gateway.fe2.apple-dns.net\" \"p43-imap.mail.me.com\" \"n.connections.brother.com\" \"ota.onecloud.harman.com\" \"log.tailscale.com\" \"connections.brother.com\" \"imap.mail.me.com.akadns.net\" \"canary.mask.apple-dns.net\" \"mask.apple-dns.net\" \"build-cloud.docker.com\"}\n\nOptimized using list: Business Applications (419dd8d5-b0a0-4892-ab87-9c663735727a)\nDomains replaced: google.com, gmail.com, accounts.google.com, workspace.google.com, admin.google.com, drive.google.com, docs.google.com, sheets.google.com, slides.google.com, calendar.google.com, meet.google.com, chat.google.com, googleapis.com, gstatic.com, console.cloud.google.com, cloud.google.com, mail.google.com, inbox.google.com, smtp.gmail.com, imap.gmail.com, pop.gmail.com, mail-settings.google.com\n\n[BACKUP 2025-08-17T03:10:16.151Z] Original traffic filter:\ndns.fqdn in $fa64ba26-c470-4273-b251-c75ce17280b6 or (dns.fqdn in $419dd8d5-b0a0-4892-ab87-9c663735727a or dns.fqdn in {\"claude.ai\" \"openai.com\" \"api.openai.com\" \"chat.openai.com\" \"platform.openai.com\" \"ab.chatgpt.com\" \"googleusercontent.com\" \"gcp.goog\" \"googledomains.com\" \"1.1.1.1\" \"googlemail.com\" \"mail.me.com\" \"smtp.mail.me.com\" \"imap.mail.me.com\" \"p01-smtp.mail.me.com\" \"p02-smtp.mail.me.com\" \"p03-smtp.mail.me.com\" \"p01-imap.mail.me.com\" \"p02-imap.mail.me.com\" \"p03-imap.mail.me.com\" \"geolocation.onetrust.com\" \"gateway.fe2.apple-dns.net\" \"p43-imap.mail.me.com\" \"n.connections.brother.com\" \"ota.onecloud.harman.com\" \"log.tailscale.com\" \"connections.brother.com\" \"imap.mail.me.com.akadns.net\" \"canary.mask.apple-dns.net\" \"mask.apple-dns.net\" \"build-cloud.docker.com\"})\n\nOptimized using list: AI and ML Platforms (fe4bf9b5-0afb-40bb-b713-474f7323b3f9)\nDomains replaced: claude.ai, openai.com, api.openai.com, chat.openai.com, platform.openai.com, ab.chatgpt.com",
+      "precedence": 500,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "dns"
+      ],
+      "created_at": "2025-08-15T04:23:37Z",
+      "updated_at": "2025-08-17T03:10:17Z",
+      "deleted_at": null,
+      "traffic": "dns.fqdn in $fa64ba26-c470-4273-b251-c75ce17280b6 or (dns.fqdn in $419dd8d5-b0a0-4892-ab87-9c663735727a or (dns.fqdn in $fe4bf9b5-0afb-40bb-b713-474f7323b3f9 or dns.fqdn in {\"googleusercontent.com\" \"gcp.goog\" \"googledomains.com\" \"1.1.1.1\" \"googlemail.com\" \"mail.me.com\" \"smtp.mail.me.com\" \"imap.mail.me.com\" \"p01-smtp.mail.me.com\" \"p02-smtp.mail.me.com\" \"p03-smtp.mail.me.com\" \"p01-imap.mail.me.com\" \"p02-imap.mail.me.com\" \"p03-imap.mail.me.com\" \"geolocation.onetrust.com\" \"gateway.fe2.apple-dns.net\" \"p43-imap.mail.me.com\" \"n.connections.brother.com\" \"ota.onecloud.harman.com\" \"log.tailscale.com\" \"connections.brother.com\" \"imap.mail.me.com.akadns.net\" \"canary.mask.apple-dns.net\" \"mask.apple-dns.net\" \"build-cloud.docker.com\"}))",
+      "identity": "",
+      "device_posture": "",
+      "version": 19,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "0ff5bbfa-88cb-46cc-a860-4b34091198e8",
+      "name": "CRITICAL INFRASTRUCTURE: Essential Services (HTTP)",
+      "description": "\ud83d\udea8 CRITICAL INFRASTRUCTURE (HTTP): Companion to DNS rule. This rule MUST remain at LOW precedence (early evaluation) to ensure HTTP traffic to essential services always works. Contains same domains as DNS rule for complete coverage. DO NOT disable or move this rule. (Updated: Added Google & Apple Mail services)\n\n[BACKUP 2025-08-17T02:57:06.707Z] Original traffic filter:\nhttp.request.host in {\"warp.dev\" \"app.warp.dev\" \"rtc.app.warp.dev\" \"anthropic.com\" \"api.anthropic.com\" \"claude.ai\" \"console.anthropic.com\" \"openai.com\" \"api.openai.com\" \"chat.openai.com\" \"platform.openai.com\" \"ab.chatgpt.com\" \"apple.com\" \"icloud.com\" \"appleid.apple.com\" \"idmsa.apple.com\" \"deviceenrollment.apple.com\" \"deviceservices-external.apple.com\" \"gdmf.apple.com\" \"mdmenrollment.apple.com\" \"cloudflare.com\" \"dash.cloudflare.com\" \"api.cloudflare.com\" \"simplemdm.com\" \"a.simplemdm.com\" \"api.simplemdm.com\" \"ui.com\" \"unifi.ui.com\" \"account.ui.com\" \"sso.ui.com\" \"login.microsoftonline.com\" \"login.microsoft.com\" \"microsoft.com\" \"google.com\" \"gmail.com\" \"accounts.google.com\" \"workspace.google.com\" \"admin.google.com\" \"drive.google.com\" \"docs.google.com\" \"sheets.google.com\" \"slides.google.com\" \"calendar.google.com\" \"meet.google.com\" \"chat.google.com\" \"googleapis.com\" \"googleusercontent.com\" \"gstatic.com\" \"console.cloud.google.com\" \"cloud.google.com\" \"gcp.goog\" \"googledomains.com\" \"one.one.one.one\" \"1.1.1.1\" \"quad9.net\" \"ocsp.apple.com\" \"valid.apple.com\" \"ocsp2.g.aaplimg.com\" \"valid-apple.g.aaplimg.com\" \"mail.google.com\" \"googlemail.com\" \"inbox.google.com\" \"smtp.gmail.com\" \"imap.gmail.com\" \"pop.gmail.com\" \"mail-settings.google.com\" \"mail.me.com\" \"mail.icloud.com\" \"smtp.mail.me.com\" \"imap.mail.me.com\" \"p01-smtp.mail.me.com\" \"p02-smtp.mail.me.com\" \"p03-smtp.mail.me.com\" \"p01-imap.mail.me.com\" \"p02-imap.mail.me.com\" \"p03-imap.mail.me.com\" \"p01-contacts.icloud.com\" \"p02-contacts.icloud.com\" \"p03-contacts.icloud.com\" \"p01-caldav.icloud.com\" \"p02-caldav.icloud.com\" \"p03-caldav.icloud.com\" \"push.apple.com\" \"gateway.push.apple.com\"}\n\nOptimized using list: Critical Infrastructure Domains (fa64ba26-c470-4273-b251-c75ce17280b6)\nDomains replaced: warp.dev, app.warp.dev, rtc.app.warp.dev, anthropic.com, api.anthropic.com, console.anthropic.com, apple.com, icloud.com, appleid.apple.com, idmsa.apple.com, deviceenrollment.apple.com, deviceservices-external.apple.com, gdmf.apple.com, mdmenrollment.apple.com, cloudflare.com, dash.cloudflare.com, api.cloudflare.com, simplemdm.com, a.simplemdm.com, api.simplemdm.com, ui.com, unifi.ui.com, account.ui.com, sso.ui.com, login.microsoftonline.com, login.microsoft.com, microsoft.com, one.one.one.one, quad9.net, ocsp.apple.com, valid.apple.com, ocsp2.g.aaplimg.com, valid-apple.g.aaplimg.com, mail.icloud.com, p01-contacts.icloud.com, p02-contacts.icloud.com, p03-contacts.icloud.com, p01-caldav.icloud.com, p02-caldav.icloud.com, p03-caldav.icloud.com, push.apple.com, gateway.push.apple.com",
+      "precedence": 501,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-15T04:24:37Z",
+      "updated_at": "2025-08-17T02:57:08Z",
+      "deleted_at": null,
+      "traffic": "http.request.host in $fa64ba26-c470-4273-b251-c75ce17280b6",
+      "identity": "",
+      "device_posture": "",
+      "version": 4,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "470234c9-0deb-48cf-8872-3065aba5028e",
+      "name": "OpenAI Infrastructure: Critical DNS Resolution",
+      "description": "[DOMAIN OPTIMIZED 2025-08-17] Converted regex pattern to Gateway List (Misc Domains)\\n\\nAllow DNS resolution for critical OpenAI domains and infrastructure services.",
+      "precedence": 985,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "dns"
+      ],
+      "created_at": "2025-08-17T13:09:51Z",
+      "updated_at": "2025-08-17T13:09:51Z",
+      "deleted_at": null,
+      "traffic": "dns.fqdn in $list-misc-domains-20250817",
+      "identity": "",
+      "device_posture": "",
+      "version": 1,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "0e04e20a-699b-41a7-a9f2-ee92f28837ac",
+      "name": "OpenAI Infrastructure: HTTPS Access",
+      "description": "[DOMAIN OPTIMIZED 2025-08-17] Converted regex pattern to Gateway List (Misc Domains)\\n\\nAllow HTTPS access to OpenAI infrastructure domains and services.",
+      "precedence": 986,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-17T13:10:10Z",
+      "updated_at": "2025-08-17T13:10:10Z",
+      "deleted_at": null,
+      "traffic": "http.request.host in $list-misc-domains-20250817",
+      "identity": "",
+      "device_posture": "",
+      "version": 1,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "4da41e6a-c0a7-4c9a-b7ec-47dc7edc96f3",
+      "name": "OpenAI Infrastructure: Extended TLS Bypass",
+      "description": "[DOMAIN OPTIMIZED 2025-08-17] Converted regex pattern to Gateway List (Misc Domains)\\n\\nExtended TLS bypass for additional OpenAI infrastructure domains that may use certificate validation.",
+      "precedence": 987,
+      "enabled": true,
+      "action": "off",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-17T13:10:29Z",
+      "updated_at": "2025-08-17T13:10:29Z",
+      "deleted_at": null,
+      "traffic": "http.conn.hostname matches \".*\\.auth\\.openai\\.com\" or http.conn.hostname matches \".*\\.oaiusercontent\\.com\" or http.conn.hostname matches \".*\\.oaistatic\\.com\" or http.conn.hostname == \"js.stripe.com\" or http.conn.hostname == \"setup.workos.com\" or http.conn.hostname == \"forwarder.workos.com\" or http.conn.hostname matches \".*\\.statsig\\.com\" or http.conn.hostname matches \".*\\.featuregates\\.org\" or http.conn.hostname matches \".*\\.intercom\\.io\"",
+      "identity": "",
+      "device_posture": "",
+      "version": 1,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "e7655766-a8b6-4ac7-aa13-f31f9ba91250",
+      "name": "Microsoft: Authentication Services",
+      "description": "Allow Microsoft login and authentication\n\n[BACKUP 2025-08-17T03:15:36.440Z] Original traffic filter:\nhttp.request.host in {\"login.microsoftonline.com\" \"login.microsoft.com\" \"login.live.com\" \"account.microsoft.com\"}\n\nOptimized using list: Business Applications (419dd8d5-b0a0-4892-ab87-9c663735727a)\nDomains replaced: login.microsoftonline.com, login.microsoft.com, account.microsoft.com",
+      "precedence": 990,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-14T20:21:17Z",
+      "updated_at": "2025-08-17T03:15:38Z",
+      "deleted_at": null,
+      "traffic": "http.request.host in $419dd8d5-b0a0-4892-ab87-9c663735727a",
+      "identity": "",
+      "device_posture": "",
+      "version": 2,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "8827c005-0281-4d09-ae63-f46b72dc7997",
+      "name": "AI Services: ChatGPT Certificate Pinning Fix",
+      "description": "[DOMAIN OPTIMIZED 2025-08-17] Converted regex pattern to Gateway List (Ai Domains)\\n\\nHigh-priority TLS bypass specifically for ChatGPT certificate pinning issues.",
+      "precedence": 995,
+      "enabled": true,
+      "action": "off",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-17T13:07:21Z",
+      "updated_at": "2025-08-17T13:07:21Z",
+      "deleted_at": null,
+      "traffic": "http.conn.hostname == \"chat.openai.com\" or http.conn.hostname == \"api.openai.com\" or http.conn.hostname matches \".*\\.openai\\.com\" or http.conn.hostname matches \".*\\.chatgpt\\.com\"",
+      "identity": "",
+      "device_posture": "",
+      "version": 1,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "c569aa22-085e-4b24-bafb-5a1c57ece8dd",
+      "name": "Security: Block High-Risk Countries",
+      "description": "",
+      "precedence": 1000,
+      "enabled": true,
+      "action": "block",
+      "filters": [
+        "l4"
+      ],
+      "created_at": "2025-08-14T09:48:02Z",
+      "updated_at": "2025-08-14T20:31:12Z",
+      "deleted_at": null,
+      "traffic": "net.src.geo.country in {\"CN\" \"RU\" \"KP\" \"IR\" \"BY\" \"MM\" \"SY\" \"AF\"}",
+      "identity": "",
+      "device_posture": "",
+      "version": 2,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "245965ce-e2e1-4ec4-943d-6d1d5e61fc65",
+      "name": "Security: Block Phishing",
+      "description": "",
+      "precedence": 1020,
+      "enabled": true,
+      "action": "block",
+      "filters": [
+        "dns"
+      ],
+      "created_at": "2025-08-14T09:46:57Z",
+      "updated_at": "2025-08-14T20:31:14Z",
+      "deleted_at": null,
+      "traffic": "any(dns.security_category[*] in {83})",
+      "identity": "",
+      "device_posture": "",
+      "version": 2,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "5cecf0a7-970d-42a3-b11e-38456c225705",
+      "name": "Security: Block Command & Control",
+      "description": "",
+      "precedence": 1030,
+      "enabled": true,
+      "action": "block",
+      "filters": [
+        "dns"
+      ],
+      "created_at": "2025-08-14T09:47:17Z",
+      "updated_at": "2025-08-14T20:31:15Z",
+      "deleted_at": null,
+      "traffic": "any(dns.security_category[*] in {68})",
+      "identity": "",
+      "device_posture": "",
+      "version": 2,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "cb602428-e7d8-4b8c-b849-e62e138fcea1",
+      "name": "Certificate: Banking/Critical Sites TLS Bypass",
+      "description": "[DOMAIN OPTIMIZED 2025-08-17] Converted regex pattern to Gateway List (Misc Domains)\\n\\nBypass TLS inspection for critical domains to preserve original certificates and OCSP/CRL validation, preventing net::ERR_CERT_NO_REVOCATION_MECHANISM errors.",
+      "precedence": 1045,
+      "enabled": true,
+      "action": "off",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-17T13:01:09Z",
+      "updated_at": "2025-08-17T13:01:09Z",
+      "deleted_at": null,
+      "traffic": "http.conn.hostname == \"apple.com\" or http.conn.hostname matches \".*\\.apple.com\"",
+      "identity": "",
+      "device_posture": "",
+      "version": 1,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "eabdfcbe-d4d6-4327-820e-deb2849dada4",
+      "name": "Social: Allow Grindr (DNS)",
+      "description": "Allow DNS resolution for Grindr app and services\n\n[BACKUP 2025-08-17T02:57:11.209Z] Original traffic filter:\ndns.fqdn in {\"grindr.com\" \"www.grindr.com\" \"api.grindr.com\" \"app.grindr.com\" \"chat.grindr.com\" \"media.grindr.com\" \"images.grindr.com\" \"cdn.grindr.com\" \"push.grindr.com\" \"analytics.grindr.com\" \"static.grindr.com\" \"assets.grindr.com\"}\n\nOptimized using list: Social Media Sites (0df15f7f-dc35-46cb-8ac6-8a827bdbf559)\nDomains replaced: grindr.com, www.grindr.com, api.grindr.com, app.grindr.com, chat.grindr.com, media.grindr.com, images.grindr.com, cdn.grindr.com, push.grindr.com, analytics.grindr.com, static.grindr.com, assets.grindr.com",
+      "precedence": 1050,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "dns"
+      ],
+      "created_at": "2025-08-15T05:07:15Z",
+      "updated_at": "2025-08-17T02:57:12Z",
+      "deleted_at": null,
+      "traffic": "dns.fqdn in $0df15f7f-dc35-46cb-8ac6-8a827bdbf559",
+      "identity": "",
+      "device_posture": "",
+      "version": 2,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "dd7a23e2-c728-42d2-8e48-1b5ae94a9769",
+      "name": "Social: Allow Grindr (HTTP)",
+      "description": "Allow HTTP/HTTPS traffic for Grindr app and services\n\n[BACKUP 2025-08-17T03:00:08.229Z] Original traffic filter:\nhttp.request.host in {\"grindr.com\" \"www.grindr.com\" \"api.grindr.com\" \"app.grindr.com\" \"chat.grindr.com\" \"media.grindr.com\" \"images.grindr.com\" \"cdn.grindr.com\" \"push.grindr.com\" \"analytics.grindr.com\" \"static.grindr.com\" \"assets.grindr.com\"}\n\nOptimized using list: Social Media Sites (0df15f7f-dc35-46cb-8ac6-8a827bdbf559)\nDomains replaced: grindr.com, www.grindr.com, api.grindr.com, app.grindr.com, chat.grindr.com, media.grindr.com, images.grindr.com, cdn.grindr.com, push.grindr.com, analytics.grindr.com, static.grindr.com, assets.grindr.com",
+      "precedence": 1051,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-15T05:07:16Z",
+      "updated_at": "2025-08-17T03:00:10Z",
+      "deleted_at": null,
+      "traffic": "http.request.host in $0df15f7f-dc35-46cb-8ac6-8a827bdbf559",
+      "identity": "",
+      "device_posture": "",
+      "version": 2,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "1fdbf958-564b-44d4-9dba-08de944315b3",
+      "name": "Allow pulsedive.com",
+      "description": "Auto-created rule to allow access to specified domains",
+      "precedence": 1150,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "dns"
+      ],
+      "created_at": "2025-08-17T05:12:08Z",
+      "updated_at": "2025-08-17T05:12:08Z",
+      "deleted_at": null,
+      "traffic": "dns.fqdn == \"pulsedive.com\"",
+      "identity": "",
+      "device_posture": "",
+      "version": 1,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "1dd393bf-33df-44dc-8ed0-9ec59a70edbd",
+      "name": "Allow a.simplemdm.com",
+      "description": "Auto-created rule to allow access to specified domains with security validation",
+      "precedence": 1151,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "dns"
+      ],
+      "created_at": "2025-08-17T11:38:11Z",
+      "updated_at": "2025-08-17T11:38:11Z",
+      "deleted_at": null,
+      "traffic": "dns.fqdn == \"a.simplemdm.com\"",
+      "identity": "",
+      "device_posture": "",
+      "version": 1,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "09c05756-6c75-4c06-9b54-e526d0630fb7",
+      "name": "Allow crt.sh",
+      "description": "Auto-created rule to allow access to specified domains with security validation",
+      "precedence": 1152,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "dns"
+      ],
+      "created_at": "2025-08-17T11:49:09Z",
+      "updated_at": "2025-08-17T11:49:09Z",
+      "deleted_at": null,
+      "traffic": "dns.fqdn == \"crt.sh\"",
+      "identity": "",
+      "device_posture": "",
+      "version": 1,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "ce7cae26-17fd-42a4-8b24-96046102a894",
+      "name": "Certificate: OCSP and CRL Infrastructure (DNS)",
+      "description": "Critical: Allow DNS resolution for OCSP responders and CRL servers. Required for certificate revocation checking and browser security.",
+      "precedence": 1153,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "dns"
+      ],
+      "created_at": "2025-08-17T12:59:09Z",
+      "updated_at": "2025-08-17T12:59:09Z",
+      "deleted_at": null,
+      "traffic": "dns.fqdn == \"ocsp.digicert.com\" or dns.fqdn == \"ocsp.sectigo.com\" or dns.fqdn == \"ocsp.comodoca.com\" or dns.fqdn == \"ocsp.globalsign.com\" or dns.fqdn == \"ocsp.entrust.net\" or dns.fqdn == \"ocsp.apple.com\" or dns.fqdn == \"ocsp.godaddy.com\" or dns.fqdn == \"ocsp.thawte.com\" or dns.fqdn == \"ocsp.verisign.com\" or dns.fqdn == \"ocsp.symantec.com\" or dns.fqdn == \"ocsp2.globalsign.com\" or dns.fqdn == \"ocsp.identrust.com\" or dns.fqdn == \"ocsp.usertrust.com\" or dns.fqdn == \"ocsp.trust-provider.com\" or dns.fqdn == \"ocsp.letsencrypt.org\" or dns.fqdn == \"r3.o.lencr.org\" or dns.fqdn == \"r4.o.lencr.org\" or dns.fqdn == \"e1.o.lencr.org\" or dns.fqdn == \"e2.o.lencr.org\" or dns.fqdn == \"x1.o.lencr.org\" or dns.fqdn == \"x2.o.lencr.org\" or dns.fqdn == \"crl.digicert.com\" or dns.fqdn == \"crl.sectigo.com\" or dns.fqdn == \"crl.comodoca.com\" or dns.fqdn == \"crl.globalsign.com\" or dns.fqdn == \"crl.entrust.net\" or dns.fqdn == \"crl.apple.com\" or dns.fqdn == \"crl.godaddy.com\" or dns.fqdn == \"crl.thawte.com\" or dns.fqdn == \"crl.verisign.com\" or dns.fqdn == \"crl.symantec.com\" or dns.fqdn == \"crl3.digicert.com\" or dns.fqdn == \"crl4.digicert.com\" or dns.fqdn == \"crl.identrust.com\" or dns.fqdn == \"crl.usertrust.com\" or dns.fqdn == \"crl.letsencrypt.org\" or dns.fqdn == \"cacerts.digicert.com\" or dns.fqdn == \"secure.globalsign.com\" or dns.fqdn == \"apps.identrust.com\" or dns.fqdn == \"letsencrypt.org\" or dns.fqdn == \"isrg.trustid.ocsp.identrust.com\" or dns.fqdn == \"ocsp.int-x3.letsencrypt.org\" or dns.fqdn == \"ocsp.msocsp.com\" or dns.fqdn == \"crl.microsoft.com\" or dns.fqdn == \"mscrl.microsoft.com\" or dns.fqdn == \"ocsp.rootca.microsoft.com\" or dns.fqdn == \"ocsp.apple.com\" or dns.fqdn == \"ocsp2.apple.com\" or dns.fqdn == \"crl.apple.com\" or dns.fqdn == \"ocsp-lb.apple.com.akadns.net\" or dns.fqdn == \"crl-lb.apple.com.akadns.net\" or dns.fqdn == \"ocsp.pki.goog\" or dns.fqdn == \"crl.pki.goog\" or dns.fqdn == \"pki.goog\" or dns.fqdn == \"status.rapidssl.com\" or dns.fqdn == \"ocsp.rapidssl.com\" or dns.fqdn == \"crl.rapidssl.com\" or dns.fqdn == \"ocsp.ssl.com\" or dns.fqdn == \"crl.ssl.com\"",
+      "identity": "",
+      "device_posture": "",
+      "version": 1,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "96e6fa90-5315-4ec5-9943-fdb12a707777",
+      "name": "Certificate: OCSP and CRL Infrastructure (HTTP)",
+      "description": "Critical: Allow HTTPS access to OCSP responders and CRL servers for certificate revocation validation.",
+      "precedence": 1154,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-17T12:59:10Z",
+      "updated_at": "2025-08-17T12:59:10Z",
+      "deleted_at": null,
+      "traffic": "http.request.host == \"ocsp.digicert.com\" or http.request.host == \"ocsp.sectigo.com\" or http.request.host == \"ocsp.comodoca.com\" or http.request.host == \"ocsp.globalsign.com\" or http.request.host == \"ocsp.entrust.net\" or http.request.host == \"ocsp.apple.com\" or http.request.host == \"ocsp.godaddy.com\" or http.request.host == \"ocsp.thawte.com\" or http.request.host == \"ocsp.verisign.com\" or http.request.host == \"ocsp.symantec.com\" or http.request.host == \"ocsp2.globalsign.com\" or http.request.host == \"ocsp.identrust.com\" or http.request.host == \"ocsp.usertrust.com\" or http.request.host == \"ocsp.trust-provider.com\" or http.request.host == \"ocsp.letsencrypt.org\" or http.request.host == \"r3.o.lencr.org\" or http.request.host == \"r4.o.lencr.org\" or http.request.host == \"e1.o.lencr.org\" or http.request.host == \"e2.o.lencr.org\" or http.request.host == \"x1.o.lencr.org\" or http.request.host == \"x2.o.lencr.org\" or http.request.host == \"crl.digicert.com\" or http.request.host == \"crl.sectigo.com\" or http.request.host == \"crl.comodoca.com\" or http.request.host == \"crl.globalsign.com\" or http.request.host == \"crl.entrust.net\" or http.request.host == \"crl.apple.com\" or http.request.host == \"crl.godaddy.com\" or http.request.host == \"crl.thawte.com\" or http.request.host == \"crl.verisign.com\" or http.request.host == \"crl.symantec.com\" or http.request.host == \"crl3.digicert.com\" or http.request.host == \"crl4.digicert.com\" or http.request.host == \"crl.identrust.com\" or http.request.host == \"crl.usertrust.com\" or http.request.host == \"crl.letsencrypt.org\" or http.request.host == \"cacerts.digicert.com\" or http.request.host == \"secure.globalsign.com\" or http.request.host == \"apps.identrust.com\" or http.request.host == \"letsencrypt.org\" or http.request.host == \"isrg.trustid.ocsp.identrust.com\" or http.request.host == \"ocsp.int-x3.letsencrypt.org\" or http.request.host == \"ocsp.msocsp.com\" or http.request.host == \"crl.microsoft.com\" or http.request.host == \"mscrl.microsoft.com\" or http.request.host == \"ocsp.rootca.microsoft.com\" or http.request.host == \"ocsp.apple.com\" or http.request.host == \"ocsp2.apple.com\" or http.request.host == \"crl.apple.com\" or http.request.host == \"ocsp-lb.apple.com.akadns.net\" or http.request.host == \"crl-lb.apple.com.akadns.net\" or http.request.host == \"ocsp.pki.goog\" or http.request.host == \"crl.pki.goog\" or http.request.host == \"pki.goog\" or http.request.host == \"status.rapidssl.com\" or http.request.host == \"ocsp.rapidssl.com\" or http.request.host == \"crl.rapidssl.com\" or http.request.host == \"ocsp.ssl.com\" or http.request.host == \"crl.ssl.com\"",
+      "identity": "",
+      "device_posture": "",
+      "version": 1,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "1878886e-8ecd-4163-9742-5f96e1d5f358",
+      "name": "Certificate: OCSP/CRL TLS Bypass",
+      "description": "Critical: Bypass TLS inspection for certificate revocation checking to prevent validation loops.",
+      "precedence": 1155,
+      "enabled": true,
+      "action": "off",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-17T12:59:11Z",
+      "updated_at": "2025-08-17T12:59:11Z",
+      "deleted_at": null,
+      "traffic": "http.conn.hostname == \"ocsp.digicert.com\" or http.conn.hostname == \"ocsp.sectigo.com\" or http.conn.hostname == \"ocsp.comodoca.com\" or http.conn.hostname == \"ocsp.globalsign.com\" or http.conn.hostname == \"ocsp.entrust.net\" or http.conn.hostname == \"ocsp.apple.com\" or http.conn.hostname == \"ocsp.godaddy.com\" or http.conn.hostname == \"ocsp.thawte.com\" or http.conn.hostname == \"ocsp.verisign.com\" or http.conn.hostname == \"ocsp.symantec.com\" or http.conn.hostname == \"ocsp2.globalsign.com\" or http.conn.hostname == \"ocsp.identrust.com\" or http.conn.hostname == \"ocsp.usertrust.com\" or http.conn.hostname == \"ocsp.trust-provider.com\" or http.conn.hostname == \"ocsp.letsencrypt.org\" or http.conn.hostname == \"r3.o.lencr.org\" or http.conn.hostname == \"r4.o.lencr.org\" or http.conn.hostname == \"e1.o.lencr.org\" or http.conn.hostname == \"e2.o.lencr.org\" or http.conn.hostname == \"x1.o.lencr.org\" or http.conn.hostname == \"x2.o.lencr.org\" or http.conn.hostname == \"crl.digicert.com\" or http.conn.hostname == \"crl.sectigo.com\" or http.conn.hostname == \"crl.comodoca.com\" or http.conn.hostname == \"crl.globalsign.com\" or http.conn.hostname == \"crl.entrust.net\" or http.conn.hostname == \"crl.apple.com\" or http.conn.hostname == \"crl.godaddy.com\" or http.conn.hostname == \"crl.thawte.com\" or http.conn.hostname == \"crl.verisign.com\" or http.conn.hostname == \"crl.symantec.com\" or http.conn.hostname == \"crl3.digicert.com\" or http.conn.hostname == \"crl4.digicert.com\" or http.conn.hostname == \"crl.identrust.com\" or http.conn.hostname == \"crl.usertrust.com\" or http.conn.hostname == \"crl.letsencrypt.org\" or http.conn.hostname == \"cacerts.digicert.com\" or http.conn.hostname == \"secure.globalsign.com\" or http.conn.hostname == \"apps.identrust.com\" or http.conn.hostname == \"letsencrypt.org\" or http.conn.hostname == \"isrg.trustid.ocsp.identrust.com\" or http.conn.hostname == \"ocsp.int-x3.letsencrypt.org\" or http.conn.hostname == \"ocsp.msocsp.com\" or http.conn.hostname == \"crl.microsoft.com\" or http.conn.hostname == \"mscrl.microsoft.com\" or http.conn.hostname == \"ocsp.rootca.microsoft.com\" or http.conn.hostname == \"ocsp.apple.com\" or http.conn.hostname == \"ocsp2.apple.com\" or http.conn.hostname == \"crl.apple.com\" or http.conn.hostname == \"ocsp-lb.apple.com.akadns.net\" or http.conn.hostname == \"crl-lb.apple.com.akadns.net\" or http.conn.hostname == \"ocsp.pki.goog\" or http.conn.hostname == \"crl.pki.goog\" or http.conn.hostname == \"pki.goog\" or http.conn.hostname == \"status.rapidssl.com\" or http.conn.hostname == \"ocsp.rapidssl.com\" or http.conn.hostname == \"crl.rapidssl.com\" or http.conn.hostname == \"ocsp.ssl.com\" or http.conn.hostname == \"crl.ssl.com\"",
+      "identity": "",
+      "device_posture": "",
+      "version": 1,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "a60a0af0-0dee-4435-9b55-110b2808e525",
+      "name": "Certificate: SSL/TLS Validation Services",
+      "description": "Allow access to certificate transparency logs, OCSP responders, and CRL endpoints for SSL/TLS validation.",
+      "precedence": 1158,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "dns"
+      ],
+      "created_at": "2025-08-17T12:44:53Z",
+      "updated_at": "2025-08-17T12:44:53Z",
+      "deleted_at": null,
+      "traffic": "dns.fqdn == \"crt.sh\" or dns.fqdn == \"ct.googleapis.com\" or dns.fqdn == \"ct.cloudflare.com\" or dns.fqdn == \"ocsp.digicert.com\" or dns.fqdn == \"ocsp.letsencrypt.org\" or dns.fqdn == \"crl.digicert.com\" or dns.fqdn == \"crl.letsencrypt.org\" or dns.fqdn == \"r3.o.lencr.org\" or dns.fqdn == \"r4.o.lencr.org\"",
+      "identity": "",
+      "device_posture": "",
+      "version": 1,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "7a8e919a-b4d9-4718-8883-408a7294bcd6",
+      "name": "Certificate: SSL/TLS Validation Services (HTTP)",
+      "description": "Allow HTTPS access to certificate transparency logs, OCSP responders, and CRL endpoints.",
+      "precedence": 1159,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-17T12:45:44Z",
+      "updated_at": "2025-08-17T12:45:44Z",
+      "deleted_at": null,
+      "traffic": "http.request.host == \"crt.sh\" or http.request.host == \"ct.googleapis.com\" or http.request.host == \"ct.cloudflare.com\" or http.request.host == \"ocsp.digicert.com\" or http.request.host == \"ocsp.letsencrypt.org\" or http.request.host == \"crl.digicert.com\" or http.request.host == \"crl.letsencrypt.org\" or http.request.host == \"r3.o.lencr.org\" or http.request.host == \"r4.o.lencr.org\"",
+      "identity": "",
+      "device_posture": "",
+      "version": 1,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "8142c528-3562-41cc-a4a7-9969e8e0682c",
+      "name": "Certificate: TLS Bypass for SSL/TLS Validation",
+      "description": "Bypass TLS inspection for certificate transparency and validation services to enable proper certificate monitoring.",
+      "precedence": 1160,
+      "enabled": true,
+      "action": "off",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-17T12:47:42Z",
+      "updated_at": "2025-08-17T12:47:42Z",
+      "deleted_at": null,
+      "traffic": "http.conn.hostname == \"crt.sh\" or http.conn.hostname == \"ct.googleapis.com\" or http.conn.hostname == \"ct.cloudflare.com\" or http.conn.hostname == \"ocsp.digicert.com\" or http.conn.hostname == \"ocsp.letsencrypt.org\" or http.conn.hostname == \"crl.digicert.com\" or http.conn.hostname == \"crl.letsencrypt.org\" or http.conn.hostname == \"r3.o.lencr.org\" or http.conn.hostname == \"r4.o.lencr.org\"",
+      "identity": "",
+      "device_posture": "",
+      "version": 1,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "13e9b12a-215c-4363-8e57-ba39d08892df",
+      "name": "AI Services: Complete Coverage (Anthropic/Claude Critical)",
+      "description": "Comprehensive AI services including all critical Anthropic/Claude domains\n\n[BACKUP 2025-08-17T02:56:58.211Z] Original traffic filter:\nhttp.request.host in {\"openai.com\" \"api.openai.com\" \"chat.openai.com\" \"platform.openai.com\" \"ab.chatgpt.com\" \"anthropic.com\" \"api.anthropic.com\" \"claude.ai\" \"console.anthropic.com\" \"docs.anthropic.com\" \"statsig.anthropic.com\" \"telemetry.anthropic.com\" \"gemini.google.com\" \"makersuite.google.com\" \"ai.google.com\" \"bard.google.com\" \"huggingface.co\" \"ollama.ai\" \"ollama.com\" \"api.perplexity.ai\" \"perplexity.ai\" \"poe.com\" \"midjourney.com\" \"replicate.com\" \"stability.ai\" \"leonardo.ai\" \"character.ai\" \"janitorai.com\" \"meta.ai\" \"copilot.microsoft.com\" \"jasper.ai\" \"copy.ai\" \"writesonic.com\" \"grammarly.com\" \"warp.dev\" \"app.warp.dev\" \"rtc.app.warp.dev\"}\n\nOptimized using list: AI and ML Platforms (fe4bf9b5-0afb-40bb-b713-474f7323b3f9)\nDomains replaced: openai.com, api.openai.com, chat.openai.com, platform.openai.com, ab.chatgpt.com, anthropic.com, api.anthropic.com, claude.ai, console.anthropic.com, docs.anthropic.com, statsig.anthropic.com, telemetry.anthropic.com, gemini.google.com, huggingface.co, midjourney.com, replicate.com, stability.ai\n\n[BACKUP 2025-08-17T02:59:56.481Z] Original traffic filter:\nhttp.request.host in $fe4bf9b5-0afb-40bb-b713-474f7323b3f9 or http.request.host in {\"makersuite.google.com\" \"ai.google.com\" \"bard.google.com\" \"ollama.ai\" \"ollama.com\" \"api.perplexity.ai\" \"perplexity.ai\" \"poe.com\" \"leonardo.ai\" \"character.ai\" \"janitorai.com\" \"meta.ai\" \"copilot.microsoft.com\" \"jasper.ai\" \"copy.ai\" \"writesonic.com\" \"grammarly.com\" \"warp.dev\" \"app.warp.dev\" \"rtc.app.warp.dev\"}\n\nOptimized using list: Business Applications (419dd8d5-b0a0-4892-ab87-9c663735727a)\nDomains replaced: makersuite.google.com, ai.google.com, bard.google.com, copilot.microsoft.com\n\n[BACKUP 2025-08-17T03:10:11.877Z] Original traffic filter:\nhttp.request.host in $fe4bf9b5-0afb-40bb-b713-474f7323b3f9 or (http.request.host in $419dd8d5-b0a0-4892-ab87-9c663735727a or http.request.host in {\"ollama.ai\" \"ollama.com\" \"api.perplexity.ai\" \"perplexity.ai\" \"poe.com\" \"leonardo.ai\" \"character.ai\" \"janitorai.com\" \"meta.ai\" \"jasper.ai\" \"copy.ai\" \"writesonic.com\" \"grammarly.com\" \"warp.dev\" \"app.warp.dev\" \"rtc.app.warp.dev\"})\n\nOptimized using list: Critical Infrastructure Domains (fa64ba26-c470-4273-b251-c75ce17280b6)\nDomains replaced: warp.dev, app.warp.dev, rtc.app.warp.dev",
+      "precedence": 1450,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-14T13:11:49Z",
+      "updated_at": "2025-08-17T03:47:00Z",
+      "deleted_at": null,
+      "traffic": "http.request.host in $fe4bf9b5-0afb-40bb-b713-474f7323b3f9 or (http.request.host in $419dd8d5-b0a0-4892-ab87-9c663735727a or (http.request.host in $fa64ba26-c470-4273-b251-c75ce17280b6 or http.request.host in {\"ollama.ai\" \"ollama.com\" \"api.perplexity.ai\" \"perplexity.ai\" \"poe.com\" \"leonardo.ai\" \"character.ai\" \"janitorai.com\" \"meta.ai\" \"jasper.ai\" \"copy.ai\" \"writesonic.com\" \"grammarly.com\"}))",
+      "identity": "",
+      "device_posture": "",
+      "version": 12,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "67d0224e-ef48-47a3-9dab-e12ac6f49efe",
+      "name": "Security: Block Suspicious File Downloads",
+      "description": "[SECURITY OPTIMIZED 2025-08-17] Regex patterns optimized to prevent catastrophic backtracking while maintaining security coverage.\\n\\nBlock downloads of potentially dangerous file types",
+      "precedence": 2010,
+      "enabled": true,
+      "action": "block",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-15T05:49:48Z",
+      "updated_at": "2025-08-17T23:35:13Z",
+      "deleted_at": null,
+      "traffic": "http.request.uri.path matches \".*\\.(exe|scr|bat|cmd|pif|com|vbs|msi)$\"",
+      "identity": "",
+      "device_posture": "",
+      "version": 1,
+      "rule_settings": {
+        "block_reason": "Potentially dangerous file download blocked"
+      },
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "0f4f70e4-0340-4bc2-afdb-7975b1c91f95",
+      "name": "Network Security: Block Dangerous File Downloads",
+      "description": "[SECURITY OPTIMIZED 2025-08-17] Regex patterns optimized to prevent catastrophic backtracking while maintaining security coverage.\\n\\nBlock downloads of executable files and scripts",
+      "precedence": 2100,
+      "enabled": true,
+      "action": "block",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-15T05:50:43Z",
+      "updated_at": "2025-08-17T23:35:13Z",
+      "deleted_at": null,
+      "traffic": "http.request.uri.path matches \".*\\.(exe|scr|bat|cmd|pif|com|vbs|msi|deb|rpm)$\"",
+      "identity": "",
+      "device_posture": "",
+      "version": 1,
+      "rule_settings": {
+        "block_reason": "Dangerous file type blocked"
+      },
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "64fe8f32-cf65-4d8a-85a4-3f4940d453ba",
+      "name": "Network Security: Block SQL Injection Attempts",
+      "description": "[SECURITY OPTIMIZED 2025-08-17] Regex patterns optimized to prevent catastrophic backtracking while maintaining security coverage.\\n\\nBlock common SQL injection patterns",
+      "precedence": 2110,
+      "enabled": true,
+      "action": "block",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-15T05:50:44Z",
+      "updated_at": "2025-08-17T23:35:13Z",
+      "deleted_at": null,
+      "traffic": "http.request.uri.query matches \".*(SELECT|UNION|INSERT|UPDATE|DELETE).*\"",
+      "identity": "",
+      "device_posture": "",
+      "version": 1,
+      "rule_settings": {
+        "block_reason": "SQL injection attempt blocked"
+      },
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "e9ddfb0c-a16c-429c-ac64-ae6a4e56a635",
+      "name": "Network Security: Block XSS Attempts",
+      "description": "[SECURITY OPTIMIZED 2025-08-17] Regex patterns optimized to prevent catastrophic backtracking while maintaining security coverage.\\n\\nBlock cross-site scripting attempts",
+      "precedence": 2120,
+      "enabled": true,
+      "action": "block",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-15T05:50:45Z",
+      "updated_at": "2025-08-17T23:35:13Z",
+      "deleted_at": null,
+      "traffic": "http.request.uri matches \".*(<script|javascript:|onload=|onerror=).*\"",
+      "identity": "",
+      "device_posture": "",
+      "version": 1,
+      "rule_settings": {
+        "block_reason": "XSS attempt blocked"
+      },
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "ddab6d91-54e4-485b-9e6f-a6f237d2b8ca",
+      "name": "Network Security: Block Admin Path Brute Force",
+      "description": "Block suspicious admin path access attempts",
+      "precedence": 2130,
+      "enabled": true,
+      "action": "block",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-15T05:50:46Z",
+      "updated_at": "2025-08-15T05:50:46Z",
+      "deleted_at": null,
+      "traffic": "http.request.uri.path matches \".*(wp-admin|phpmyadmin|cpanel|admin|administrator).*\" and http.request.method == \"POST\"",
+      "identity": "",
+      "device_posture": "",
+      "version": 1,
+      "rule_settings": {
+        "block_reason": "Admin access attempt blocked"
+      },
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "89088143-113e-4f5b-b391-04a72e895fa5",
+      "name": "Security: Block Malware",
+      "description": "",
+      "precedence": 3000,
+      "enabled": true,
+      "action": "block",
+      "filters": [
+        "dns"
+      ],
+      "created_at": "2025-08-14T09:46:35Z",
+      "updated_at": "2025-08-15T04:07:42Z",
+      "deleted_at": null,
+      "traffic": "any(dns.security_category[*] in {80})",
+      "identity": "",
+      "device_posture": "",
+      "version": 2,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "e7f464c0-c932-4734-9517-2f52279062ff",
+      "name": "App Control: Monitor Large Uploads",
+      "description": "Monitor POST requests to upload paths",
+      "precedence": 4100,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-15T05:50:47Z",
+      "updated_at": "2025-08-15T05:50:47Z",
+      "deleted_at": null,
+      "traffic": "http.request.method == \"POST\" and http.request.uri.path matches \".*(upload|file).*\"",
+      "identity": "",
+      "device_posture": "",
+      "version": 1,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "d21d165d-b778-40a2-89cd-c808ebb4429d",
+      "name": "App Control: Block Suspicious Downloads",
+      "description": "Block downloads from suspicious paths",
+      "precedence": 4110,
+      "enabled": true,
+      "action": "block",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-15T05:50:48Z",
+      "updated_at": "2025-08-15T05:50:48Z",
+      "deleted_at": null,
+      "traffic": "http.request.uri.path matches \".*(tmp|temp|cache).*\\.(zip|rar|7z|tar)$\"",
+      "identity": "",
+      "device_posture": "",
+      "version": 1,
+      "rule_settings": {
+        "block_reason": "Suspicious download blocked"
+      },
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "7d8fedc9-adfa-4a83-bae2-f96f089da5dc",
+      "name": "Security: Block Botnets",
+      "description": "",
+      "precedence": 5000,
+      "enabled": true,
+      "action": "block",
+      "filters": [
+        "dns"
+      ],
+      "created_at": "2025-08-14T09:47:40Z",
+      "updated_at": "2025-08-15T04:07:44Z",
+      "deleted_at": null,
+      "traffic": "any(dns.security_category[*] in {131})",
+      "identity": "",
+      "device_posture": "",
+      "version": 3,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "b2f80827-8306-460c-8cd2-46969fd33cb4",
+      "name": "Risk-Based: Block Common Attack Patterns",
+      "description": "[SECURITY OPTIMIZED 2025-08-17] Regex patterns optimized to prevent catastrophic backtracking while maintaining security coverage.\\n\\nBlock common web attack patterns in URLs",
+      "precedence": 5010,
+      "enabled": true,
+      "action": "block",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-15T05:49:51Z",
+      "updated_at": "2025-08-17T23:35:13Z",
+      "deleted_at": null,
+      "traffic": "http.request.uri.path matches \".*(SELECT|UNION|DROP|INSERT|UPDATE|DELETE|script>|javascript:).*\"",
+      "identity": "",
+      "device_posture": "",
+      "version": 1,
+      "rule_settings": {
+        "block_reason": "Potential attack pattern detected"
+      },
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "acd51552-4666-41f4-8c31-05a7f46eb16e",
+      "name": "Network Audit: Log API Access",
+      "description": "Log access to API endpoints",
+      "precedence": 6100,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-15T05:50:49Z",
+      "updated_at": "2025-08-15T05:50:49Z",
+      "deleted_at": null,
+      "traffic": "http.request.uri.path matches \".*(api|rest|graphql).*\"",
+      "identity": "",
+      "device_posture": "",
+      "version": 1,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "88a42bfc-61d9-46d5-9d0d-319890246ac2",
+      "name": "Network Audit: Monitor Authentication",
+      "description": "Monitor authentication endpoints",
+      "precedence": 6110,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-15T05:50:50Z",
+      "updated_at": "2025-08-15T05:50:50Z",
+      "deleted_at": null,
+      "traffic": "http.request.uri.path matches \".*(login|signin|auth|oauth).*\"",
+      "identity": "",
+      "device_posture": "",
+      "version": 1,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "e1abbb1e-18ce-4436-8e2e-ddb728362e91",
+      "name": "Apple: Certificate Validation",
+      "description": "Allow Apple OCSP and certificate validation\n\n[BACKUP 2025-08-17T03:14:33.642Z] Original traffic filter:\nhttp.request.host in {\"ocsp2.g.aaplimg.com\" \"valid-apple.g.aaplimg.com\" \"ocsp.apple.com\" \"valid.apple.com\"}\n\nOptimized using list: Critical Infrastructure Domains (fa64ba26-c470-4273-b251-c75ce17280b6)\nDomains replaced: ocsp2.g.aaplimg.com, valid-apple.g.aaplimg.com, ocsp.apple.com, valid.apple.com",
+      "precedence": 8000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-14T20:21:18Z",
+      "updated_at": "2025-08-17T03:14:35Z",
+      "deleted_at": null,
+      "traffic": "http.request.host in $fa64ba26-c470-4273-b251-c75ce17280b6",
+      "identity": "",
+      "device_posture": "",
+      "version": 3,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "630b207b-ba35-484b-9851-5f2e379b8e7d",
+      "name": "Security: Authentication Services",
+      "description": "Allow SSO and auth providers",
+      "precedence": 9000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-14T20:07:54Z",
+      "updated_at": "2025-08-15T04:07:47Z",
+      "deleted_at": null,
+      "traffic": "http.request.host in {\"auth0.com\" \"okta.com\" \"oktacdn.com\" \"onelogin.com\" \"duo.com\"}",
+      "identity": "",
+      "device_posture": "",
+      "version": 3,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "3b11c848-68e2-42fc-97c0-e1d42916e7a4",
+      "name": "Apple: MDM & Device Enrollment",
+      "description": "Allow Apple MDM, DEP, and device enrollment services\n\n[BACKUP 2025-08-17T03:00:12.738Z] Original traffic filter:\nhttp.request.host in {\"deviceenrollment.apple.com\" \"deviceservices-external.apple.com\" \"gdmf.apple.com\" \"mdmenrollment.apple.com\" \"school.apple.com\" \"business.apple.com\" \"dep.apple.com\" \"dep-client-downloads.apple.com\"}\n\nOptimized using list: Critical Infrastructure Domains (fa64ba26-c470-4273-b251-c75ce17280b6)\nDomains replaced: deviceenrollment.apple.com, deviceservices-external.apple.com, gdmf.apple.com, mdmenrollment.apple.com, school.apple.com, business.apple.com, dep.apple.com, dep-client-downloads.apple.com",
+      "precedence": 10000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-14T20:11:59Z",
+      "updated_at": "2025-08-17T03:00:15Z",
+      "deleted_at": null,
+      "traffic": "http.request.host in $fa64ba26-c470-4273-b251-c75ce17280b6",
+      "identity": "",
+      "device_posture": "",
+      "version": 3,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "34cb1f3c-6f90-4a29-bccf-d10d3cfa182f",
+      "name": "Development: GitHub & Git Services",
+      "description": "Allow GitHub and related development services\n\n[BACKUP 2025-08-17T03:14:37.933Z] Original traffic filter:\nhttp.request.host in {\"github.com\" \"githubusercontent.com\" \"github.io\" \"githubassets.com\"}\n\nOptimized using list: Development Tools Domains (d8954bf1-0d77-42c7-b8b4-e9c7b507b961)\nDomains replaced: github.com, githubusercontent.com, github.io, githubassets.com",
+      "precedence": 11000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-14T20:07:42Z",
+      "updated_at": "2025-08-17T03:14:39Z",
+      "deleted_at": null,
+      "traffic": "http.request.host in $d8954bf1-0d77-42c7-b8b4-e9c7b507b961",
+      "identity": "",
+      "device_posture": "",
+      "version": 3,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "c2763df2-1b9c-49e5-bd03-e73787764794",
+      "name": "Development: Package Managers",
+      "description": "Allow NPM, PyPI, and other package registries\n\n[BACKUP 2025-08-17T03:12:56.375Z] Original traffic filter:\nhttp.request.host in {\"npmjs.com\" \"registry.npmjs.org\" \"pypi.org\" \"files.pythonhosted.org\" \"rubygems.org\"}\n\nOptimized using list: Development Tools Domains (d8954bf1-0d77-42c7-b8b4-e9c7b507b961)\nDomains replaced: npmjs.com, registry.npmjs.org, pypi.org, files.pythonhosted.org, rubygems.org",
+      "precedence": 12000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-14T20:07:43Z",
+      "updated_at": "2025-08-17T03:12:57Z",
+      "deleted_at": null,
+      "traffic": "http.request.host in $d8954bf1-0d77-42c7-b8b4-e9c7b507b961",
+      "identity": "",
+      "device_posture": "",
+      "version": 3,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "e1deb9da-f7ca-4890-ac46-c48d1b0134ad",
+      "name": "CDN: JavaScript Libraries",
+      "description": "Allow CDN services for web libraries\n\n[BACKUP 2025-08-17T03:17:04.697Z] Original traffic filter:\nhttp.request.host in {\"cdn.jsdelivr.net\" \"unpkg.com\" \"cdnjs.cloudflare.com\" \"esm.sh\" \"skypack.dev\"}\n\nOptimized using list: Development Tools Domains (d8954bf1-0d77-42c7-b8b4-e9c7b507b961)\nDomains replaced: cdn.jsdelivr.net, unpkg.com, esm.sh",
+      "precedence": 13000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-14T20:07:45Z",
+      "updated_at": "2025-08-17T03:17:06Z",
+      "deleted_at": null,
+      "traffic": "http.request.host in $d8954bf1-0d77-42c7-b8b4-e9c7b507b961",
+      "identity": "",
+      "device_posture": "",
+      "version": 4,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "30867815-418f-413d-89f9-3a1572a90b0d",
+      "name": "Allow Apple Homekit and Google Home Ecosystems",
+      "description": "Allow Apple Homekit and Google Home Ecosystems\n\n[BACKUP 2025-08-17T03:17:08.969Z] Original traffic filter:\ndns.fqdn in {\"apple-cloudkit.com\" \"apple-livephotoskit.com\" \"icloud.com\" \"apple.com\" \"googleapis.com\" \"nest.com\" \"google-home.com\" \"gstatic.com\" \"home.nest.com\" \"xmpp-qa.google.com\"} or dns.fqdn matches \"^.*\\.local\\.home$\"\n\nOptimized using list: Business Applications (419dd8d5-b0a0-4892-ab87-9c663735727a)\nDomains replaced: googleapis.com, gstatic.com, xmpp-qa.google.com\n\n[BACKUP 2025-08-17T03:19:32.128Z] Original traffic filter:\n(dns.fqdn in $419dd8d5-b0a0-4892-ab87-9c663735727a or dns.fqdn in {\"apple-cloudkit.com\" \"apple-livephotoskit.com\" \"icloud.com\" \"apple.com\" \"nest.com\" \"google-home.com\" \"home.nest.com\"}) or dns.fqdn matches \"^.*\\.local\\.home$\"\n\nOptimized using list: Critical Infrastructure Domains (fa64ba26-c470-4273-b251-c75ce17280b6)\nDomains replaced: icloud.com, apple.com [FIXED: Removed problematic regex anchor]",
+      "precedence": 14000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "dns"
+      ],
+      "created_at": "2025-08-15T04:05:08Z",
+      "updated_at": "2025-08-17T12:33:42Z",
+      "deleted_at": null,
+      "traffic": "dns.fqdn in $419dd8d5-b0a0-4892-ab87-9c663735727a or (dns.fqdn in $fa64ba26-c470-4273-b251-c75ce17280b6 or dns.fqdn in {\"apple-cloudkit.com\" \"apple-livephotoskit.com\" \"nest.com\" \"google-home.com\" \"home.nest.com\"}) or dns.fqdn matches \".*\\.local\\.home\"",
+      "identity": "",
+      "device_posture": "",
+      "version": 5,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "204d3a9b-9a27-468b-ab9d-78d219fa74b9",
+      "name": "Apple: iCloud Services Extended",
+      "description": "Allow iCloud gateway and mask services for Private Relay\n\n[BACKUP 2025-08-17T03:13:00.646Z] Original traffic filter:\nhttp.request.host in {\"gateway.icloud.com\" \"mask-canary.icloud.com\" \"mask-h2.icloud.com\" \"mask.icloud.com\" \"mask-api.icloud.com\"}\n\nOptimized using list: Critical Infrastructure Domains (fa64ba26-c470-4273-b251-c75ce17280b6)\nDomains replaced: gateway.icloud.com, mask-canary.icloud.com, mask-h2.icloud.com, mask.icloud.com, mask-api.icloud.com",
+      "precedence": 15000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-14T20:15:57Z",
+      "updated_at": "2025-08-17T03:13:02Z",
+      "deleted_at": null,
+      "traffic": "http.request.host in $fa64ba26-c470-4273-b251-c75ce17280b6",
+      "identity": "",
+      "device_posture": "",
+      "version": 4,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "a69a30e9-521d-427e-9305-f52921b8e39e",
+      "name": "Cloud: Google Core Services",
+      "description": "Allow essential Google APIs and services",
+      "precedence": 16000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-14T20:07:46Z",
+      "updated_at": "2025-08-15T04:07:55Z",
+      "deleted_at": null,
+      "traffic": "http.request.host matches \"^.*\\.(googleapis\\.com|gstatic\\.com|googleusercontent\\.com)$\"",
+      "identity": "",
+      "device_posture": "",
+      "version": 3,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "0d700ea5-851b-4d3e-95de-f41f6469b0e0",
+      "name": "Cloud: AWS Infrastructure",
+      "description": "Allow AWS services and CloudFront",
+      "precedence": 17000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-14T20:07:47Z",
+      "updated_at": "2025-08-15T04:07:56Z",
+      "deleted_at": null,
+      "traffic": "http.request.host matches \"^.*\\.(amazonaws\\.com|cloudfront\\.net|aws\\.amazon\\.com)$\"",
+      "identity": "",
+      "device_posture": "",
+      "version": 3,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "1e99ab4c-ef24-4476-be8d-b2b1eadf1d0f",
+      "name": "Cloud: Microsoft Azure",
+      "description": "Allow Azure and Microsoft cloud services",
+      "precedence": 18000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-14T20:07:48Z",
+      "updated_at": "2025-08-15T04:07:57Z",
+      "deleted_at": null,
+      "traffic": "http.request.host matches \"^.*\\.(azure\\.com|azurewebsites\\.net|azureedge\\.net|windowsazure\\.com)$\"",
+      "identity": "",
+      "device_posture": "",
+      "version": 3,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "c5044065-43e7-4263-b1a9-9fb611810a9b",
+      "name": "Infrastructure: Cloudflare Services",
+      "description": "[DOMAIN OPTIMIZED 2025-08-17] Converted regex pattern to Gateway List (Cloud Domains)\\n\\nAllow Cloudflare infrastructure",
+      "precedence": 19000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-14T20:07:58Z",
+      "updated_at": "2025-08-15T04:07:58Z",
+      "deleted_at": null,
+      "traffic": "http.request.host in $list-cloud-domains-20250817",
+      "identity": "",
+      "device_posture": "",
+      "version": 3,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "b63c3696-58b3-4462-a010-6fc4d07dceb5",
+      "name": "Cloud: AWS and Major Providers",
+      "description": "[DOMAIN OPTIMIZED 2025-08-17] Converted regex pattern to Gateway List (Misc Domains)\\n\\n",
+      "precedence": 20000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "dns"
+      ],
+      "created_at": "2025-08-14T09:52:35Z",
+      "updated_at": "2025-08-15T04:07:59Z",
+      "deleted_at": null,
+      "traffic": "dns.fqdn in $list-misc-domains-20250817",
+      "identity": "",
+      "device_posture": "",
+      "version": 4,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "d12f1188-a1c7-4d22-aacd-f6f04f9723a5",
+      "name": "Apple: Core HTTP Services",
+      "description": "[DOMAIN OPTIMIZED 2025-08-17] Converted regex pattern to Gateway List (Misc Domains)\\n\\n",
+      "precedence": 21000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-14T09:49:34Z",
+      "updated_at": "2025-08-15T04:08:00Z",
+      "deleted_at": null,
+      "traffic": "http.request.host in $list-misc-domains-20250817",
+      "identity": "",
+      "device_posture": "",
+      "version": 3,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "c185b517-f2cf-4cfd-a370-c5e9af10d578",
+      "name": "API Services",
+      "description": "test API access",
+      "precedence": 22000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-14T21:15:51Z",
+      "updated_at": "2025-08-15T04:08:00Z",
+      "deleted_at": null,
+      "traffic": "http.request.uri matches \"^/api/.*$\" or http.request.host matches \"^api\\..*\\.com$\"",
+      "identity": "",
+      "device_posture": "",
+      "version": 2,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "f903f638-2d9a-4608-8f1f-eda33109d46b",
+      "name": "Apple: Additional Services & CDN",
+      "description": "[DOMAIN OPTIMIZED 2025-08-17] Converted regex pattern to Gateway List (Misc Domains)\\n\\nAllow Apple image CDN and Safari services",
+      "precedence": 23000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-14T20:17:47Z",
+      "updated_at": "2025-08-15T04:08:02Z",
+      "deleted_at": null,
+      "traffic": "http.request.host in $list-misc-domains-20250817",
+      "identity": "",
+      "device_posture": "",
+      "version": 3,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "cf06d3d7-754b-4a34-9206-6bd0ceecb478",
+      "name": "Apple: Core DNS Services",
+      "description": "[BACKUP 2025-08-17T03:10:20.433Z] Original traffic filter:\ndns.fqdn matches \".*\\.apple\\.com$\" or dns.fqdn == \"apple.com\" or dns.fqdn in {\"ausyd2.icloud-content.com\" \"gateway.icloud.com\" \"updates.cdn-apple.com\" \"api.apple-cloudkit.com\" \"api.apple-cloudkit.fe2.apple-dns.net\" \"us-sandbox-courier-4.push-apple.com.akadns.net\" \"setup.icloud.com\" \"token.safebrowsing.apple\" \"ausyd2.ce.apple-dns.net\" \"metrics-config.icloud.com\"}\n\nOptimized using list: Critical Infrastructure Domains (fa64ba26-c470-4273-b251-c75ce17280b6)\nDomains replaced: gateway.icloud.com, updates.cdn-apple.com, us-sandbox-courier-4.push-apple.com.akadns.net, setup.icloud.com, metrics-config.icloud.com, apple.com",
+      "precedence": 24000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "dns"
+      ],
+      "created_at": "2025-08-14T09:49:14Z",
+      "updated_at": "2025-08-17T03:10:21Z",
+      "deleted_at": null,
+      "traffic": "dns.fqdn matches \".*\\.apple\\.com$\" or dns.fqdn == \"apple.com\" or dns.fqdn in $fa64ba26-c470-4273-b251-c75ce17280b6",
+      "identity": "",
+      "device_posture": "",
+      "version": 14,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "573c9c70-689f-49b0-bcfe-7722f6a30935",
+      "name": "Allow Apple Mail Servers",
+      "description": "add apple mail to the mail server rule",
+      "precedence": 25000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "dns"
+      ],
+      "created_at": "2025-08-14T13:42:02Z",
+      "updated_at": "2025-08-15T06:01:41Z",
+      "deleted_at": null,
+      "traffic": "dns.fqdn in {\"imap.mail.me.com\" \"smtp.mail.me.com\" \"mail.me.com\" \"p58-imap.mail.me.com\" \"p58-smtp.mail.me.com\" \"p143-caldav.icloud.com\" \"p69-caldav.icloud.com\"}",
+      "identity": "",
+      "device_posture": "",
+      "version": 4,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "cd2b3a19-24d3-457d-84a3-4988d7cea66b",
+      "name": "Communication: Slack",
+      "description": "Allow Slack and related services",
+      "precedence": 26000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-14T20:07:49Z",
+      "updated_at": "2025-08-15T04:08:04Z",
+      "deleted_at": null,
+      "traffic": "http.request.host matches \"^.*\\.(slack\\.com|slack-edge\\.com|slack-imgs\\.com|slackb\\.com)$\"",
+      "identity": "",
+      "device_posture": "",
+      "version": 3,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "6ca9c186-4be8-41d0-9a9d-663e47b3031a",
+      "name": "Communication: Video Conferencing",
+      "description": "Allow Zoom and Teams",
+      "precedence": 27000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-14T20:07:50Z",
+      "updated_at": "2025-08-15T04:08:11Z",
+      "deleted_at": null,
+      "traffic": "http.request.host in {\"zoom.us\" \"zoom.com\" \"teams.microsoft.com\" \"teams.live.com\"}",
+      "identity": "",
+      "device_posture": "",
+      "version": 3,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "8414545b-b6cc-4e2b-b833-08b98b26ff1d",
+      "name": "Productivity: Slack and Communication",
+      "description": "[DOMAIN OPTIMIZED 2025-08-17] Converted regex pattern to Gateway List (Misc Domains)\\n\\n",
+      "precedence": 28000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "dns"
+      ],
+      "created_at": "2025-08-14T09:56:53Z",
+      "updated_at": "2025-08-15T04:08:12Z",
+      "deleted_at": null,
+      "traffic": "dns.fqdn in $list-misc-domains-20250817",
+      "identity": "",
+      "device_posture": "",
+      "version": 3,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "302aecce-0b90-46d0-b6ec-103e2a3e8abb",
+      "name": "Productivity: Atlassian Suite",
+      "description": "Allow Jira, Confluence, and Atlassian services",
+      "precedence": 29000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-14T20:07:51Z",
+      "updated_at": "2025-08-15T04:08:13Z",
+      "deleted_at": null,
+      "traffic": "http.request.host matches \"^.*\\.(atlassian\\.com|atlassian\\.net|jira\\.com|confluence\\.com|statuspage\\.io)$\"",
+      "identity": "",
+      "device_posture": "",
+      "version": 3,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "91bdb7a7-2bcc-452b-8232-e54f79703bca",
+      "name": "Allow 3d Print Sites",
+      "description": "Allow all of the reputable 3d print sites",
+      "precedence": 30000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "dns"
+      ],
+      "created_at": "2025-08-15T01:02:41Z",
+      "updated_at": "2025-08-15T06:28:47Z",
+      "deleted_at": null,
+      "traffic": "dns.fqdn in {\"thingiverse.com\" \"prusaprinters.org\" \"myminifactory.com\" \"thangs.com\" \"cults3d.com\" \"printables.com\" \"grabcad.com\" \"api.crealitycloud.com\" \"www.printables.com\" \"account.prusa3d.com\" \"media.printables.com\" \"api.printables.com\" \"sentry.prusa3d.com\" \"files.printables.com\" \"internal-creality-usa.oss-accelerate.aliyuncs.com\" \"pic2-creality.oss-accelerate.aliyuncs.com\" \"pic2-cdn.creality.com\" \"file2-cdn.creality.com\" \"file2-creality.oss-accelerate.aliyuncs.com\"}",
+      "identity": "",
+      "device_posture": "",
+      "version": 11,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "f3019a2e-3bbc-4593-bbe3-60b5e7760c6d",
+      "name": "Security: Password Managers",
+      "description": "Allow password management services",
+      "precedence": 31000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-14T20:07:55Z",
+      "updated_at": "2025-08-15T04:08:15Z",
+      "deleted_at": null,
+      "traffic": "http.request.host in {\"1password.com\" \"lastpass.com\" \"bitwarden.com\" \"dashlane.com\"}",
+      "identity": "",
+      "device_posture": "",
+      "version": 3,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "bb1cca06-4e8a-461a-ba69-6f0060dd8f1e",
+      "name": "Security: SimpleMDM Device Management",
+      "description": "Allow SimpleMDM mobile device management platform\n\n[BACKUP 2025-08-17T03:19:27.299Z] Original traffic filter:\nhttp.request.host in {\"simplemdm.com\" \"a.simplemdm.com\" \"api.simplemdm.com\" \"simplemdm.s3.amazonaws.com\"} or http.request.host matches \"^.*\\.simplemdm\\.com$\"\n\nOptimized using list: Critical Infrastructure Domains (fa64ba26-c470-4273-b251-c75ce17280b6)\nDomains replaced: simplemdm.com, a.simplemdm.com, api.simplemdm.com",
+      "precedence": 32000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-14T20:11:23Z",
+      "updated_at": "2025-08-17T03:19:29Z",
+      "deleted_at": null,
+      "traffic": "http.request.host in $fa64ba26-c470-4273-b251-c75ce17280b6 or http.request.host matches \"^.*\\.simplemdm\\.com$\"",
+      "identity": "",
+      "device_posture": "",
+      "version": 4,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "d0dc8aa5-31e2-402f-abe4-58ce542175f2",
+      "name": "Development: GitHub and NPM",
+      "description": "[BACKUP 2025-08-17T03:13:04.904Z] Original traffic filter:\ndns.fqdn in {\"github.com\" \"api.github.com\" \"registry.npmjs.org\" \"raw.githubusercontent.com\" \"objects.githubusercontent.com\" \"ghcr.io\"} or dns.fqdn matches \".*\\.github\\.com$\" or dns.fqdn matches \".*\\.npmjs\\.org$\"\n\nOptimized using list: Development Tools Domains (d8954bf1-0d77-42c7-b8b4-e9c7b507b961)\nDomains replaced: github.com, api.github.com, registry.npmjs.org, raw.githubusercontent.com, objects.githubusercontent.com",
+      "precedence": 33000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "dns"
+      ],
+      "created_at": "2025-08-14T09:52:10Z",
+      "updated_at": "2025-08-17T03:13:06Z",
+      "deleted_at": null,
+      "traffic": "dns.fqdn in $d8954bf1-0d77-42c7-b8b4-e9c7b507b961 or dns.fqdn matches \".*\\.github\\.com$\" or dns.fqdn matches \".*\\.npmjs\\.org$\"",
+      "identity": "",
+      "device_posture": "",
+      "version": 3,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "1f7a8f53-8d52-4b22-b729-0c2347f0254d",
+      "name": "Monitoring: Application Performance",
+      "description": "Allow APM and error tracking",
+      "precedence": 34000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-14T20:07:56Z",
+      "updated_at": "2025-08-15T04:08:19Z",
+      "deleted_at": null,
+      "traffic": "http.request.host in {\"sentry.io\" \"datadoghq.com\" \"newrelic.com\" \"bugsnag.com\" \"rollbar.com\"}",
+      "identity": "",
+      "device_posture": "",
+      "version": 3,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "42b9fa4d-7efa-499c-b08c-6b6163b28068",
+      "name": "IoT: Device Management",
+      "description": "Allow IoT device connections (Brother, Harman)",
+      "precedence": 35000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-14T20:16:03Z",
+      "updated_at": "2025-08-15T04:08:20Z",
+      "deleted_at": null,
+      "traffic": "http.request.host in {\"n.connections.brother.com\" \"ota.onecloud.harman.com\" \"brother.com\" \"harman.com\"}",
+      "identity": "",
+      "device_posture": "",
+      "version": 3,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "b66ee424-1e49-47ac-8c70-bef79f02ba32",
+      "name": "Allow Aqara Smart Home Devices",
+      "description": "Allow Aqara Services",
+      "precedence": 36000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "dns"
+      ],
+      "created_at": "2025-08-15T04:00:47Z",
+      "updated_at": "2025-08-15T04:08:21Z",
+      "deleted_at": null,
+      "traffic": "dns.fqdn in {\"aqara.com\" \"us.aqara.com\" \"api.aqara.com\" \"cloud.aqara.com\" \"openapi.aqara.cn\" \"log.aqara.cn\"}",
+      "identity": "",
+      "device_posture": "",
+      "version": 2,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "3c44d61d-96c2-4a8f-99af-bec1d85a92de",
+      "name": "Allow Logitech Smart Home Devices",
+      "description": "Allow Logitech Smart Home Devices",
+      "precedence": 37000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "dns"
+      ],
+      "created_at": "2025-08-15T04:02:13Z",
+      "updated_at": "2025-08-15T04:08:22Z",
+      "deleted_at": null,
+      "traffic": "dns.fqdn in {\"logitech.com\" \"logi.com\" \"logitechg.com\" \"logitech-partner.com\" \"logi-devices-api.com\"}",
+      "identity": "",
+      "device_posture": "",
+      "version": 2,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "9e2cfa4e-de4b-4906-88f8-306e60cc6e35",
+      "name": "Network: Time and System Services",
+      "description": "[DOMAIN OPTIMIZED 2025-08-17] Converted regex pattern to Gateway List (Misc Domains)\\n\\n",
+      "precedence": 38000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "dns"
+      ],
+      "created_at": "2025-08-14T09:57:46Z",
+      "updated_at": "2025-08-15T04:08:23Z",
+      "deleted_at": null,
+      "traffic": "dns.fqdn in $list-misc-domains-20250817",
+      "identity": "",
+      "device_posture": "",
+      "version": 3,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "c38fd757-4d60-4cbf-b840-2192b1ab81fb",
+      "name": "Networking: Tailscale VPN",
+      "description": "Allow Tailscale logging and control plane",
+      "precedence": 39000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-14T20:16:00Z",
+      "updated_at": "2025-08-15T04:08:24Z",
+      "deleted_at": null,
+      "traffic": "http.request.host in {\"log.tailscale.com\" \"controlplane.tailscale.com\" \"login.tailscale.com\"}",
+      "identity": "",
+      "device_posture": "",
+      "version": 3,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "4730cf05-cf07-481d-b7a0-e76bc139a4c1",
+      "name": "Network: Ubiquiti/UniFi Management",
+      "description": "[BACKUP 2025-08-17T03:14:42.169Z] Original traffic filter:\ndns.fqdn in {\"ui.com\" \"unifi.ui.com\" \"account.ui.com\" \"sso.ui.com\"} or dns.fqdn matches \".*\\.ui\\.com$\" or dns.fqdn matches \".*\\.ubnt\\.com$\"\n\nOptimized using list: Critical Infrastructure Domains (fa64ba26-c470-4273-b251-c75ce17280b6)\nDomains replaced: ui.com, unifi.ui.com, account.ui.com, sso.ui.com",
+      "precedence": 40000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "dns"
+      ],
+      "created_at": "2025-08-14T09:51:18Z",
+      "updated_at": "2025-08-17T03:14:43Z",
+      "deleted_at": null,
+      "traffic": "dns.fqdn in $fa64ba26-c470-4273-b251-c75ce17280b6 or dns.fqdn matches \".*\\.ui\\.com$\" or dns.fqdn matches \".*\\.ubnt\\.com$\"",
+      "identity": "",
+      "device_posture": "",
+      "version": 4,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "fb508ba4-b9b9-4c53-a9cc-831c8c81a695",
+      "name": "Network: Home Assistant",
+      "description": "[DOMAIN OPTIMIZED 2025-08-17] Converted regex pattern to Gateway List (Misc Domains)\\n\\n",
+      "precedence": 41000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "dns"
+      ],
+      "created_at": "2025-08-14T09:51:44Z",
+      "updated_at": "2025-08-15T04:08:26Z",
+      "deleted_at": null,
+      "traffic": "dns.fqdn in $list-misc-domains-20250817",
+      "identity": "",
+      "device_posture": "",
+      "version": 3,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "006e1a41-0c01-4276-adf6-04593c1956e8",
+      "name": "Tesla: API and Services",
+      "description": "[DOMAIN OPTIMIZED 2025-08-17] Converted regex pattern to Gateway List (Misc Domains)\\n\\n",
+      "precedence": 42000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "dns"
+      ],
+      "created_at": "2025-08-14T09:50:27Z",
+      "updated_at": "2025-08-15T04:08:27Z",
+      "deleted_at": null,
+      "traffic": "dns.fqdn in $list-misc-domains-20250817",
+      "identity": "",
+      "device_posture": "",
+      "version": 3,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "9c640999-fd37-49e1-b777-0c2c1b68741b",
+      "name": "Tesla: Vehicle Services",
+      "description": "Allow Tesla telemetry and map services",
+      "precedence": 43000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-14T20:15:58Z",
+      "updated_at": "2025-08-15T04:08:28Z",
+      "deleted_at": null,
+      "traffic": "http.request.host matches \"^.*\\.tesla\\.(services|com)$\" or http.request.host in {\"telemetry-prd.vn.tesla.services\" \"maps-ap-prd.go.tesla.services\"}",
+      "identity": "",
+      "device_posture": "",
+      "version": 3,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "2a85b159-33dd-4dda-be80-3376d8ce5b61",
+      "name": "Tesla: Extended Vehicle Services",
+      "description": "[DOMAIN OPTIMIZED 2025-08-17] Converted regex pattern to Gateway List (Misc Domains)\\n\\nAllow additional Tesla vehicle services",
+      "precedence": 44000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-14T20:17:48Z",
+      "updated_at": "2025-08-15T04:08:29Z",
+      "deleted_at": null,
+      "traffic": "http.request.host in $list-misc-domains-20250817",
+      "identity": "",
+      "device_posture": "",
+      "version": 3,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "4ecd8904-c3ca-403e-a340-15727b3cf542",
+      "name": "Tesla: Complete Vehicle Services",
+      "description": "Ensure all Tesla services work",
+      "precedence": 45000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-14T20:21:23Z",
+      "updated_at": "2025-08-15T04:08:30Z",
+      "deleted_at": null,
+      "traffic": "http.request.host matches \"^.*\\.tesla\\.(services|com)$\"",
+      "identity": "",
+      "device_posture": "",
+      "version": 3,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "30ce4427-0f33-4072-a637-2c34166b3ac1",
+      "name": "Email: Microsoft 365 and Outlook",
+      "description": "[DOMAIN OPTIMIZED 2025-08-17] Converted regex pattern to Gateway List (Misc Domains)\\n\\n",
+      "precedence": 46000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "dns"
+      ],
+      "created_at": "2025-08-14T09:53:49Z",
+      "updated_at": "2025-08-15T04:08:31Z",
+      "deleted_at": null,
+      "traffic": "dns.fqdn in $list-misc-domains-20250817",
+      "identity": "",
+      "device_posture": "",
+      "version": 3,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "8b501856-4852-4011-a2aa-f536a00144bf",
+      "name": "Infrastructure: SSH Access Monitoring",
+      "description": "",
+      "precedence": 47000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "l4"
+      ],
+      "created_at": "2025-08-14T09:48:26Z",
+      "updated_at": "2025-08-15T04:08:31Z",
+      "deleted_at": null,
+      "traffic": "net.dst.port == 22",
+      "identity": "",
+      "device_posture": "",
+      "version": 3,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "7b71b108-6775-4abc-9477-7ca4c4437b43",
+      "name": "Email: Gmail and Google Workspace",
+      "description": "[DOMAIN OPTIMIZED 2025-08-17] Converted regex pattern to Gateway List (Misc Domains)\\n\\n",
+      "precedence": 48000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "dns"
+      ],
+      "created_at": "2025-08-14T09:53:20Z",
+      "updated_at": "2025-08-15T04:08:32Z",
+      "deleted_at": null,
+      "traffic": "dns.fqdn in $list-misc-domains-20250817",
+      "identity": "",
+      "device_posture": "",
+      "version": 3,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "a7c34b55-2526-4a99-9bdf-d483cc2c1b35",
+      "name": "Social: Meta Platforms (Facebook, Instagram)",
+      "description": "[DOMAIN OPTIMIZED 2025-08-17] Converted regex pattern to Gateway List (Social Domains)\\n\\n",
+      "precedence": 49000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "dns"
+      ],
+      "created_at": "2025-08-14T09:54:19Z",
+      "updated_at": "2025-08-15T04:08:33Z",
+      "deleted_at": null,
+      "traffic": "dns.fqdn in $list-social-domains-20250817",
+      "identity": "",
+      "device_posture": "",
+      "version": 3,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "f549a4b6-e499-434b-974e-122e6f48b05e",
+      "name": "Social: Twitter/X",
+      "description": "[DOMAIN OPTIMIZED 2025-08-17] Converted regex pattern to Gateway List (Misc Domains)\\n\\n",
+      "precedence": 50000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "dns"
+      ],
+      "created_at": "2025-08-14T09:54:44Z",
+      "updated_at": "2025-08-15T04:08:34Z",
+      "deleted_at": null,
+      "traffic": "dns.fqdn in $list-misc-domains-20250817",
+      "identity": "",
+      "device_posture": "",
+      "version": 3,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "34ab175a-3abe-4e13-89a2-2fe1741fe164",
+      "name": "Streaming: Netflix and Amazon Prime",
+      "description": "[DOMAIN OPTIMIZED 2025-08-17] Converted regex pattern to Gateway List (Misc Domains)\\n\\n",
+      "precedence": 51000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "dns"
+      ],
+      "created_at": "2025-08-14T09:55:33Z",
+      "updated_at": "2025-08-15T04:08:35Z",
+      "deleted_at": null,
+      "traffic": "dns.fqdn in $list-misc-domains-20250817",
+      "identity": "",
+      "device_posture": "",
+      "version": 3,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "6630a5c3-976c-4601-9e85-4c2f51a31d56",
+      "name": "Network: Allow Reverse DNS Lookups (.arpa)",
+      "description": "Allow reverse DNS lookups for .arpa domains which are essential for network diagnostics and proper network function",
+      "precedence": 51999,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "dns"
+      ],
+      "created_at": "2025-08-15T06:35:29Z",
+      "updated_at": "2025-08-15T06:35:29Z",
+      "deleted_at": null,
+      "traffic": "dns.fqdn matches \".*\\\\.arpa$\"",
+      "identity": "",
+      "device_posture": "",
+      "version": 1,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "dbd7854e-1f27-4731-a2a6-ffb7c7f48ddd",
+      "name": "Streaming: YouTube and Google Media",
+      "description": "[DOMAIN OPTIMIZED 2025-08-17] Converted regex pattern to Gateway List (Misc Domains)\\n\\n",
+      "precedence": 52000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "dns"
+      ],
+      "created_at": "2025-08-14T09:56:00Z",
+      "updated_at": "2025-08-15T04:08:36Z",
+      "deleted_at": null,
+      "traffic": "dns.fqdn in $list-misc-domains-20250817",
+      "identity": "",
+      "device_posture": "",
+      "version": 3,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "f273e2d0-5bac-4982-bea2-516f063ceaf9",
+      "name": "Network: Allow mDNS/Bonjour (.local)",
+      "description": "Allow mDNS/Bonjour service discovery for .local domains used by Apple devices and network printers",
+      "precedence": 52010,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "dns"
+      ],
+      "created_at": "2025-08-15T06:35:08Z",
+      "updated_at": "2025-08-15T06:35:08Z",
+      "deleted_at": null,
+      "traffic": "dns.fqdn matches \".*\\.local$\"",
+      "identity": "",
+      "device_posture": "",
+      "version": 1,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "714c0d08-bcee-4a4d-b351-72f13334ad6d",
+      "name": "Network: Allow Service Discovery (_services)",
+      "description": "Allow service discovery queries that start with underscore (_) for network device discovery [FIXED: Updated to specific service discovery patterns]",
+      "precedence": 52020,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "dns"
+      ],
+      "created_at": "2025-08-15T06:35:09Z",
+      "updated_at": "2025-08-17T12:33:43Z",
+      "deleted_at": null,
+      "traffic": "dns.fqdn matches \"_.*\\.local\" or dns.fqdn matches \"_.*\\.lan\" or dns.fqdn matches \"_.*\\._tcp\" or dns.fqdn matches \"_.*\\._udp\"",
+      "identity": "",
+      "device_posture": "",
+      "version": 2,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "8be6bbbd-0d23-4ed0-afd1-6e061f1f3e71",
+      "name": "Finance: Banking and Payment Services",
+      "description": "[DOMAIN OPTIMIZED 2025-08-17] Converted regex pattern to Gateway List (Misc Domains)\\n\\n",
+      "precedence": 53000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "dns"
+      ],
+      "created_at": "2025-08-14T09:56:27Z",
+      "updated_at": "2025-08-15T04:08:37Z",
+      "deleted_at": null,
+      "traffic": "dns.fqdn in $list-misc-domains-20250817",
+      "identity": "",
+      "device_posture": "",
+      "version": 3,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "9e7cb5fd-10be-47e9-87a1-7a650dec4cb6",
+      "name": "Security: DNS and Monitoring Services",
+      "description": "[DOMAIN OPTIMIZED 2025-08-17] Converted regex pattern to Gateway List (Misc Domains)\\n\\n",
+      "precedence": 54000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "dns"
+      ],
+      "created_at": "2025-08-14T09:57:20Z",
+      "updated_at": "2025-08-15T04:08:38Z",
+      "deleted_at": null,
+      "traffic": "dns.fqdn in $list-misc-domains-20250817",
+      "identity": "",
+      "device_posture": "",
+      "version": 4,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "3e486c9e-3921-4736-ac25-ec5b4b1a05aa",
+      "name": "Productivity: Documentation Tools",
+      "description": "Allow Notion and similar tools",
+      "precedence": 55000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-14T20:07:53Z",
+      "updated_at": "2025-08-15T04:08:39Z",
+      "deleted_at": null,
+      "traffic": "http.request.host in {\"notion.so\" \"notion.site\" \"notion-static.com\"}",
+      "identity": "",
+      "device_posture": "",
+      "version": 3,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "54f23828-63fb-4b6c-bfaf-89b3c8abb5f2",
+      "name": "Software: API Services",
+      "description": "Allow legitimate software API endpoints",
+      "precedence": 56000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-14T20:16:05Z",
+      "updated_at": "2025-08-15T04:08:40Z",
+      "deleted_at": null,
+      "traffic": "http.request.host in {\"api.acasa-software.de\" \"t1.cnrd.io\"}",
+      "identity": "",
+      "device_posture": "",
+      "version": 3,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "786f935b-10ff-4e47-9768-cd1d6e320e91",
+      "name": "Allow Microsoft Online",
+      "description": "[BACKUP 2025-08-17T03:10:24.697Z] Original traffic filter:\ndns.fqdn in {\"outlook.com\" \"office.com\" \"microsoft.com\" \"microsoftonline.com\" \"office365.com\" \"login.microsoftonline.com\"}\n\nOptimized using list: Business Applications (419dd8d5-b0a0-4892-ab87-9c663735727a)\nDomains replaced: outlook.com, office.com, microsoft.com, microsoftonline.com, office365.com, login.microsoftonline.com",
+      "precedence": 57000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "dns"
+      ],
+      "created_at": "2025-08-14T21:03:45Z",
+      "updated_at": "2025-08-17T03:10:26Z",
+      "deleted_at": null,
+      "traffic": "dns.fqdn in $419dd8d5-b0a0-4892-ab87-9c663735727a",
+      "identity": "",
+      "device_posture": "",
+      "version": 3,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "59ceb190-0847-4095-b9ac-221e04adf372",
+      "name": "High Priority: Allow Warp.dev",
+      "description": "[DOMAIN OPTIMIZED 2025-08-17] Converted regex pattern to Gateway List (Misc Domains)\\n\\n",
+      "precedence": 58000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "dns"
+      ],
+      "created_at": "2025-08-14T21:07:03Z",
+      "updated_at": "2025-08-15T04:08:42Z",
+      "deleted_at": null,
+      "traffic": "dns.fqdn in $list-misc-domains-20250817",
+      "identity": "",
+      "device_posture": "",
+      "version": 2,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "1acaadb5-3454-46d9-bb1b-48056c9fb98d",
+      "name": "Override: Allow Warp.dev (High Priority)",
+      "description": "[DOMAIN OPTIMIZED 2025-08-17] Converted regex pattern to Gateway List (Misc Domains)\\n\\n",
+      "precedence": 59000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "dns"
+      ],
+      "created_at": "2025-08-14T21:09:23Z",
+      "updated_at": "2025-08-15T04:08:43Z",
+      "deleted_at": null,
+      "traffic": "dns.fqdn in $list-misc-domains-20250817",
+      "identity": "",
+      "device_posture": "",
+      "version": 2,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "572f0a68-377f-4296-a6e7-ea51b21ee2d8",
+      "name": "Authentication: AI Services Critical",
+      "description": "[DOMAIN OPTIMIZED 2025-08-17] Converted regex pattern to Gateway List (Ai Domains)\\n\\n[BACKUP 2025-08-17T03:15:27.881Z] Original traffic filter:\ndns.fqdn matches \".*\\.anthropic\\.com$\" or dns.fqdn == \"anthropic.com\" or dns.fqdn matches \".*\\.openai\\.com$\" or dns.fqdn == \"openai.com\" or dns.fqdn == \"claude.ai\" or dns.fqdn == \"ws.chatgpt.com\"\n\nOptimized using list: AI and ML Platforms (fe4bf9b5-0afb-40bb-b713-474f7323b3f9)\nDomains replaced: anthropic.com, openai.com, claude.ai, ws.chatgpt.com\n\n[BACKUP 2025-08-17T03:17:00.448Z] Original traffic filter:\ndns.fqdn matches \".*\\.anthropic\\.com$\" or dns.fqdn == \"anthropic.com\" or dns.fqdn matches \".*\\.openai\\.com$\" or dns.fqdn == \"openai.com\" or dns.fqdn == \"claude.ai\" or dns.fqdn == \"ws.chatgpt.com\"\n\nOptimized using list: AI and ML Platforms (fe4bf9b5-0afb-40bb-b713-474f7323b3f9)\nDomains replaced: anthropic.com, openai.com, claude.ai, ws.chatgpt.com\n\n[BACKUP 2025-08-17T03:19:22.523Z] Original traffic filter:\ndns.fqdn matches \".*\\.anthropic\\.com$\" or dns.fqdn == \"anthropic.com\" or dns.fqdn matches \".*\\.openai\\.com$\" or dns.fqdn == \"openai.com\" or dns.fqdn == \"claude.ai\" or dns.fqdn == \"ws.chatgpt.com\"\n\nOptimized using list: AI and ML Platforms (fe4bf9b5-0afb-40bb-b713-474f7323b3f9)\nDomains replaced: anthropic.com, openai.com, claude.ai, ws.chatgpt.com",
+      "precedence": 60000,
+      "enabled": true,
+      "action": "allow",
+      "filters": [
+        "dns"
+      ],
+      "created_at": "2025-08-14T21:13:41Z",
+      "updated_at": "2025-08-17T03:19:24Z",
+      "deleted_at": null,
+      "traffic": "dns.fqdn in $list-ai-domains-20250817",
+      "identity": "",
+      "device_posture": "",
+      "version": 6,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "3fbfc9ba-98db-4086-8b1f-69f474a95688",
+      "name": "Apple: TLS Bypass Critical Services",
+      "description": "[BACKUP 2025-08-17T03:15:32.206Z] Original traffic filter:\nhttp.conn.hostname in {\"appleid.apple.com\" \"idmsa.apple.com\" \"gsa.apple.com\" \"api.push.apple.com\" \"accounts.google.com\"}\n\nOptimized using list: Critical Infrastructure Domains (fa64ba26-c470-4273-b251-c75ce17280b6)\nDomains replaced: appleid.apple.com, idmsa.apple.com, gsa.apple.com, api.push.apple.com",
+      "precedence": 61000,
+      "enabled": true,
+      "action": "off",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-14T09:50:00Z",
+      "updated_at": "2025-08-17T03:15:33Z",
+      "deleted_at": null,
+      "traffic": "http.conn.hostname in $fa64ba26-c470-4273-b251-c75ce17280b6",
+      "identity": "",
+      "device_posture": "",
+      "version": 4,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "15a4f681-ef9b-47eb-8308-05c5a1a99871",
+      "name": "Tesla: TLS Bypass for APIs",
+      "description": "[DOMAIN OPTIMIZED 2025-08-17] Converted regex pattern to Gateway List (Misc Domains)\\n\\n",
+      "precedence": 62000,
+      "enabled": true,
+      "action": "off",
+      "filters": [
+        "http"
+      ],
+      "created_at": "2025-08-14T09:50:54Z",
+      "updated_at": "2025-08-15T04:08:46Z",
+      "deleted_at": null,
+      "traffic": "http.conn.hostname in {\"owner-api.teslamotors.com\" \"streaming.vn.teslamotors.com\" \"fleet-api.prd.na.vn.cloud.tesla.com\"}",
+      "identity": "",
+      "device_posture": "",
+      "version": 3,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "0519eb6f-0e60-4713-8213-19da74e501f9",
+      "name": "Security: Block Unknown DNS Queries",
+      "description": "\u26a0\ufe0f CRITICAL: This rule MUST always be the LAST rule (highest precedence) to function as a catch-all DNS blocker. DO NOT move this rule or DNS filtering will break. Blocks all DNS queries not explicitly allowed by other rules.",
+      "precedence": 63000,
+      "enabled": true,
+      "action": "block",
+      "filters": [
+        "dns"
+      ],
+      "created_at": "2025-08-14T22:23:03Z",
+      "updated_at": "2025-08-15T04:17:44Z",
+      "deleted_at": null,
+      "traffic": "not(any(dns.security_category[*] in {1 82 68 80 83 131}))",
+      "identity": "",
+      "device_posture": "",
+      "version": 3,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    },
+    {
+      "id": "5412b606-b25e-41f2-8968-3facf2d1b125",
+      "name": "Block facebook.com, instagram.com",
+      "description": "Auto-created rule to block access to specified domains",
+      "precedence": 64000,
+      "enabled": true,
+      "action": "block",
+      "filters": [
+        "dns"
+      ],
+      "created_at": "2025-08-17T05:06:08Z",
+      "updated_at": "2025-08-17T05:06:08Z",
+      "deleted_at": null,
+      "traffic": "dns.fqdn == \"facebook.com\" or dns.fqdn == \"instagram.com\"",
+      "identity": "",
+      "device_posture": "",
+      "version": 1,
+      "rule_settings": {},
+      "source_account": "0b0ee2b5eaf1fb8a2612e40ab6488052"
+    }
+  ],
+  "lists": [
+    {
+      "id": "083c187a-f1aa-4845-b3fb-58de2597045a",
+      "name": "Authorised Users",
+      "description": "",
+      "type": "EMAIL",
+      "created_at": "2023-07-28T12:44:24Z",
+      "updated_at": "2025-08-10T20:18:33Z",
+      "count": 1
+    },
+    {
+      "id": "a46ce0e8-218c-4a89-8d1a-00fbf5ebf490",
+      "name": "ITNC IoC Domains",
+      "description": "",
+      "type": "DOMAIN",
+      "created_at": "2023-11-25T17:50:30Z",
+      "updated_at": "2023-12-04T08:14:49Z",
+      "count": 55
+    },
+    {
+      "id": "e8a1751b-6622-41fa-a1a3-e738448b695f",
+      "name": "Essential Development Services",
+      "description": "Essential services for development and DevOps",
+      "type": "DOMAIN",
+      "created_at": "2025-08-10T21:18:07Z",
+      "updated_at": "2025-08-10T21:18:07Z",
+      "count": 15
+    },
+    {
+      "id": "419dd8d5-b0a0-4892-ab87-9c663735727a",
+      "name": "Business Applications",
+      "description": "Essential business and productivity applications",
+      "type": "DOMAIN",
+      "created_at": "2025-08-10T21:18:08Z",
+      "updated_at": "2025-08-11T03:32:47Z",
+      "count": 15
+    },
+    {
+      "id": "64707c35-833f-4ed5-aa1f-39e30a067e9e",
+      "name": "Cloud Services",
+      "description": "Approved cloud computing and hosting services",
+      "type": "DOMAIN",
+      "created_at": "2025-08-10T21:18:08Z",
+      "updated_at": "2025-08-10T21:18:08Z",
+      "count": 12
+    },
+    {
+      "id": "567fd539-f71b-41f3-8812-da1992de69f0",
+      "name": "Streaming Services",
+      "description": "Video streaming and entertainment platforms",
+      "type": "DOMAIN",
+      "created_at": "2025-08-10T21:18:10Z",
+      "updated_at": "2025-08-10T21:18:10Z",
+      "count": 10
+    },
+    {
+      "id": "332dcc88-0b0f-4c13-bb17-7058ffad4eef",
+      "name": "File Sharing Services",
+      "description": "File sharing and cloud storage services",
+      "type": "DOMAIN",
+      "created_at": "2025-08-10T21:18:11Z",
+      "updated_at": "2025-08-10T21:18:11Z",
+      "count": 8
+    },
+    {
+      "id": "2af06e9e-cf45-451e-9c39-800c730c617b",
+      "name": "Security Tools",
+      "description": "Cybersecurity and monitoring tools",
+      "type": "DOMAIN",
+      "created_at": "2025-08-10T21:18:12Z",
+      "updated_at": "2025-08-10T21:18:12Z",
+      "count": 7
+    },
+    {
+      "id": "56090270-17f4-4514-88ff-18c98e7351b7",
+      "name": "DLP_DLP_-_Block_File_Sharing_Sites_Domains",
+      "description": "Domain list for DLP rule: DLP - Block File Sharing Sites",
+      "type": "DOMAIN",
+      "created_at": "2025-08-10T22:06:43Z",
+      "updated_at": "2025-08-10T22:06:43Z",
+      "count": 10
+    },
+    {
+      "id": "2c7cb666-6cbb-42b1-9a75-5638de796152",
+      "name": "DLP_DLP_-_Block_Pastebin_Sites_Domains",
+      "description": "Domain list for DLP rule: DLP - Block Pastebin Sites",
+      "type": "DOMAIN",
+      "created_at": "2025-08-10T22:06:44Z",
+      "updated_at": "2025-08-10T22:06:44Z",
+      "count": 8
+    },
+    {
+      "id": "6d92a1d6-574b-4e6a-887d-be6cd254863f",
+      "name": "DLP_DLP_-_Block_Personal_Email_Domains",
+      "description": "Domain list for DLP rule: DLP - Block Personal Email",
+      "type": "DOMAIN",
+      "created_at": "2025-08-10T22:06:45Z",
+      "updated_at": "2025-08-10T22:06:45Z",
+      "count": 8
+    },
+    {
+      "id": "eeda0311-d389-4717-803e-baaa44802296",
+      "name": "DLP_DLP_-_Allow_Business_Services_Domains",
+      "description": "Domain list for DLP rule: DLP - Allow Business Services",
+      "type": "DOMAIN",
+      "created_at": "2025-08-10T22:06:46Z",
+      "updated_at": "2025-08-10T22:06:46Z",
+      "count": 7
+    },
+    {
+      "id": "eabb91d0-2d22-48b1-910b-2444e1af000d",
+      "name": "Google Cloud SDK Downloads",
+      "description": "",
+      "type": "DOMAIN",
+      "created_at": "2025-08-10T22:47:00Z",
+      "updated_at": "2025-08-10T22:47:00Z",
+      "count": 6
+    },
+    {
+      "id": "0df15f7f-dc35-46cb-8ac6-8a827bdbf559",
+      "name": "Social Media Sites",
+      "description": "Major social media platforms and messaging services",
+      "type": "DOMAIN",
+      "created_at": "2025-08-17T02:10:18Z",
+      "updated_at": "2025-08-17T09:10:08Z",
+      "count": 18
+    },
+    {
+      "id": "fa64ba26-c470-4273-b251-c75ce17280b6",
+      "name": "Critical Infrastructure Domains",
+      "description": "Essential services and infrastructure domains required for business operations",
+      "type": "DOMAIN",
+      "created_at": "2025-08-17T02:13:31Z",
+      "updated_at": "2025-08-17T02:13:32Z",
+      "count": 42
+    },
+    {
+      "id": "fe4bf9b5-0afb-40bb-b713-474f7323b3f9",
+      "name": "AI and ML Platforms",
+      "description": "Artificial Intelligence and Machine Learning service providers",
+      "type": "DOMAIN",
+      "created_at": "2025-08-17T02:13:34Z",
+      "updated_at": "2025-08-17T02:13:35Z",
+      "count": 16
+    },
+    {
+      "id": "d8954bf1-0d77-42c7-b8b4-e9c7b507b961",
+      "name": "Development Tools Domains",
+      "description": "Software development platforms, tools, and package managers",
+      "type": "DOMAIN",
+      "created_at": "2025-08-17T02:19:58Z",
+      "updated_at": "2025-08-17T04:50:44Z",
+      "count": 29
+    },
+    {
+      "id": "412a5576-53d2-4224-b225-19a8fdb3d5a0",
+      "name": "Streaming and Entertainment",
+      "description": "Video streaming, music, and entertainment platforms",
+      "type": "DOMAIN",
+      "created_at": "2025-08-17T02:19:58Z",
+      "updated_at": "2025-08-17T04:51:03Z",
+      "count": 11
+    },
+    {
+      "id": "5167cd6c-ff48-4b92-a6ca-e886404a98e5",
+      "name": "E-commerce Sites",
+      "description": "Online shopping and e-commerce platforms",
+      "type": "DOMAIN",
+      "created_at": "2025-08-17T02:19:59Z",
+      "updated_at": "2025-08-17T04:50:56Z",
+      "count": 12
+    },
+    {
+      "id": "f2faa2a0-6039-4743-b150-5f29618ce830",
+      "name": "Google Services",
+      "description": "Matched patterns: *.google.com, gmail.com, youtube.com, gstatic.com, googleapis.com and keywords: google, gmail, drive, docs, sheets, meet",
+      "type": "DOMAIN",
+      "created_at": "2025-08-17T04:47:56Z",
+      "updated_at": "2025-08-17T08:57:32Z",
+      "count": 7
+    },
+    {
+      "id": "768b5de6-729c-43ee-b687-40429cf4b4f3",
+      "name": "Microsoft Services",
+      "description": "Matched patterns: *.microsoft.com, office.com, *.office.com, outlook.com, live.com, xbox.com and keywords: microsoft, office, teams, outlook, onedrive, sharepoint",
+      "type": "DOMAIN",
+      "created_at": "2025-08-17T04:50:12Z",
+      "updated_at": "2025-08-17T04:50:46Z",
+      "count": 5
+    },
+    {
+      "id": "8daa5367-e910-433c-9f66-e11759519ad8",
+      "name": "Apple Services",
+      "description": "Matched patterns: *.apple.com, icloud.com, *.icloud.com, itunes.com, app-store.com and keywords: apple, ios, macos, ipad, iphone, mac",
+      "type": "DOMAIN",
+      "created_at": "2025-08-17T04:50:15Z",
+      "updated_at": "2025-08-17T08:57:31Z",
+      "count": 4
+    },
+    {
+      "id": "cb64f91c-f3c7-4b1f-bfa5-0f269e43945b",
+      "name": "Communication Tools",
+      "description": "Matched patterns: slack.com, zoom.us, teams.microsoft.com, discord.com, webex.com and keywords: chat, communication, meeting, conference, collaborate",
+      "type": "DOMAIN",
+      "created_at": "2025-08-17T04:50:17Z",
+      "updated_at": "2025-08-17T04:50:51Z",
+      "count": 4
+    },
+    {
+      "id": "ecbaf431-aee5-4ff6-bdec-043c128b61b1",
+      "name": "Cloud Infrastructure",
+      "description": "Matched patterns: *.amazonaws.com, *.cloudfront.net, *.googleusercontent.com, *.azureedge.net and keywords: aws, cloud, cdn, storage, compute, infrastructure",
+      "type": "DOMAIN",
+      "created_at": "2025-08-17T04:50:19Z",
+      "updated_at": "2025-08-17T04:50:53Z",
+      "count": 2
+    },
+    {
+      "id": "b6a7520b-9b02-4915-9d7f-97487c910561",
+      "name": "Uncategorized Domains",
+      "description": "No clear pattern match found",
+      "type": "DOMAIN",
+      "created_at": "2025-08-17T04:50:24Z",
+      "updated_at": "2025-08-17T04:50:58Z",
+      "count": 4
+    },
+    {
+      "id": "b9cf878f-0d02-409c-bdf9-f309132d4d50",
+      "name": "Miscellaneous Domains",
+      "description": "Domains approved through enhanced security review on 2025-08-17",
+      "type": "DOMAIN",
+      "created_at": "2025-08-17T09:10:07Z",
+      "updated_at": "2025-08-17T09:10:07Z",
+      "count": 1
+    }
+  ],
+  "metadata": {
+    "totalRules": 95,
+    "totalLists": 26,
+    "backupReason": "Pre-optimization backup"
+  }
+}

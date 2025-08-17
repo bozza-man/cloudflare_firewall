@@ -1,0 +1,1 @@
+CLOUDFLARE GATEWAY REGEX OPTIMIZATION REPORT\n==================================================\nGenerated: 2025-08-17 23:28:07\nInput file: gateway-config-backup.json\nOutput file: gateway-config-optimized-20250817_232807.json\n\nOPTIMIZATION SUMMARY\n--------------------\nTotal rules processed: 95\nRules modified: 0\nPatterns optimized: 0\n\nNo patterns required optimization.

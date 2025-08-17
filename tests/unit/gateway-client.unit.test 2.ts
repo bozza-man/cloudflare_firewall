@@ -2,7 +2,6 @@ import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals
 import axios from 'axios';
 import { GatewayClient } from '../../src/api/gateway-client.js';
 import { TestFactory } from '../utils/test-factory.js';
-import type { GatewayRule } from '../../src/types/gateway.js';
 
 // Mock axios
 jest.mock('axios');
@@ -21,6 +20,7 @@ jest.mock('../../src/utils/config.js', () => ({
 
 describe('GatewayClient', () => {
   let client: GatewayClient;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockAxiosInstance: any;
 
   beforeEach(() => {

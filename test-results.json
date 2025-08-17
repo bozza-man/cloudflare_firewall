@@ -1,0 +1,351 @@
+{
+  "timestamp": "2025-08-17T04:51:49.136Z",
+  "summary": {
+    "totalDomains": 45,
+    "totalLists": 10,
+    "newLists": 0,
+    "updatedLists": 10
+  },
+  "assignments": [
+    {
+      "listName": "Google Services",
+      "action": "update",
+      "domainCount": 7,
+      "domains": [
+        {
+          "domain": "gmail.com",
+          "confidence": 1,
+          "businessCriticality": "critical",
+          "reasoning": "Matched patterns: *.google.com, gmail.com, youtube.com, gstatic.com, googleapis.com and keywords: google, gmail, drive, docs, sheets, meet"
+        },
+        {
+          "domain": "docs.google.com",
+          "confidence": 1,
+          "businessCriticality": "critical",
+          "reasoning": "Matched patterns: *.google.com, gmail.com, youtube.com, gstatic.com, googleapis.com and keywords: google, gmail, drive, docs, sheets, meet"
+        },
+        {
+          "domain": "drive.google.com",
+          "confidence": 1,
+          "businessCriticality": "critical",
+          "reasoning": "Matched patterns: *.google.com, gmail.com, youtube.com, gstatic.com, googleapis.com and keywords: google, gmail, drive, docs, sheets, meet"
+        },
+        {
+          "domain": "meet.google.com",
+          "confidence": 1,
+          "businessCriticality": "critical",
+          "reasoning": "Matched patterns: *.google.com, gmail.com, youtube.com, gstatic.com, googleapis.com and keywords: google, gmail, drive, docs, sheets, meet"
+        },
+        {
+          "domain": "apis.google.com",
+          "confidence": 1,
+          "businessCriticality": "critical",
+          "reasoning": "Matched patterns: *.google.com, gmail.com, youtube.com, gstatic.com, googleapis.com and keywords: google, gmail, drive, docs, sheets, meet"
+        },
+        {
+          "domain": "youtube.com",
+          "confidence": 1,
+          "businessCriticality": "critical",
+          "reasoning": "Matched patterns: *.google.com, gmail.com, youtube.com, gstatic.com, googleapis.com and keywords: google, gmail, drive, docs, sheets, meet"
+        },
+        {
+          "domain": "storage.googleapis.com",
+          "confidence": 1,
+          "businessCriticality": "critical",
+          "reasoning": "Matched patterns: *.google.com, gmail.com, youtube.com, gstatic.com, googleapis.com and keywords: google, gmail, drive, docs, sheets, meet"
+        }
+      ]
+    },
+    {
+      "listName": "Development Tools Domains",
+      "action": "update",
+      "domainCount": 5,
+      "domains": [
+        {
+          "domain": "github.com",
+          "confidence": 1,
+          "businessCriticality": "critical",
+          "reasoning": "Matched patterns: github.com, *.github.io, gitlab.com, bitbucket.org, azure.com, visualstudio.com and keywords: git, dev, code, repo, ci, cd, azure, aws, gcp"
+        },
+        {
+          "domain": "api.github.com",
+          "confidence": 1,
+          "businessCriticality": "critical",
+          "reasoning": "Matched patterns: github.com, *.github.io, gitlab.com, bitbucket.org, azure.com, visualstudio.com and keywords: git, dev, code, repo, ci, cd, azure, aws, gcp"
+        },
+        {
+          "domain": "raw.githubusercontent.com",
+          "confidence": 0.3,
+          "businessCriticality": "critical",
+          "reasoning": "Matched patterns: github.com, *.github.io, gitlab.com, bitbucket.org, azure.com, visualstudio.com and keywords: git, dev, code, repo, ci, cd, azure, aws, gcp"
+        },
+        {
+          "domain": "gitlab.com",
+          "confidence": 1,
+          "businessCriticality": "critical",
+          "reasoning": "Matched patterns: github.com, *.github.io, gitlab.com, bitbucket.org, azure.com, visualstudio.com and keywords: git, dev, code, repo, ci, cd, azure, aws, gcp"
+        },
+        {
+          "domain": "bitbucket.org",
+          "confidence": 1,
+          "businessCriticality": "critical",
+          "reasoning": "Matched patterns: github.com, *.github.io, gitlab.com, bitbucket.org, azure.com, visualstudio.com and keywords: git, dev, code, repo, ci, cd, azure, aws, gcp"
+        }
+      ]
+    },
+    {
+      "listName": "Microsoft Services",
+      "action": "update",
+      "domainCount": 5,
+      "domains": [
+        {
+          "domain": "outlook.office365.com",
+          "confidence": 0.6,
+          "businessCriticality": "critical",
+          "reasoning": "Matched patterns: *.microsoft.com, office.com, *.office.com, outlook.com, live.com, xbox.com and keywords: microsoft, office, teams, outlook, onedrive, sharepoint"
+        },
+        {
+          "domain": "teams.microsoft.com",
+          "confidence": 1,
+          "businessCriticality": "critical",
+          "reasoning": "Matched patterns: *.microsoft.com, office.com, *.office.com, outlook.com, live.com, xbox.com and keywords: microsoft, office, teams, outlook, onedrive, sharepoint"
+        },
+        {
+          "domain": "graph.microsoft.com",
+          "confidence": 1,
+          "businessCriticality": "critical",
+          "reasoning": "Matched patterns: *.microsoft.com, office.com, *.office.com, outlook.com, live.com, xbox.com and keywords: microsoft, office, teams, outlook, onedrive, sharepoint"
+        },
+        {
+          "domain": "login.microsoftonline.com",
+          "confidence": 0.3,
+          "businessCriticality": "critical",
+          "reasoning": "Matched patterns: *.microsoft.com, office.com, *.office.com, outlook.com, live.com, xbox.com and keywords: microsoft, office, teams, outlook, onedrive, sharepoint"
+        },
+        {
+          "domain": "office.com",
+          "confidence": 1,
+          "businessCriticality": "critical",
+          "reasoning": "Matched patterns: *.microsoft.com, office.com, *.office.com, outlook.com, live.com, xbox.com and keywords: microsoft, office, teams, outlook, onedrive, sharepoint"
+        }
+      ]
+    },
+    {
+      "listName": "Apple Services",
+      "action": "update",
+      "domainCount": 4,
+      "domains": [
+        {
+          "domain": "apple.com",
+          "confidence": 0.3,
+          "businessCriticality": "critical",
+          "reasoning": "Matched patterns: *.apple.com, icloud.com, *.icloud.com, itunes.com, app-store.com and keywords: apple, ios, macos, ipad, iphone, mac"
+        },
+        {
+          "domain": "icloud.com",
+          "confidence": 1,
+          "businessCriticality": "critical",
+          "reasoning": "Matched patterns: *.apple.com, icloud.com, *.icloud.com, itunes.com, app-store.com and keywords: apple, ios, macos, ipad, iphone, mac"
+        },
+        {
+          "domain": "itunes.apple.com",
+          "confidence": 1,
+          "businessCriticality": "critical",
+          "reasoning": "Matched patterns: *.apple.com, icloud.com, *.icloud.com, itunes.com, app-store.com and keywords: apple, ios, macos, ipad, iphone, mac"
+        },
+        {
+          "domain": "developer.apple.com",
+          "confidence": 1,
+          "businessCriticality": "critical",
+          "reasoning": "Matched patterns: *.apple.com, icloud.com, *.icloud.com, itunes.com, app-store.com and keywords: apple, ios, macos, ipad, iphone, mac"
+        }
+      ]
+    },
+    {
+      "listName": "Communication Tools",
+      "action": "update",
+      "domainCount": 4,
+      "domains": [
+        {
+          "domain": "slack.com",
+          "confidence": 1,
+          "businessCriticality": "critical",
+          "reasoning": "Matched patterns: slack.com, zoom.us, teams.microsoft.com, discord.com, webex.com and keywords: chat, communication, meeting, conference, collaborate"
+        },
+        {
+          "domain": "zoom.us",
+          "confidence": 1,
+          "businessCriticality": "critical",
+          "reasoning": "Matched patterns: slack.com, zoom.us, teams.microsoft.com, discord.com, webex.com and keywords: chat, communication, meeting, conference, collaborate"
+        },
+        {
+          "domain": "discord.com",
+          "confidence": 1,
+          "businessCriticality": "critical",
+          "reasoning": "Matched patterns: slack.com, zoom.us, teams.microsoft.com, discord.com, webex.com and keywords: chat, communication, meeting, conference, collaborate"
+        },
+        {
+          "domain": "webex.com",
+          "confidence": 1,
+          "businessCriticality": "critical",
+          "reasoning": "Matched patterns: slack.com, zoom.us, teams.microsoft.com, discord.com, webex.com and keywords: chat, communication, meeting, conference, collaborate"
+        }
+      ]
+    },
+    {
+      "listName": "Cloud Infrastructure",
+      "action": "update",
+      "domainCount": 2,
+      "domains": [
+        {
+          "domain": "s3.amazonaws.com",
+          "confidence": 1,
+          "businessCriticality": "critical",
+          "reasoning": "Matched patterns: *.amazonaws.com, *.cloudfront.net, *.googleusercontent.com, *.azureedge.net and keywords: aws, cloud, cdn, storage, compute, infrastructure"
+        },
+        {
+          "domain": "cloudfront.net",
+          "confidence": 0.3,
+          "businessCriticality": "critical",
+          "reasoning": "Matched patterns: *.amazonaws.com, *.cloudfront.net, *.googleusercontent.com, *.azureedge.net and keywords: aws, cloud, cdn, storage, compute, infrastructure"
+        }
+      ]
+    },
+    {
+      "listName": "E-commerce Sites",
+      "action": "update",
+      "domainCount": 5,
+      "domains": [
+        {
+          "domain": "amazon.com",
+          "confidence": 1,
+          "businessCriticality": "normal",
+          "reasoning": "Matched patterns: amazon.com, ebay.com, shopify.com, stripe.com, paypal.com, shop.*.com and keywords: shop, buy, store, commerce, payment, retail"
+        },
+        {
+          "domain": "shopify.com",
+          "confidence": 1,
+          "businessCriticality": "normal",
+          "reasoning": "Matched patterns: amazon.com, ebay.com, shopify.com, stripe.com, paypal.com, shop.*.com and keywords: shop, buy, store, commerce, payment, retail"
+        },
+        {
+          "domain": "stripe.com",
+          "confidence": 1,
+          "businessCriticality": "normal",
+          "reasoning": "Matched patterns: amazon.com, ebay.com, shopify.com, stripe.com, paypal.com, shop.*.com and keywords: shop, buy, store, commerce, payment, retail"
+        },
+        {
+          "domain": "paypal.com",
+          "confidence": 1,
+          "businessCriticality": "normal",
+          "reasoning": "Matched patterns: amazon.com, ebay.com, shopify.com, stripe.com, paypal.com, shop.*.com and keywords: shop, buy, store, commerce, payment, retail"
+        },
+        {
+          "domain": "ebay.com",
+          "confidence": 1,
+          "businessCriticality": "normal",
+          "reasoning": "Matched patterns: amazon.com, ebay.com, shopify.com, stripe.com, paypal.com, shop.*.com and keywords: shop, buy, store, commerce, payment, retail"
+        }
+      ]
+    },
+    {
+      "listName": "Uncategorized Domains",
+      "action": "update",
+      "domainCount": 4,
+      "domains": [
+        {
+          "domain": "blob.core.windows.net",
+          "confidence": 0.3,
+          "businessCriticality": "normal",
+          "reasoning": "No clear pattern match found"
+        },
+        {
+          "domain": "mycustomapp.internal",
+          "confidence": 0.3,
+          "businessCriticality": "normal",
+          "reasoning": "No clear pattern match found"
+        },
+        {
+          "domain": "businesstool.example.com",
+          "confidence": 0.3,
+          "businessCriticality": "normal",
+          "reasoning": "No clear pattern match found"
+        },
+        {
+          "domain": "privateservice.local",
+          "confidence": 0.3,
+          "businessCriticality": "normal",
+          "reasoning": "No clear pattern match found"
+        }
+      ]
+    },
+    {
+      "listName": "Social Media Sites",
+      "action": "update",
+      "domainCount": 5,
+      "domains": [
+        {
+          "domain": "facebook.com",
+          "confidence": 1,
+          "businessCriticality": "low",
+          "reasoning": "Matched patterns: facebook.com, instagram.com, twitter.com, linkedin.com, tiktok.com, snapchat.com and keywords: social, media, facebook, instagram, twitter, linkedin"
+        },
+        {
+          "domain": "instagram.com",
+          "confidence": 1,
+          "businessCriticality": "low",
+          "reasoning": "Matched patterns: facebook.com, instagram.com, twitter.com, linkedin.com, tiktok.com, snapchat.com and keywords: social, media, facebook, instagram, twitter, linkedin"
+        },
+        {
+          "domain": "twitter.com",
+          "confidence": 1,
+          "businessCriticality": "low",
+          "reasoning": "Matched patterns: facebook.com, instagram.com, twitter.com, linkedin.com, tiktok.com, snapchat.com and keywords: social, media, facebook, instagram, twitter, linkedin"
+        },
+        {
+          "domain": "linkedin.com",
+          "confidence": 1,
+          "businessCriticality": "low",
+          "reasoning": "Matched patterns: facebook.com, instagram.com, twitter.com, linkedin.com, tiktok.com, snapchat.com and keywords: social, media, facebook, instagram, twitter, linkedin"
+        },
+        {
+          "domain": "tiktok.com",
+          "confidence": 1,
+          "businessCriticality": "low",
+          "reasoning": "Matched patterns: facebook.com, instagram.com, twitter.com, linkedin.com, tiktok.com, snapchat.com and keywords: social, media, facebook, instagram, twitter, linkedin"
+        }
+      ]
+    },
+    {
+      "listName": "Streaming and Entertainment",
+      "action": "update",
+      "domainCount": 4,
+      "domains": [
+        {
+          "domain": "netflix.com",
+          "confidence": 1,
+          "businessCriticality": "low",
+          "reasoning": "Matched patterns: netflix.com, spotify.com, youtube.com, twitch.tv, hulu.com, disney.com and keywords: streaming, video, music, entertainment, netflix, spotify"
+        },
+        {
+          "domain": "spotify.com",
+          "confidence": 1,
+          "businessCriticality": "low",
+          "reasoning": "Matched patterns: netflix.com, spotify.com, youtube.com, twitch.tv, hulu.com, disney.com and keywords: streaming, video, music, entertainment, netflix, spotify"
+        },
+        {
+          "domain": "twitch.tv",
+          "confidence": 1,
+          "businessCriticality": "low",
+          "reasoning": "Matched patterns: netflix.com, spotify.com, youtube.com, twitch.tv, hulu.com, disney.com and keywords: streaming, video, music, entertainment, netflix, spotify"
+        },
+        {
+          "domain": "hulu.com",
+          "confidence": 1,
+          "businessCriticality": "low",
+          "reasoning": "Matched patterns: netflix.com, spotify.com, youtube.com, twitch.tv, hulu.com, disney.com and keywords: streaming, video, music, entertainment, netflix, spotify"
+        }
+      ]
+    }
+  ]
+}

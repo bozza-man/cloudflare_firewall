@@ -13,6 +13,29 @@ export const config = {
   },
   anthropic: {
     apiKey: process.env.ANTHROPIC_API_KEY || ''
+  },
+  osint: {
+    // Free services (no API key required)
+    enableFreeServices: process.env.OSINT_ENABLE_FREE_SERVICES !== 'false',
+    
+    // Premium services (require API keys)
+    whoisXmlApiKey: process.env.WHOISXML_API_KEY || undefined,
+    securityTrailsApiKey: process.env.SECURITYTRAILS_API_KEY || undefined,
+    clearbitApiKey: process.env.CLEARBIT_API_KEY || undefined,
+    hunterApiKey: process.env.HUNTER_API_KEY || undefined,
+    
+    // Rate limiting and performance settings
+    maxConcurrentRequests: parseInt(process.env.OSINT_MAX_CONCURRENT || '3'),
+    rateLimitMs: parseInt(process.env.OSINT_RATE_LIMIT_MS || '1000'),
+    requestTimeoutMs: parseInt(process.env.OSINT_TIMEOUT_MS || '10000'),
+    dnsTimeoutMs: parseInt(process.env.OSINT_DNS_TIMEOUT_MS || '5000'),
+    
+    // Feature toggles
+    enableWhoisLookup: process.env.OSINT_ENABLE_WHOIS !== 'false',
+    enableDnsLookup: process.env.OSINT_ENABLE_DNS !== 'false',
+    enableGeoLocation: process.env.OSINT_ENABLE_GEO !== 'false',
+    enableCertificateTransparency: process.env.OSINT_ENABLE_CT !== 'false',
+    enableSubdomainEnum: process.env.OSINT_ENABLE_SUBDOMAINS !== 'false'
   }
 };
 

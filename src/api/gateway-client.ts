@@ -223,6 +223,36 @@ export class GatewayClient {
     }
   }
 
+  async updateGatewayList(update: {
+    id: string;
+    name?: string;
+    description?: string;
+    items?: Array<{ value: string; description?: string }>;
+  }): Promise<GatewayList> {
+    try {
+      // For Gateway Lists, we need to use PATCH to update items
+      const response = await this.api.patch<CloudflareResponse<GatewayList>>(
+        `/accounts/${this.accountId}/gateway/lists/${update.id}`,
+        {
+          name: update.name,
+          description: update.description,
+          items: update.items
+        }
+      );
+      return response.data.result;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  async deleteGatewayList(listId: string): Promise<void> {
+    try {
+      await this.api.delete(`/accounts/${this.accountId}/gateway/lists/${listId}`);
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
   // Gateway Locations
   async listGatewayLocations(): Promise<GatewayLocation[]> {
     try {

@@ -1,0 +1,20 @@
+{
+  "rules": [
+    {
+      "id": "nextron-systems-access",
+      "name": "Allow: Nextron Systems",
+      "description": "Allow access to Nextron Systems domains and services (security tools and updates)",
+      "precedence": 2000,
+      "enabled": true,
+      "action": "allow",
+      "rule_settings": {
+        "block_page_enabled": false
+      },
+      "traffic": "dns.fqdn matches \".*\\.nextron-systems\\.com$\" or dns.fqdn matches \".*\\.huntandhackett\\.com$\" or dns.fqdn in {\"apt.huntandhackett.com\" \"packages.nextron-systems.com\" \"update.nextron-systems.com\" \"portal.nextron-systems.com\" \"thor.nextron-systems.com\" \"asgard.nextron-systems.com\" \"loki.nextron-systems.com\" \"heimdall.nextron-systems.com\"}",
+      "identity": "all(identity.groups[*])",
+      "version": 1,
+      "created_at": "2025-08-17T14:14:13Z",
+      "updated_at": "2025-08-17T14:14:13Z"
+    }
+  ]
+}

@@ -1,0 +1,1490 @@
+CLOUDFLARE GATEWAY REGEX VALIDATION REPORT
+==================================================
+Generated: 2025-08-17 23:26:53
+
+OVERVIEW STATISTICS
+--------------------
+Total rules analyzed: 95
+Rules with regex patterns: 50
+Total regex patterns found: 120
+Valid syntax patterns: 120
+Invalid syntax patterns: 0
+Performance concerns: 120
+
+PERFORMANCE CONCERNS
+--------------------
+Rule: OpenAI Infrastructure: Critical DNS Resolution
+Pattern: .*\\.auth\\.openai.com
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: OpenAI Infrastructure: Critical DNS Resolution
+Pattern: .*\\.chatgpt\\.com
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: OpenAI Infrastructure: Critical DNS Resolution
+Pattern: .*\\.oaiusercontent\\.com
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: OpenAI Infrastructure: Critical DNS Resolution
+Pattern: .*\\.oaistatic\\.com
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: OpenAI Infrastructure: Critical DNS Resolution
+Pattern: .*\\.statsig\\.com
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: OpenAI Infrastructure: Critical DNS Resolution
+Pattern: .*\\.featuregates\\.org
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: OpenAI Infrastructure: Critical DNS Resolution
+Pattern: .*\\.intercomcdn\\.com
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: OpenAI Infrastructure: Critical DNS Resolution
+Pattern: .*\\.intercom\\.io
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: OpenAI Infrastructure: Critical DNS Resolution
+Pattern: .*\\.ct\\.sendgrid.net
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: OpenAI Infrastructure: HTTPS Access
+Pattern: .*\\.auth\\.openai.com
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: OpenAI Infrastructure: HTTPS Access
+Pattern: .*\\.chatgpt\\.com
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: OpenAI Infrastructure: HTTPS Access
+Pattern: .*\\.oaiusercontent\\.com
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: OpenAI Infrastructure: HTTPS Access
+Pattern: .*\\.oaistatic\\.com
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: OpenAI Infrastructure: HTTPS Access
+Pattern: .*\\.statsig\\.com
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: OpenAI Infrastructure: HTTPS Access
+Pattern: .*\\.featuregates\\.org
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: OpenAI Infrastructure: HTTPS Access
+Pattern: .*\\.intercomcdn\\.com
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: OpenAI Infrastructure: HTTPS Access
+Pattern: .*\\.intercom\\.io
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: OpenAI Infrastructure: HTTPS Access
+Pattern: .*\\.ct\\.sendgrid.net
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: OpenAI Infrastructure: Extended TLS Bypass
+Pattern: .*\.auth\.openai\.com
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: OpenAI Infrastructure: Extended TLS Bypass
+Pattern: .*\.oaiusercontent\.com
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: OpenAI Infrastructure: Extended TLS Bypass
+Pattern: .*\.oaistatic\.com
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: OpenAI Infrastructure: Extended TLS Bypass
+Pattern: .*\.statsig\.com
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: OpenAI Infrastructure: Extended TLS Bypass
+Pattern: .*\.featuregates\.org
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: OpenAI Infrastructure: Extended TLS Bypass
+Pattern: .*\.intercom\.io
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: AI Services: ChatGPT Certificate Pinning Fix
+Pattern: .*\.openai\.com
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: AI Services: ChatGPT Certificate Pinning Fix
+Pattern: .*\.chatgpt\.com
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Certificate: Banking/Critical Sites TLS Bypass
+Pattern: .*\.apple.com
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Security: Block Suspicious File Downloads
+Pattern: .*\.(exe|scr|bat|cmd|pif|com|vbs|msi)$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Network Security: Block Dangerous File Downloads
+Pattern: .*\.(exe|scr|bat|cmd|pif|com|vbs|msi|deb|rpm)$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Network Security: Block SQL Injection Attempts
+Pattern: .*(SELECT|UNION|INSERT|UPDATE|DELETE).*
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Network Security: Block XSS Attempts
+Pattern: .*(<script|javascript:|onload=|onerror=).*
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Network Security: Block Admin Path Brute Force
+Pattern: .*(wp-admin|phpmyadmin|cpanel|admin|administrator).*
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: App Control: Monitor Large Uploads
+Pattern: .*(upload|file).*
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: App Control: Block Suspicious Downloads
+Pattern: .*(tmp|temp|cache).*\.(zip|rar|7z|tar)$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Risk-Based: Block Common Attack Patterns
+Pattern: .*(SELECT|UNION|DROP|INSERT|UPDATE|DELETE|script>|javascript:).*
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Network Audit: Log API Access
+Pattern: .*(api|rest|graphql).*
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Network Audit: Monitor Authentication
+Pattern: .*(login|signin|auth|oauth).*
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Allow Apple Homekit and Google Home Ecosystems
+Pattern: .*\.local\.home
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Cloud: Google Core Services
+Pattern: ^.*\.(googleapis\.com|gstatic\.com|googleusercontent\.com)$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Cloud: AWS Infrastructure
+Pattern: ^.*\.(amazonaws\.com|cloudfront\.net|aws\.amazon\.com)$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Cloud: Microsoft Azure
+Pattern: ^.*\.(azure\.com|azurewebsites\.net|azureedge\.net|windowsazure\.com)$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Infrastructure: Cloudflare Services
+Pattern: ^.*\.cloudflare\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Cloud: AWS and Major Providers
+Pattern: .*\.amazonaws\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Cloud: AWS and Major Providers
+Pattern: .*\.cloudflare\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Cloud: AWS and Major Providers
+Pattern: .*\.googleapis\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Cloud: AWS and Major Providers
+Pattern: .*\.azure\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Cloud: AWS and Major Providers
+Pattern: .*\.warp\.dev$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Apple: Core HTTP Services
+Pattern: ^.*\.apple\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: API Services
+Pattern: ^/api/.*$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: API Services
+Pattern: ^api\..*\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Apple: Additional Services & CDN
+Pattern: ^.*\.aaplimg\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Apple: Core DNS Services
+Pattern: .*\.apple\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Communication: Slack
+Pattern: ^.*\.(slack\.com|slack-edge\.com|slack-imgs\.com|slackb\.com)$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Productivity: Slack and Communication
+Pattern: .*\.slack\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Productivity: Slack and Communication
+Pattern: .*\.slack-edge\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Productivity: Slack and Communication
+Pattern: .*\.discord\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Productivity: Slack and Communication
+Pattern: .*\.zoom\.us$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Productivity: Slack and Communication
+Pattern: .*\.teams\.microsoft\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Productivity: Atlassian Suite
+Pattern: ^.*\.(atlassian\.com|atlassian\.net|jira\.com|confluence\.com|statuspage\.io)$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Security: SimpleMDM Device Management
+Pattern: ^.*\.simplemdm\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Development: GitHub and NPM
+Pattern: .*\.github\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Development: GitHub and NPM
+Pattern: .*\.npmjs\.org$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Network: Time and System Services
+Pattern: .*\.ntp\.org$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Network: Time and System Services
+Pattern: .*\.time\.apple\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Network: Time and System Services
+Pattern: .*\.pool\.ntp\.org$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Network: Time and System Services
+Pattern: .*\.ubuntu\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Network: Time and System Services
+Pattern: .*\.debian\.org$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Network: Ubiquiti/UniFi Management
+Pattern: .*\.ui\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Network: Ubiquiti/UniFi Management
+Pattern: .*\.ubnt\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Network: Home Assistant
+Pattern: .*\.home-assistant\.io$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Tesla: API and Services
+Pattern: .*\.tesla\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Tesla: API and Services
+Pattern: .*\.teslamotors\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Tesla: Vehicle Services
+Pattern: ^.*\.tesla\.(services|com)$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Tesla: Extended Vehicle Services
+Pattern: ^.*\.tesla\.services$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Tesla: Complete Vehicle Services
+Pattern: ^.*\.tesla\.(services|com)$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Email: Microsoft 365 and Outlook
+Pattern: .*\.outlook\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Email: Microsoft 365 and Outlook
+Pattern: .*\.hotmail\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Email: Microsoft 365 and Outlook
+Pattern: .*\.live\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Email: Microsoft 365 and Outlook
+Pattern: .*\.office365\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Email: Microsoft 365 and Outlook
+Pattern: .*\.office\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Email: Gmail and Google Workspace
+Pattern: .*\.gmail\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Email: Gmail and Google Workspace
+Pattern: .*\.googlemail\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Email: Gmail and Google Workspace
+Pattern: .*\.google\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Email: Gmail and Google Workspace
+Pattern: .*\.gstatic\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Social: Meta Platforms (Facebook, Instagram)
+Pattern: .*\.facebook\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Social: Meta Platforms (Facebook, Instagram)
+Pattern: .*\.instagram\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Social: Meta Platforms (Facebook, Instagram)
+Pattern: .*\.fbcdn\.net$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Social: Meta Platforms (Facebook, Instagram)
+Pattern: .*\.cdninstagram\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Social: Twitter/X
+Pattern: .*\.twitter\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Social: Twitter/X
+Pattern: .*\.x\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Social: Twitter/X
+Pattern: .*\.twimg\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Streaming: Netflix and Amazon Prime
+Pattern: .*\.netflix\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Streaming: Netflix and Amazon Prime
+Pattern: .*\.nflxext\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Streaming: Netflix and Amazon Prime
+Pattern: .*\.nflxvideo\.net$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Streaming: Netflix and Amazon Prime
+Pattern: .*\.primevideo\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Streaming: Netflix and Amazon Prime
+Pattern: .*\.amazonvideo\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Network: Allow Reverse DNS Lookups (.arpa)
+Pattern: .*\\.arpa$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Streaming: YouTube and Google Media
+Pattern: .*\.youtube\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Streaming: YouTube and Google Media
+Pattern: .*\.googlevideo\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Streaming: YouTube and Google Media
+Pattern: .*\.ytimg\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Streaming: YouTube and Google Media
+Pattern: .*\.ggpht\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Network: Allow mDNS/Bonjour (.local)
+Pattern: .*\.local$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Network: Allow Service Discovery (_services)
+Pattern: _.*\.local
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Network: Allow Service Discovery (_services)
+Pattern: _.*\.lan
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Network: Allow Service Discovery (_services)
+Pattern: _.*\._tcp
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Network: Allow Service Discovery (_services)
+Pattern: _.*\._udp
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Finance: Banking and Payment Services
+Pattern: .*\.paypal\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Finance: Banking and Payment Services
+Pattern: .*\.stripe\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Finance: Banking and Payment Services
+Pattern: .*\.square\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Finance: Banking and Payment Services
+Pattern: .*\.visa\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Finance: Banking and Payment Services
+Pattern: .*\.mastercard\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Security: DNS and Monitoring Services
+Pattern: .*\.1\.1\.1\.1$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Security: DNS and Monitoring Services
+Pattern: .*\.quad9\.net$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Security: DNS and Monitoring Services
+Pattern: .*\.opendns\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Security: DNS and Monitoring Services
+Pattern: .*\.umbrella\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Security: DNS and Monitoring Services
+Pattern: .*\.dyn\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Security: DNS and Monitoring Services
+Pattern: .*\.bozza\.au$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Override: Allow Warp.dev (High Priority)
+Pattern: .*\.warp\.dev$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Authentication: AI Services Critical
+Pattern: .*\.anthropic\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+Rule: Authentication: AI Services Critical
+Pattern: .*\.openai\.com$
+  • Potential catastrophic backtracking
+  • Greedy .* may cause performance issues
+
+DETAILED PATTERN ANALYSIS
+------------------------------
+Rule: OpenAI Infrastructure: Critical DNS Resolution (ID: 470234c9-0deb-48cf-8872-3065aba5028e)
+Field: dns.fqdn
+Pattern: .*\\.auth\\.openai.com
+Enabled: True
+Precedence: 985
+Complexity: Length=22, Groups=0, Alternations=0
+
+Rule: OpenAI Infrastructure: Critical DNS Resolution (ID: 470234c9-0deb-48cf-8872-3065aba5028e)
+Field: dns.fqdn
+Pattern: .*\\.chatgpt\\.com
+Enabled: True
+Precedence: 985
+Complexity: Length=18, Groups=0, Alternations=0
+
+Rule: OpenAI Infrastructure: Critical DNS Resolution (ID: 470234c9-0deb-48cf-8872-3065aba5028e)
+Field: dns.fqdn
+Pattern: .*\\.oaiusercontent\\.com
+Enabled: True
+Precedence: 985
+Complexity: Length=25, Groups=0, Alternations=0
+
+Rule: OpenAI Infrastructure: Critical DNS Resolution (ID: 470234c9-0deb-48cf-8872-3065aba5028e)
+Field: dns.fqdn
+Pattern: .*\\.oaistatic\\.com
+Enabled: True
+Precedence: 985
+Complexity: Length=20, Groups=0, Alternations=0
+
+Rule: OpenAI Infrastructure: Critical DNS Resolution (ID: 470234c9-0deb-48cf-8872-3065aba5028e)
+Field: dns.fqdn
+Pattern: .*\\.statsig\\.com
+Enabled: True
+Precedence: 985
+Complexity: Length=18, Groups=0, Alternations=0
+
+Rule: OpenAI Infrastructure: Critical DNS Resolution (ID: 470234c9-0deb-48cf-8872-3065aba5028e)
+Field: dns.fqdn
+Pattern: .*\\.featuregates\\.org
+Enabled: True
+Precedence: 985
+Complexity: Length=23, Groups=0, Alternations=0
+
+Rule: OpenAI Infrastructure: Critical DNS Resolution (ID: 470234c9-0deb-48cf-8872-3065aba5028e)
+Field: dns.fqdn
+Pattern: .*\\.intercomcdn\\.com
+Enabled: True
+Precedence: 985
+Complexity: Length=22, Groups=0, Alternations=0
+
+Rule: OpenAI Infrastructure: Critical DNS Resolution (ID: 470234c9-0deb-48cf-8872-3065aba5028e)
+Field: dns.fqdn
+Pattern: .*\\.intercom\\.io
+Enabled: True
+Precedence: 985
+Complexity: Length=18, Groups=0, Alternations=0
+
+Rule: OpenAI Infrastructure: Critical DNS Resolution (ID: 470234c9-0deb-48cf-8872-3065aba5028e)
+Field: dns.fqdn
+Pattern: .*\\.ct\\.sendgrid.net
+Enabled: True
+Precedence: 985
+Complexity: Length=22, Groups=0, Alternations=0
+
+Rule: OpenAI Infrastructure: HTTPS Access (ID: 0e04e20a-699b-41a7-a9f2-ee92f28837ac)
+Field: http.request.host
+Pattern: .*\\.auth\\.openai.com
+Enabled: True
+Precedence: 986
+Complexity: Length=22, Groups=0, Alternations=0
+
+Rule: OpenAI Infrastructure: HTTPS Access (ID: 0e04e20a-699b-41a7-a9f2-ee92f28837ac)
+Field: http.request.host
+Pattern: .*\\.chatgpt\\.com
+Enabled: True
+Precedence: 986
+Complexity: Length=18, Groups=0, Alternations=0
+
+Rule: OpenAI Infrastructure: HTTPS Access (ID: 0e04e20a-699b-41a7-a9f2-ee92f28837ac)
+Field: http.request.host
+Pattern: .*\\.oaiusercontent\\.com
+Enabled: True
+Precedence: 986
+Complexity: Length=25, Groups=0, Alternations=0
+
+Rule: OpenAI Infrastructure: HTTPS Access (ID: 0e04e20a-699b-41a7-a9f2-ee92f28837ac)
+Field: http.request.host
+Pattern: .*\\.oaistatic\\.com
+Enabled: True
+Precedence: 986
+Complexity: Length=20, Groups=0, Alternations=0
+
+Rule: OpenAI Infrastructure: HTTPS Access (ID: 0e04e20a-699b-41a7-a9f2-ee92f28837ac)
+Field: http.request.host
+Pattern: .*\\.statsig\\.com
+Enabled: True
+Precedence: 986
+Complexity: Length=18, Groups=0, Alternations=0
+
+Rule: OpenAI Infrastructure: HTTPS Access (ID: 0e04e20a-699b-41a7-a9f2-ee92f28837ac)
+Field: http.request.host
+Pattern: .*\\.featuregates\\.org
+Enabled: True
+Precedence: 986
+Complexity: Length=23, Groups=0, Alternations=0
+
+Rule: OpenAI Infrastructure: HTTPS Access (ID: 0e04e20a-699b-41a7-a9f2-ee92f28837ac)
+Field: http.request.host
+Pattern: .*\\.intercomcdn\\.com
+Enabled: True
+Precedence: 986
+Complexity: Length=22, Groups=0, Alternations=0
+
+Rule: OpenAI Infrastructure: HTTPS Access (ID: 0e04e20a-699b-41a7-a9f2-ee92f28837ac)
+Field: http.request.host
+Pattern: .*\\.intercom\\.io
+Enabled: True
+Precedence: 986
+Complexity: Length=18, Groups=0, Alternations=0
+
+Rule: OpenAI Infrastructure: HTTPS Access (ID: 0e04e20a-699b-41a7-a9f2-ee92f28837ac)
+Field: http.request.host
+Pattern: .*\\.ct\\.sendgrid.net
+Enabled: True
+Precedence: 986
+Complexity: Length=22, Groups=0, Alternations=0
+
+Rule: OpenAI Infrastructure: Extended TLS Bypass (ID: 4da41e6a-c0a7-4c9a-b7ec-47dc7edc96f3)
+Field: http.conn.hostname
+Pattern: .*\.auth\.openai\.com
+Enabled: True
+Precedence: 987
+Complexity: Length=21, Groups=0, Alternations=0
+
+Rule: OpenAI Infrastructure: Extended TLS Bypass (ID: 4da41e6a-c0a7-4c9a-b7ec-47dc7edc96f3)
+Field: http.conn.hostname
+Pattern: .*\.oaiusercontent\.com
+Enabled: True
+Precedence: 987
+Complexity: Length=23, Groups=0, Alternations=0
+
+Rule: OpenAI Infrastructure: Extended TLS Bypass (ID: 4da41e6a-c0a7-4c9a-b7ec-47dc7edc96f3)
+Field: http.conn.hostname
+Pattern: .*\.oaistatic\.com
+Enabled: True
+Precedence: 987
+Complexity: Length=18, Groups=0, Alternations=0
+
+Rule: OpenAI Infrastructure: Extended TLS Bypass (ID: 4da41e6a-c0a7-4c9a-b7ec-47dc7edc96f3)
+Field: http.conn.hostname
+Pattern: .*\.statsig\.com
+Enabled: True
+Precedence: 987
+Complexity: Length=16, Groups=0, Alternations=0
+
+Rule: OpenAI Infrastructure: Extended TLS Bypass (ID: 4da41e6a-c0a7-4c9a-b7ec-47dc7edc96f3)
+Field: http.conn.hostname
+Pattern: .*\.featuregates\.org
+Enabled: True
+Precedence: 987
+Complexity: Length=21, Groups=0, Alternations=0
+
+Rule: OpenAI Infrastructure: Extended TLS Bypass (ID: 4da41e6a-c0a7-4c9a-b7ec-47dc7edc96f3)
+Field: http.conn.hostname
+Pattern: .*\.intercom\.io
+Enabled: True
+Precedence: 987
+Complexity: Length=16, Groups=0, Alternations=0
+
+Rule: AI Services: ChatGPT Certificate Pinning Fix (ID: 8827c005-0281-4d09-ae63-f46b72dc7997)
+Field: http.conn.hostname
+Pattern: .*\.openai\.com
+Enabled: True
+Precedence: 995
+Complexity: Length=15, Groups=0, Alternations=0
+
+Rule: AI Services: ChatGPT Certificate Pinning Fix (ID: 8827c005-0281-4d09-ae63-f46b72dc7997)
+Field: http.conn.hostname
+Pattern: .*\.chatgpt\.com
+Enabled: True
+Precedence: 995
+Complexity: Length=16, Groups=0, Alternations=0
+
+Rule: Certificate: Banking/Critical Sites TLS Bypass (ID: cb602428-e7d8-4b8c-b849-e62e138fcea1)
+Field: http.conn.hostname
+Pattern: .*\.apple.com
+Enabled: True
+Precedence: 1045
+Complexity: Length=13, Groups=0, Alternations=0
+
+Rule: Security: Block Suspicious File Downloads (ID: 67d0224e-ef48-47a3-9dab-e12ac6f49efe)
+Field: http.request.uri.path
+Pattern: .*\.(exe|scr|bat|cmd|pif|com|vbs|msi)$
+Enabled: True
+Precedence: 2010
+Complexity: Length=38, Groups=1, Alternations=7
+
+Rule: Network Security: Block Dangerous File Downloads (ID: 0f4f70e4-0340-4bc2-afdb-7975b1c91f95)
+Field: http.request.uri.path
+Pattern: .*\.(exe|scr|bat|cmd|pif|com|vbs|msi|deb|rpm)$
+Enabled: True
+Precedence: 2100
+Complexity: Length=46, Groups=1, Alternations=9
+
+Rule: Network Security: Block SQL Injection Attempts (ID: 64fe8f32-cf65-4d8a-85a4-3f4940d453ba)
+Field: http.request.uri.query
+Pattern: .*(SELECT|UNION|INSERT|UPDATE|DELETE).*
+Enabled: True
+Precedence: 2110
+Complexity: Length=39, Groups=1, Alternations=4
+
+Rule: Network Security: Block XSS Attempts (ID: e9ddfb0c-a16c-429c-ac64-ae6a4e56a635)
+Field: http.request.uri
+Pattern: .*(<script|javascript:|onload=|onerror=).*
+Enabled: True
+Precedence: 2120
+Complexity: Length=42, Groups=1, Alternations=3
+
+Rule: Network Security: Block Admin Path Brute Force (ID: ddab6d91-54e4-485b-9e6f-a6f237d2b8ca)
+Field: http.request.uri.path
+Pattern: .*(wp-admin|phpmyadmin|cpanel|admin|administrator).*
+Enabled: True
+Precedence: 2130
+Complexity: Length=52, Groups=1, Alternations=4
+
+Rule: App Control: Monitor Large Uploads (ID: e7f464c0-c932-4734-9517-2f52279062ff)
+Field: http.request.uri.path
+Pattern: .*(upload|file).*
+Enabled: True
+Precedence: 4100
+Complexity: Length=17, Groups=1, Alternations=1
+
+Rule: App Control: Block Suspicious Downloads (ID: d21d165d-b778-40a2-89cd-c808ebb4429d)
+Field: http.request.uri.path
+Pattern: .*(tmp|temp|cache).*\.(zip|rar|7z|tar)$
+Enabled: True
+Precedence: 4110
+Complexity: Length=39, Groups=2, Alternations=5
+
+Rule: Risk-Based: Block Common Attack Patterns (ID: b2f80827-8306-460c-8cd2-46969fd33cb4)
+Field: http.request.uri.path
+Pattern: .*(SELECT|UNION|DROP|INSERT|UPDATE|DELETE|script>|javascript:).*
+Enabled: True
+Precedence: 5010
+Complexity: Length=64, Groups=1, Alternations=7
+Suggestions:
+  • Consider using case-insensitive matching flag if available
+
+Rule: Network Audit: Log API Access (ID: acd51552-4666-41f4-8c31-05a7f46eb16e)
+Field: http.request.uri.path
+Pattern: .*(api|rest|graphql).*
+Enabled: True
+Precedence: 6100
+Complexity: Length=22, Groups=1, Alternations=2
+
+Rule: Network Audit: Monitor Authentication (ID: 88a42bfc-61d9-46d5-9d0d-319890246ac2)
+Field: http.request.uri.path
+Pattern: .*(login|signin|auth|oauth).*
+Enabled: True
+Precedence: 6110
+Complexity: Length=29, Groups=1, Alternations=3
+
+Rule: Allow Apple Homekit and Google Home Ecosystems (ID: 30867815-418f-413d-89f9-3a1572a90b0d)
+Field: dns.fqdn
+Pattern: .*\.local\.home
+Enabled: True
+Precedence: 14000
+Complexity: Length=15, Groups=0, Alternations=0
+
+Rule: Cloud: Google Core Services (ID: a69a30e9-521d-427e-9305-f52921b8e39e)
+Field: http.request.host
+Pattern: ^.*\.(googleapis\.com|gstatic\.com|googleusercontent\.com)$
+Enabled: True
+Precedence: 16000
+Complexity: Length=59, Groups=1, Alternations=2
+Suggestions:
+  • Remove redundant .* at start/end of anchored patterns
+
+Rule: Cloud: AWS Infrastructure (ID: 0d700ea5-851b-4d3e-95de-f41f6469b0e0)
+Field: http.request.host
+Pattern: ^.*\.(amazonaws\.com|cloudfront\.net|aws\.amazon\.com)$
+Enabled: True
+Precedence: 17000
+Complexity: Length=55, Groups=1, Alternations=2
+Suggestions:
+  • Remove redundant .* at start/end of anchored patterns
+
+Rule: Cloud: Microsoft Azure (ID: 1e99ab4c-ef24-4476-be8d-b2b1eadf1d0f)
+Field: http.request.host
+Pattern: ^.*\.(azure\.com|azurewebsites\.net|azureedge\.net|windowsazure\.com)$
+Enabled: True
+Precedence: 18000
+Complexity: Length=70, Groups=1, Alternations=3
+Suggestions:
+  • Remove redundant .* at start/end of anchored patterns
+
+Rule: Infrastructure: Cloudflare Services (ID: c5044065-43e7-4263-b1a9-9fb611810a9b)
+Field: http.request.host
+Pattern: ^.*\.cloudflare\.com$
+Enabled: True
+Precedence: 19000
+Complexity: Length=21, Groups=0, Alternations=0
+Suggestions:
+  • Remove redundant .* at start/end of anchored patterns
+
+Rule: Cloud: AWS and Major Providers (ID: b63c3696-58b3-4462-a010-6fc4d07dceb5)
+Field: dns.fqdn
+Pattern: .*\.amazonaws\.com$
+Enabled: True
+Precedence: 20000
+Complexity: Length=19, Groups=0, Alternations=0
+
+Rule: Cloud: AWS and Major Providers (ID: b63c3696-58b3-4462-a010-6fc4d07dceb5)
+Field: dns.fqdn
+Pattern: .*\.cloudflare\.com$
+Enabled: True
+Precedence: 20000
+Complexity: Length=20, Groups=0, Alternations=0
+
+Rule: Cloud: AWS and Major Providers (ID: b63c3696-58b3-4462-a010-6fc4d07dceb5)
+Field: dns.fqdn
+Pattern: .*\.googleapis\.com$
+Enabled: True
+Precedence: 20000
+Complexity: Length=20, Groups=0, Alternations=0
+
+Rule: Cloud: AWS and Major Providers (ID: b63c3696-58b3-4462-a010-6fc4d07dceb5)
+Field: dns.fqdn
+Pattern: .*\.azure\.com$
+Enabled: True
+Precedence: 20000
+Complexity: Length=15, Groups=0, Alternations=0
+
+Rule: Cloud: AWS and Major Providers (ID: b63c3696-58b3-4462-a010-6fc4d07dceb5)
+Field: dns.fqdn
+Pattern: .*\.warp\.dev$
+Enabled: True
+Precedence: 20000
+Complexity: Length=14, Groups=0, Alternations=0
+
+Rule: Apple: Core HTTP Services (ID: d12f1188-a1c7-4d22-aacd-f6f04f9723a5)
+Field: http.request.host
+Pattern: ^.*\.apple\.com$
+Enabled: True
+Precedence: 21000
+Complexity: Length=16, Groups=0, Alternations=0
+Suggestions:
+  • Remove redundant .* at start/end of anchored patterns
+
+Rule: API Services (ID: c185b517-f2cf-4cfd-a370-c5e9af10d578)
+Field: http.request.uri
+Pattern: ^/api/.*$
+Enabled: True
+Precedence: 22000
+Complexity: Length=9, Groups=0, Alternations=0
+Suggestions:
+  • Remove redundant .* at start/end of anchored patterns
+
+Rule: API Services (ID: c185b517-f2cf-4cfd-a370-c5e9af10d578)
+Field: http.request.host
+Pattern: ^api\..*\.com$
+Enabled: True
+Precedence: 22000
+Complexity: Length=14, Groups=0, Alternations=0
+
+Rule: Apple: Additional Services & CDN (ID: f903f638-2d9a-4608-8f1f-eda33109d46b)
+Field: http.request.host
+Pattern: ^.*\.aaplimg\.com$
+Enabled: True
+Precedence: 23000
+Complexity: Length=18, Groups=0, Alternations=0
+Suggestions:
+  • Remove redundant .* at start/end of anchored patterns
+
+Rule: Apple: Core DNS Services (ID: cf06d3d7-754b-4a34-9206-6bd0ceecb478)
+Field: dns.fqdn
+Pattern: .*\.apple\.com$
+Enabled: True
+Precedence: 24000
+Complexity: Length=15, Groups=0, Alternations=0
+
+Rule: Communication: Slack (ID: cd2b3a19-24d3-457d-84a3-4988d7cea66b)
+Field: http.request.host
+Pattern: ^.*\.(slack\.com|slack-edge\.com|slack-imgs\.com|slackb\.com)$
+Enabled: True
+Precedence: 26000
+Complexity: Length=62, Groups=1, Alternations=3
+Suggestions:
+  • Remove redundant .* at start/end of anchored patterns
+
+Rule: Productivity: Slack and Communication (ID: 8414545b-b6cc-4e2b-b833-08b98b26ff1d)
+Field: dns.fqdn
+Pattern: .*\.slack\.com$
+Enabled: True
+Precedence: 28000
+Complexity: Length=15, Groups=0, Alternations=0
+
+Rule: Productivity: Slack and Communication (ID: 8414545b-b6cc-4e2b-b833-08b98b26ff1d)
+Field: dns.fqdn
+Pattern: .*\.slack-edge\.com$
+Enabled: True
+Precedence: 28000
+Complexity: Length=20, Groups=0, Alternations=0
+
+Rule: Productivity: Slack and Communication (ID: 8414545b-b6cc-4e2b-b833-08b98b26ff1d)
+Field: dns.fqdn
+Pattern: .*\.discord\.com$
+Enabled: True
+Precedence: 28000
+Complexity: Length=17, Groups=0, Alternations=0
+
+Rule: Productivity: Slack and Communication (ID: 8414545b-b6cc-4e2b-b833-08b98b26ff1d)
+Field: dns.fqdn
+Pattern: .*\.zoom\.us$
+Enabled: True
+Precedence: 28000
+Complexity: Length=13, Groups=0, Alternations=0
+
+Rule: Productivity: Slack and Communication (ID: 8414545b-b6cc-4e2b-b833-08b98b26ff1d)
+Field: dns.fqdn
+Pattern: .*\.teams\.microsoft\.com$
+Enabled: True
+Precedence: 28000
+Complexity: Length=26, Groups=0, Alternations=0
+
+Rule: Productivity: Atlassian Suite (ID: 302aecce-0b90-46d0-b6ec-103e2a3e8abb)
+Field: http.request.host
+Pattern: ^.*\.(atlassian\.com|atlassian\.net|jira\.com|confluence\.com|statuspage\.io)$
+Enabled: True
+Precedence: 29000
+Complexity: Length=78, Groups=1, Alternations=4
+Suggestions:
+  • Remove redundant .* at start/end of anchored patterns
+
+Rule: Security: SimpleMDM Device Management (ID: bb1cca06-4e8a-461a-ba69-6f0060dd8f1e)
+Field: http.request.host
+Pattern: ^.*\.simplemdm\.com$
+Enabled: True
+Precedence: 32000
+Complexity: Length=20, Groups=0, Alternations=0
+Suggestions:
+  • Remove redundant .* at start/end of anchored patterns
+
+Rule: Development: GitHub and NPM (ID: d0dc8aa5-31e2-402f-abe4-58ce542175f2)
+Field: dns.fqdn
+Pattern: .*\.github\.com$
+Enabled: True
+Precedence: 33000
+Complexity: Length=16, Groups=0, Alternations=0
+
+Rule: Development: GitHub and NPM (ID: d0dc8aa5-31e2-402f-abe4-58ce542175f2)
+Field: dns.fqdn
+Pattern: .*\.npmjs\.org$
+Enabled: True
+Precedence: 33000
+Complexity: Length=15, Groups=0, Alternations=0
+
+Rule: Network: Time and System Services (ID: 9e2cfa4e-de4b-4906-88f8-306e60cc6e35)
+Field: dns.fqdn
+Pattern: .*\.ntp\.org$
+Enabled: True
+Precedence: 38000
+Complexity: Length=13, Groups=0, Alternations=0
+
+Rule: Network: Time and System Services (ID: 9e2cfa4e-de4b-4906-88f8-306e60cc6e35)
+Field: dns.fqdn
+Pattern: .*\.time\.apple\.com$
+Enabled: True
+Precedence: 38000
+Complexity: Length=21, Groups=0, Alternations=0
+
+Rule: Network: Time and System Services (ID: 9e2cfa4e-de4b-4906-88f8-306e60cc6e35)
+Field: dns.fqdn
+Pattern: .*\.pool\.ntp\.org$
+Enabled: True
+Precedence: 38000
+Complexity: Length=19, Groups=0, Alternations=0
+
+Rule: Network: Time and System Services (ID: 9e2cfa4e-de4b-4906-88f8-306e60cc6e35)
+Field: dns.fqdn
+Pattern: .*\.ubuntu\.com$
+Enabled: True
+Precedence: 38000
+Complexity: Length=16, Groups=0, Alternations=0
+
+Rule: Network: Time and System Services (ID: 9e2cfa4e-de4b-4906-88f8-306e60cc6e35)
+Field: dns.fqdn
+Pattern: .*\.debian\.org$
+Enabled: True
+Precedence: 38000
+Complexity: Length=16, Groups=0, Alternations=0
+
+Rule: Network: Ubiquiti/UniFi Management (ID: 4730cf05-cf07-481d-b7a0-e76bc139a4c1)
+Field: dns.fqdn
+Pattern: .*\.ui\.com$
+Enabled: True
+Precedence: 40000
+Complexity: Length=12, Groups=0, Alternations=0
+
+Rule: Network: Ubiquiti/UniFi Management (ID: 4730cf05-cf07-481d-b7a0-e76bc139a4c1)
+Field: dns.fqdn
+Pattern: .*\.ubnt\.com$
+Enabled: True
+Precedence: 40000
+Complexity: Length=14, Groups=0, Alternations=0
+
+Rule: Network: Home Assistant (ID: fb508ba4-b9b9-4c53-a9cc-831c8c81a695)
+Field: dns.fqdn
+Pattern: .*\.home-assistant\.io$
+Enabled: True
+Precedence: 41000
+Complexity: Length=23, Groups=0, Alternations=0
+
+Rule: Tesla: API and Services (ID: 006e1a41-0c01-4276-adf6-04593c1956e8)
+Field: dns.fqdn
+Pattern: .*\.tesla\.com$
+Enabled: True
+Precedence: 42000
+Complexity: Length=15, Groups=0, Alternations=0
+
+Rule: Tesla: API and Services (ID: 006e1a41-0c01-4276-adf6-04593c1956e8)
+Field: dns.fqdn
+Pattern: .*\.teslamotors\.com$
+Enabled: True
+Precedence: 42000
+Complexity: Length=21, Groups=0, Alternations=0
+
+Rule: Tesla: Vehicle Services (ID: 9c640999-fd37-49e1-b777-0c2c1b68741b)
+Field: http.request.host
+Pattern: ^.*\.tesla\.(services|com)$
+Enabled: True
+Precedence: 43000
+Complexity: Length=27, Groups=1, Alternations=1
+Suggestions:
+  • Remove redundant .* at start/end of anchored patterns
+
+Rule: Tesla: Extended Vehicle Services (ID: 2a85b159-33dd-4dda-be80-3376d8ce5b61)
+Field: http.request.host
+Pattern: ^.*\.tesla\.services$
+Enabled: True
+Precedence: 44000
+Complexity: Length=21, Groups=0, Alternations=0
+Suggestions:
+  • Remove redundant .* at start/end of anchored patterns
+
+Rule: Tesla: Complete Vehicle Services (ID: 4ecd8904-c3ca-403e-a340-15727b3cf542)
+Field: http.request.host
+Pattern: ^.*\.tesla\.(services|com)$
+Enabled: True
+Precedence: 45000
+Complexity: Length=27, Groups=1, Alternations=1
+Suggestions:
+  • Remove redundant .* at start/end of anchored patterns
+
+Rule: Email: Microsoft 365 and Outlook (ID: 30ce4427-0f33-4072-a637-2c34166b3ac1)
+Field: dns.fqdn
+Pattern: .*\.outlook\.com$
+Enabled: True
+Precedence: 46000
+Complexity: Length=17, Groups=0, Alternations=0
+
+Rule: Email: Microsoft 365 and Outlook (ID: 30ce4427-0f33-4072-a637-2c34166b3ac1)
+Field: dns.fqdn
+Pattern: .*\.hotmail\.com$
+Enabled: True
+Precedence: 46000
+Complexity: Length=17, Groups=0, Alternations=0
+
+Rule: Email: Microsoft 365 and Outlook (ID: 30ce4427-0f33-4072-a637-2c34166b3ac1)
+Field: dns.fqdn
+Pattern: .*\.live\.com$
+Enabled: True
+Precedence: 46000
+Complexity: Length=14, Groups=0, Alternations=0
+
+Rule: Email: Microsoft 365 and Outlook (ID: 30ce4427-0f33-4072-a637-2c34166b3ac1)
+Field: dns.fqdn
+Pattern: .*\.office365\.com$
+Enabled: True
+Precedence: 46000
+Complexity: Length=19, Groups=0, Alternations=0
+
+Rule: Email: Microsoft 365 and Outlook (ID: 30ce4427-0f33-4072-a637-2c34166b3ac1)
+Field: dns.fqdn
+Pattern: .*\.office\.com$
+Enabled: True
+Precedence: 46000
+Complexity: Length=16, Groups=0, Alternations=0
+
+Rule: Email: Gmail and Google Workspace (ID: 7b71b108-6775-4abc-9477-7ca4c4437b43)
+Field: dns.fqdn
+Pattern: .*\.gmail\.com$
+Enabled: True
+Precedence: 48000
+Complexity: Length=15, Groups=0, Alternations=0
+
+Rule: Email: Gmail and Google Workspace (ID: 7b71b108-6775-4abc-9477-7ca4c4437b43)
+Field: dns.fqdn
+Pattern: .*\.googlemail\.com$
+Enabled: True
+Precedence: 48000
+Complexity: Length=20, Groups=0, Alternations=0
+
+Rule: Email: Gmail and Google Workspace (ID: 7b71b108-6775-4abc-9477-7ca4c4437b43)
+Field: dns.fqdn
+Pattern: .*\.google\.com$
+Enabled: True
+Precedence: 48000
+Complexity: Length=16, Groups=0, Alternations=0
+
+Rule: Email: Gmail and Google Workspace (ID: 7b71b108-6775-4abc-9477-7ca4c4437b43)
+Field: dns.fqdn
+Pattern: .*\.gstatic\.com$
+Enabled: True
+Precedence: 48000
+Complexity: Length=17, Groups=0, Alternations=0
+
+Rule: Social: Meta Platforms (Facebook, Instagram) (ID: a7c34b55-2526-4a99-9bdf-d483cc2c1b35)
+Field: dns.fqdn
+Pattern: .*\.facebook\.com$
+Enabled: True
+Precedence: 49000
+Complexity: Length=18, Groups=0, Alternations=0
+
+Rule: Social: Meta Platforms (Facebook, Instagram) (ID: a7c34b55-2526-4a99-9bdf-d483cc2c1b35)
+Field: dns.fqdn
+Pattern: .*\.instagram\.com$
+Enabled: True
+Precedence: 49000
+Complexity: Length=19, Groups=0, Alternations=0
+
+Rule: Social: Meta Platforms (Facebook, Instagram) (ID: a7c34b55-2526-4a99-9bdf-d483cc2c1b35)
+Field: dns.fqdn
+Pattern: .*\.fbcdn\.net$
+Enabled: True
+Precedence: 49000
+Complexity: Length=15, Groups=0, Alternations=0
+
+Rule: Social: Meta Platforms (Facebook, Instagram) (ID: a7c34b55-2526-4a99-9bdf-d483cc2c1b35)
+Field: dns.fqdn
+Pattern: .*\.cdninstagram\.com$
+Enabled: True
+Precedence: 49000
+Complexity: Length=22, Groups=0, Alternations=0
+
+Rule: Social: Twitter/X (ID: f549a4b6-e499-434b-974e-122e6f48b05e)
+Field: dns.fqdn
+Pattern: .*\.twitter\.com$
+Enabled: True
+Precedence: 50000
+Complexity: Length=17, Groups=0, Alternations=0
+
+Rule: Social: Twitter/X (ID: f549a4b6-e499-434b-974e-122e6f48b05e)
+Field: dns.fqdn
+Pattern: .*\.x\.com$
+Enabled: True
+Precedence: 50000
+Complexity: Length=11, Groups=0, Alternations=0
+
+Rule: Social: Twitter/X (ID: f549a4b6-e499-434b-974e-122e6f48b05e)
+Field: dns.fqdn
+Pattern: .*\.twimg\.com$
+Enabled: True
+Precedence: 50000
+Complexity: Length=15, Groups=0, Alternations=0
+
+Rule: Streaming: Netflix and Amazon Prime (ID: 34ab175a-3abe-4e13-89a2-2fe1741fe164)
+Field: dns.fqdn
+Pattern: .*\.netflix\.com$
+Enabled: True
+Precedence: 51000
+Complexity: Length=17, Groups=0, Alternations=0
+
+Rule: Streaming: Netflix and Amazon Prime (ID: 34ab175a-3abe-4e13-89a2-2fe1741fe164)
+Field: dns.fqdn
+Pattern: .*\.nflxext\.com$
+Enabled: True
+Precedence: 51000
+Complexity: Length=17, Groups=0, Alternations=0
+
+Rule: Streaming: Netflix and Amazon Prime (ID: 34ab175a-3abe-4e13-89a2-2fe1741fe164)
+Field: dns.fqdn
+Pattern: .*\.nflxvideo\.net$
+Enabled: True
+Precedence: 51000
+Complexity: Length=19, Groups=0, Alternations=0
+
+Rule: Streaming: Netflix and Amazon Prime (ID: 34ab175a-3abe-4e13-89a2-2fe1741fe164)
+Field: dns.fqdn
+Pattern: .*\.primevideo\.com$
+Enabled: True
+Precedence: 51000
+Complexity: Length=20, Groups=0, Alternations=0
+
+Rule: Streaming: Netflix and Amazon Prime (ID: 34ab175a-3abe-4e13-89a2-2fe1741fe164)
+Field: dns.fqdn
+Pattern: .*\.amazonvideo\.com$
+Enabled: True
+Precedence: 51000
+Complexity: Length=21, Groups=0, Alternations=0
+
+Rule: Network: Allow Reverse DNS Lookups (.arpa) (ID: 6630a5c3-976c-4601-9e85-4c2f51a31d56)
+Field: dns.fqdn
+Pattern: .*\\.arpa$
+Enabled: True
+Precedence: 51999
+Complexity: Length=10, Groups=0, Alternations=0
+
+Rule: Streaming: YouTube and Google Media (ID: dbd7854e-1f27-4731-a2a6-ffb7c7f48ddd)
+Field: dns.fqdn
+Pattern: .*\.youtube\.com$
+Enabled: True
+Precedence: 52000
+Complexity: Length=17, Groups=0, Alternations=0
+
+Rule: Streaming: YouTube and Google Media (ID: dbd7854e-1f27-4731-a2a6-ffb7c7f48ddd)
+Field: dns.fqdn
+Pattern: .*\.googlevideo\.com$
+Enabled: True
+Precedence: 52000
+Complexity: Length=21, Groups=0, Alternations=0
+
+Rule: Streaming: YouTube and Google Media (ID: dbd7854e-1f27-4731-a2a6-ffb7c7f48ddd)
+Field: dns.fqdn
+Pattern: .*\.ytimg\.com$
+Enabled: True
+Precedence: 52000
+Complexity: Length=15, Groups=0, Alternations=0
+
+Rule: Streaming: YouTube and Google Media (ID: dbd7854e-1f27-4731-a2a6-ffb7c7f48ddd)
+Field: dns.fqdn
+Pattern: .*\.ggpht\.com$
+Enabled: True
+Precedence: 52000
+Complexity: Length=15, Groups=0, Alternations=0
+
+Rule: Network: Allow mDNS/Bonjour (.local) (ID: f273e2d0-5bac-4982-bea2-516f063ceaf9)
+Field: dns.fqdn
+Pattern: .*\.local$
+Enabled: True
+Precedence: 52010
+Complexity: Length=10, Groups=0, Alternations=0
+
+Rule: Network: Allow Service Discovery (_services) (ID: 714c0d08-bcee-4a4d-b351-72f13334ad6d)
+Field: dns.fqdn
+Pattern: _.*\.local
+Enabled: True
+Precedence: 52020
+Complexity: Length=10, Groups=0, Alternations=0
+
+Rule: Network: Allow Service Discovery (_services) (ID: 714c0d08-bcee-4a4d-b351-72f13334ad6d)
+Field: dns.fqdn
+Pattern: _.*\.lan
+Enabled: True
+Precedence: 52020
+Complexity: Length=8, Groups=0, Alternations=0
+
+Rule: Network: Allow Service Discovery (_services) (ID: 714c0d08-bcee-4a4d-b351-72f13334ad6d)
+Field: dns.fqdn
+Pattern: _.*\._tcp
+Enabled: True
+Precedence: 52020
+Complexity: Length=9, Groups=0, Alternations=0
+
+Rule: Network: Allow Service Discovery (_services) (ID: 714c0d08-bcee-4a4d-b351-72f13334ad6d)
+Field: dns.fqdn
+Pattern: _.*\._udp
+Enabled: True
+Precedence: 52020
+Complexity: Length=9, Groups=0, Alternations=0
+
+Rule: Finance: Banking and Payment Services (ID: 8be6bbbd-0d23-4ed0-afd1-6e061f1f3e71)
+Field: dns.fqdn
+Pattern: .*\.paypal\.com$
+Enabled: True
+Precedence: 53000
+Complexity: Length=16, Groups=0, Alternations=0
+
+Rule: Finance: Banking and Payment Services (ID: 8be6bbbd-0d23-4ed0-afd1-6e061f1f3e71)
+Field: dns.fqdn
+Pattern: .*\.stripe\.com$
+Enabled: True
+Precedence: 53000
+Complexity: Length=16, Groups=0, Alternations=0
+
+Rule: Finance: Banking and Payment Services (ID: 8be6bbbd-0d23-4ed0-afd1-6e061f1f3e71)
+Field: dns.fqdn
+Pattern: .*\.square\.com$
+Enabled: True
+Precedence: 53000
+Complexity: Length=16, Groups=0, Alternations=0
+
+Rule: Finance: Banking and Payment Services (ID: 8be6bbbd-0d23-4ed0-afd1-6e061f1f3e71)
+Field: dns.fqdn
+Pattern: .*\.visa\.com$
+Enabled: True
+Precedence: 53000
+Complexity: Length=14, Groups=0, Alternations=0
+
+Rule: Finance: Banking and Payment Services (ID: 8be6bbbd-0d23-4ed0-afd1-6e061f1f3e71)
+Field: dns.fqdn
+Pattern: .*\.mastercard\.com$
+Enabled: True
+Precedence: 53000
+Complexity: Length=20, Groups=0, Alternations=0
+
+Rule: Security: DNS and Monitoring Services (ID: 9e7cb5fd-10be-47e9-87a1-7a650dec4cb6)
+Field: dns.fqdn
+Pattern: .*\.1\.1\.1\.1$
+Enabled: True
+Precedence: 54000
+Complexity: Length=15, Groups=0, Alternations=0
+
+Rule: Security: DNS and Monitoring Services (ID: 9e7cb5fd-10be-47e9-87a1-7a650dec4cb6)
+Field: dns.fqdn
+Pattern: .*\.quad9\.net$
+Enabled: True
+Precedence: 54000
+Complexity: Length=15, Groups=0, Alternations=0
+
+Rule: Security: DNS and Monitoring Services (ID: 9e7cb5fd-10be-47e9-87a1-7a650dec4cb6)
+Field: dns.fqdn
+Pattern: .*\.opendns\.com$
+Enabled: True
+Precedence: 54000
+Complexity: Length=17, Groups=0, Alternations=0
+
+Rule: Security: DNS and Monitoring Services (ID: 9e7cb5fd-10be-47e9-87a1-7a650dec4cb6)
+Field: dns.fqdn
+Pattern: .*\.umbrella\.com$
+Enabled: True
+Precedence: 54000
+Complexity: Length=18, Groups=0, Alternations=0
+
+Rule: Security: DNS and Monitoring Services (ID: 9e7cb5fd-10be-47e9-87a1-7a650dec4cb6)
+Field: dns.fqdn
+Pattern: .*\.dyn\.com$
+Enabled: True
+Precedence: 54000
+Complexity: Length=13, Groups=0, Alternations=0
+
+Rule: Security: DNS and Monitoring Services (ID: 9e7cb5fd-10be-47e9-87a1-7a650dec4cb6)
+Field: dns.fqdn
+Pattern: .*\.bozza\.au$
+Enabled: True
+Precedence: 54000
+Complexity: Length=14, Groups=0, Alternations=0
+
+Rule: Override: Allow Warp.dev (High Priority) (ID: 1acaadb5-3454-46d9-bb1b-48056c9fb98d)
+Field: dns.fqdn
+Pattern: .*\.warp\.dev$
+Enabled: True
+Precedence: 59000
+Complexity: Length=14, Groups=0, Alternations=0
+
+Rule: Authentication: AI Services Critical (ID: 572f0a68-377f-4296-a6e7-ea51b21ee2d8)
+Field: dns.fqdn
+Pattern: .*\.anthropic\.com$
+Enabled: True
+Precedence: 60000
+Complexity: Length=19, Groups=0, Alternations=0
+
+Rule: Authentication: AI Services Critical (ID: 572f0a68-377f-4296-a6e7-ea51b21ee2d8)
+Field: dns.fqdn
+Pattern: .*\.openai\.com$
+Enabled: True
+Precedence: 60000
+Complexity: Length=16, Groups=0, Alternations=0
+
+RECOMMENDATIONS
+---------------
+3. Optimize patterns with performance concerns to prevent timeouts
+4. Test all regex patterns with sample data to ensure they work as expected
+5. Consider using Gateway Lists instead of complex regex patterns where possible

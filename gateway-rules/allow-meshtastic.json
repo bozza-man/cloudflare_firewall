@@ -1,0 +1,20 @@
+{
+  "rules": [
+    {
+      "id": "meshtastic-access",
+      "name": "Allow: Meshtastic.org",
+      "description": "Allow access to Meshtastic.org domains and services (maps, documentation, firmware updates)",
+      "precedence": 2000,
+      "enabled": true,
+      "action": "allow",
+      "rule_settings": {
+        "block_page_enabled": false
+      },
+      "traffic": "dns.fqdn matches \".*\\.meshtastic\\.org$\" or dns.fqdn in {\"meshtastic.org\" \"map.meshtastic.org\" \"docs.meshtastic.org\" \"packages.meshtastic.org\" \"firmware.meshtastic.org\" \"maps.meshtastic.org\" \"device.meshtastic.org\" \"locator.meshtastic.org\" \"api.meshtastic.org\" \"cdn.meshtastic.org\"}",
+      "identity": "all(identity.groups[*])",
+      "version": 1,
+      "created_at": "2025-08-17T14:23:02Z",
+      "updated_at": "2025-08-17T14:23:02Z"
+    }
+  ]
+}
