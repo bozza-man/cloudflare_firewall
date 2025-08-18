@@ -1,0 +1,36 @@
+{
+  "rules": [
+    {
+      "name": "Allow NPM Registry HTTP",
+      "description": "Allow HTTP access to NPM registry and related services",
+      "precedence": 2200,
+      "action": "allow",
+      "filters": ["http"],
+      "traffic": "http_request_host contains 'registry.npmjs.org' or http_request_host contains 'registry.yarnpkg.com' or http_request_host contains 'npmjs.com' or http_request_host contains 'yarnpkg.com'"
+    },
+    {
+      "name": "Allow GitHub HTTP",
+      "description": "Allow HTTP access to GitHub services",
+      "precedence": 2201,
+      "action": "allow",
+      "filters": ["http"],
+      "traffic": "http_request_host contains 'github.com' or http_request_host contains 'githubusercontent.com'"
+    },
+    {
+      "name": "Allow OpenAI API HTTP",
+      "description": "Allow HTTP access to OpenAI API endpoints",
+      "precedence": 2202,
+      "action": "allow",
+      "filters": ["http"],
+      "traffic": "http_request_host contains 'openai.com'"
+    },
+    {
+      "name": "Allow Cloudflare API HTTP",
+      "description": "Allow HTTP access to Cloudflare API and Worker services",
+      "precedence": 2203,
+      "action": "allow",
+      "filters": ["http"],
+      "traffic": "http_request_host contains 'cloudflare.com' or http_request_host contains 'workers.dev' or http_request_host contains 'cloudflareclient.com'"
+    }
+  ]
+}

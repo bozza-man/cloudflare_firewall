@@ -1,0 +1,25 @@
+name = "cloudflare-firewall-ai"
+main = "src/worker/index.ts"
+compatibility_date = "2024-02-01"
+
+[vars]
+OPENAI_API_KEY = ""  # Will be set via environment variable
+ENVIRONMENT = "production"
+
+# AI Worker configuration
+[ai]
+binding = "AI"
+
+# AutoRAG configuration
+[[kv_namespaces]]
+binding = "RAG_STORAGE"
+id = ""  # Will be set during deployment
+
+# Static website configuration
+[site]
+bucket = "./public"
+entry-point = "./src/worker"
+
+[build]
+command = "npm run build"
+watch_dir = "src"

@@ -1,0 +1,14 @@
+{
+  "rules": [
+    {
+      "name": "Test NPM Access",
+      "description": "Test rule for NPM registry access",
+      "precedence": 3000,
+      "action": "allow",
+      "enabled": true,
+      "rule_settings": {},
+"filters": ["dns"],
+"traffic": "any(dns.domains[*] == 'registry.npmjs.org' or dns.domains[*] == 'registry.yarnpkg.com')"
+    }
+  ]
+}

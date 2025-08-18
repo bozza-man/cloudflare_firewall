@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeEach } from '@jest/globals';
 import { DomainConflictDetector } from '../../src/rules/domain-conflict-detector.js';
 import { TestFactory } from '../utils/test-factory.js';
-import type { GatewayRule } from '../../src/types/gateway.js';
 
 describe('DomainConflictDetector', () => {
   let detector: DomainConflictDetector;

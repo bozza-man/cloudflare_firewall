@@ -1,0 +1,36 @@
+{
+  "rules": [
+    {
+      "name": "Allow NPM Registry",
+      "description": "Allow access to NPM registry and related services",
+      "precedence": 2000,
+      "action": "allow",
+      "filters": ["dns"],
+      "traffic": "dns_domains contains 'registry.npmjs.org' or dns_domains contains 'registry.yarnpkg.com' or dns_domains contains 'npmjs.com' or dns_domains contains 'yarnpkg.com'"
+    },
+    {
+      "name": "Allow GitHub",
+      "description": "Allow access to GitHub services",
+      "precedence": 2001,
+      "action": "allow",
+      "filters": ["dns"],
+      "traffic": "dns_domains contains 'github.com' or dns_domains contains 'githubusercontent.com'"
+    },
+    {
+      "name": "Allow OpenAI API",
+      "description": "Allow access to OpenAI API endpoints",
+      "precedence": 2002,
+      "action": "allow",
+      "filters": ["dns"],
+      "traffic": "dns_domains contains 'openai.com'"
+    },
+    {
+      "name": "Allow Cloudflare API",
+      "description": "Allow access to Cloudflare API and Worker services",
+      "precedence": 2003,
+      "action": "allow",
+      "filters": ["dns"],
+      "traffic": "dns_domains contains 'cloudflare.com' or dns_domains contains 'workers.dev' or dns_domains contains 'cloudflareclient.com'"
+    }
+  ]
+}

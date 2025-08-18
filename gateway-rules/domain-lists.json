@@ -1,0 +1,68 @@
+{
+  "lists": [
+    {
+      "name": "Project Dependencies - NPM",
+      "type": "domain",
+      "items": [
+        {
+          "value": "registry.npmjs.org",
+          "description": "NPM Registry"
+        },
+        {
+          "value": "registry.yarnpkg.com",
+          "description": "Yarn Registry"
+        },
+        {
+          "value": "npmjs.com",
+          "description": "NPM Website"
+        },
+        {
+          "value": "yarnpkg.com",
+          "description": "Yarn Website"
+        }
+      ]
+    },
+    {
+      "name": "Project Dependencies - GitHub",
+      "type": "domain",
+      "items": [
+        {
+          "value": "github.com",
+          "description": "GitHub"
+        },
+        {
+          "value": "githubusercontent.com",
+          "description": "GitHub Content"
+        }
+      ]
+    },
+    {
+      "name": "Project Dependencies - OpenAI",
+      "type": "domain",
+      "items": [
+        {
+          "value": "openai.com",
+          "description": "OpenAI API"
+        }
+      ]
+    },
+    {
+      "name": "Project Dependencies - Cloudflare",
+      "type": "domain",
+      "items": [
+        {
+          "value": "cloudflare.com",
+          "description": "Cloudflare API"
+        },
+        {
+          "value": "workers.dev",
+          "description": "Cloudflare Workers"
+        },
+        {
+          "value": "cloudflareclient.com",
+          "description": "Cloudflare Client"
+        }
+      ]
+    }
+  ]
+}
