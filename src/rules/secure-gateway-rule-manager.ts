@@ -139,13 +139,15 @@ export class SecureGatewayRuleManager extends EnhancedGatewayRuleManager {
   }
 
   /**
-   * Override createRuleFromDescription to include security scanning
+   * Override createRuleFromNLDescription to include security scanning
    */
-  async createRuleFromDescription(description: string): Promise<GatewayRule> {
+  async createRuleFromNLDescription(description: string): Promise<GatewayRule | null> {
     console.log(chalk.cyan(`🛡️  Creating rule from description with security validation: "${description}"`));
     
     // Let the parent method generate the rule structure
-    return await super.createRuleFromDescription(description);
+    const result = await super.createRuleFromNLDescription(description);
+    if (!result) throw new Error('Failed to create rule from description');
+    return result;
   }
 
   /**
@@ -183,27 +185,6 @@ export class SecureGatewayRuleManager extends EnhancedGatewayRuleManager {
   /**
    * Extract domains from rule filters and traffic
    */
-  private extractDomainsFromRule(rule: CreateGatewayRuleRequest): string[] {
-    const domains = new Set<string>();
-    
-    // Extract from traffic expression
-    if (rule.traffic) {
-      const trafficDomains = this.extractDomainsFromExpression(rule.traffic);
-      trafficDomains.forEach(domain => domains.add(domain));
-    }
-    
-    // Extract from filters
-    if (rule.filters && Array.isArray(rule.filters)) {
-      for (const filter of rule.filters) {
-        if (typeof filter === 'string') {
-          const filterDomains = this.extractDomainsFromExpression(filter);
-          filterDomains.forEach(domain => domains.add(domain));
-        }
-      }
-    }
-    
-    return Array.from(domains).filter(domain => this.isValidDomain(domain));
-  }
 
   /**
    * Extract domains from a Gateway expression string

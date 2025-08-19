@@ -233,13 +233,14 @@ export class MonitorCommand {
       style: { head: ['cyan'] }
     });
     
+    const byAction = (stats as any).byAction || {};
     table.push([
       stats.rulesCount,
       stats.enabledCount,
       stats.disabledCount,
-      stats.byAction.block || 0,
-      stats.byAction.allow || 0,
-      stats.byAction.isolate || 0
+      byAction.block || 0,
+      byAction.allow || 0,
+      byAction.isolate || 0
     ]);
     
     console.log('\n' + table.toString());
@@ -618,7 +619,7 @@ window.refreshState = refreshState;
         
         if (this.expressServer) {
           await new Promise((resolve) => {
-            this.expressServer.close(resolve);
+            this.expressServer!.close(resolve as () => void);
           });
         }
         

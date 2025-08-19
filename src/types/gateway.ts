@@ -134,4 +134,4 @@ export interface GatewayFilter {
   application?: {
     app_id?: string[];
   };
-}
+}export type LogLevel = 'info' | 'warn' | 'error' | 'debug' | 'warning';

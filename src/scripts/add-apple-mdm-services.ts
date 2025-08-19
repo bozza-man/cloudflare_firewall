@@ -59,7 +59,7 @@ async function addAppleMDMServices() {
     console.log('  • business.apple.com - Apple Business Manager');
     console.log('  • school.apple.com - Apple School Manager');
     
-  } catch (error) {
+  } catch (error: any) {
     const errorMessage = error.response?.data?.errors?.[0]?.message || error.message;
     
     if (errorMessage.includes('already exists') || errorMessage.includes('duplicate')) {

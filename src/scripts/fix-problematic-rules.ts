@@ -48,7 +48,7 @@ class ProblematicRuleFixer {
       // Show summary of issues
       this.showRuleSummary(rules);
 
-    } catch (error) {
+    } catch (error: any) {
       console.error(chalk.red('❌ Error analyzing rules:'), error);
     }
   }
@@ -93,7 +93,7 @@ class ProblematicRuleFixer {
       console.log(`   Old traffic: ${rule.traffic}`);
       console.log(`   New traffic: ${newTraffic}`);
       
-    } catch (error) {
+    } catch (error: any) {
       console.error(chalk.red(`❌ Failed to fix rule ${ruleId}:`), error);
     }
   }

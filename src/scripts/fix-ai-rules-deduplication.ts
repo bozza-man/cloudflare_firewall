@@ -128,7 +128,7 @@ async function fixAIRulesDuplication() {
       try {
         await gateway.deleteGatewayRule(rule.id);
         deleteSpinner.succeed(`Deleted: ${rule.name}`);
-      } catch (error) {
+      } catch (error: any) {
         deleteSpinner.fail(`Failed to delete: ${rule.name}`);
       }
       await new Promise(resolve => setTimeout(resolve, 500));
@@ -152,7 +152,7 @@ async function fixAIRulesDuplication() {
       });
       
       updateSpinner.succeed('Updated AI rule successfully');
-    } catch (error) {
+    } catch (error: any) {
       updateSpinner.fail(`Failed to update: ${error.message}`);
       return;
     }
@@ -214,7 +214,7 @@ async function fixAIRulesDuplication() {
     const finalRules = await gateway.listGatewayRules();
     console.log(chalk.cyan.bold(`\n📊 Final Gateway Rules: ${finalRules.length}`));
     
-  } catch (error) {
+  } catch (error: any) {
     spinner.fail('Failed to fix AI rules');
     throw error;
   }

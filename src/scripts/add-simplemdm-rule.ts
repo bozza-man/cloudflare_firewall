@@ -64,7 +64,7 @@ async function addSimpleMDMRule() {
     console.log('  • deviceservices-external.apple.com');
     console.log('  • gdmf.apple.com (MDM feedback)');
     
-  } catch (error) {
+  } catch (error: any) {
     const errorMessage = error.response?.data?.errors?.[0]?.message || error.message;
     
     if (errorMessage.includes('already exists') || errorMessage.includes('duplicate')) {
@@ -104,7 +104,7 @@ async function addSimpleMDMRule() {
         console.log(`  ${status} ${rule.name} (precedence: ${rule.precedence})`);
       });
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error(chalk.red('Could not fetch existing rules'));
   }
 }

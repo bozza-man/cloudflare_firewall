@@ -120,7 +120,7 @@ async function checkRadarSSL(domain: string): Promise<RadarSSLInfo> {
 
     return results;
 
-  } catch (error) {
+  } catch (error: any) {
     return {
       domain,
       error: `Radar API error: ${error instanceof Error ? error.message : 'Unknown error'}`

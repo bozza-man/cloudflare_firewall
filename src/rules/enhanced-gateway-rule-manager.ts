@@ -71,6 +71,22 @@ export class EnhancedGatewayRuleManager {
       throw error;
     }
   }
+  
+  private async getNextAvailablePrecedence(): Promise<number> {
+    const rules = await this.listRules();
+    const precedences = rules.map(r => r.precedence).sort((a, b) => a - b);
+    
+    if (precedences.length === 0) return 100;
+    
+    // Find first gap
+    for (let i = 0; i < precedences.length - 1; i++) {
+      if (precedences[i + 1] - precedences[i] > 1) {
+        return precedences[i] + 1;
+      }
+    }
+    
+    return precedences[precedences.length - 1] + 1;
+  }
 
   /**
    * NEW OPTIMIZATION FEATURE: Load and cache all DOMAIN type Gateway Lists
@@ -326,13 +342,14 @@ export class EnhancedGatewayRuleManager {
       
       // Test API access with a simple rule
       const testRule = {
-        name: `API_TEST_${Date.now()}`,
-        enabled: false,
-        precedence: 999999,
-        traffic: 'dns.fqdn == "test.example.com"',
-        action: 'allow' as const,
-        description: 'Temporary API test rule'
-      };
+      name: `API_TEST_${Date.now()}`,
+      enabled: false,
+      precedence: 999999,
+      traffic: 'dns.fqdn == "test.example.com"',
+      action: 'allow' as const,
+      filters: [],
+      description: 'Temporary API test rule'
+    };
       
       const createdRule = await this.gateway.createGatewayRule(testRule);
       await this.gateway.deleteGatewayRule(createdRule.id);
@@ -788,8 +805,9 @@ export class EnhancedGatewayRuleManager {
         name: `SYNTAX_VERIFY_DELETE_${Date.now()}`,
         action: 'allow' as const,
         enabled: false,
-        traffic: `dns.fqdn in $${testList.id}`,
+        traffic: `dns.fqdn in ${testList.id}`,
         precedence: 99999,
+        filters: [],
         description: 'Syntax verification - DELETE IMMEDIATELY'
       };
       
@@ -843,7 +861,7 @@ export class EnhancedGatewayRuleManager {
     return match ? match[1].trim() : null;
   }
 
-  private extractDomainsFromRule(rule: CreateGatewayRuleRequest | GatewayRule): string[] {
+  protected extractDomainsFromRule(rule: CreateGatewayRuleRequest | GatewayRule): string[] {
     const domains: string[] = [];
     
     if ('traffic' in rule && rule.traffic) {
@@ -890,4 +908,44 @@ export class EnhancedGatewayRuleManager {
       console.log(chalk.red('\n❌ Domain verification failed:'), error instanceof Error ? error.message : error);
     }
   }
+
+  async createRuleFromNLDescription(description: string): Promise<GatewayRule | null> {
+    // Simple NL parser for common patterns
+    const lowerDesc = description.toLowerCase();
+    
+    let action: 'allow' | 'block' = 'block';
+    if (lowerDesc.includes('allow') || lowerDesc.includes('permit')) {
+      action = 'allow';
+    }
+    
+    let name = description.slice(0, 50);
+    let traffic = 'any()';
+    
+    // Extract domain patterns
+    const domainMatch = description.match(/(?:for|to|from|domain|site)\s+([a-z0-9.-]+)/i);
+    if (domainMatch) {
+      traffic = `http.request.uri.host in {"${domainMatch[1]}"}`;
+      name = `${action} ${domainMatch[1]}`;
+    }
+    
+    // Extract IP patterns
+    const ipMatch = description.match(/(?:ip|address)\s+([0-9.]+(?:\/[0-9]+)?)/i);
+    if (ipMatch) {
+      traffic = `ip.src in {${ipMatch[1]}}`;
+      name = `${action} IP ${ipMatch[1]}`;
+    }
+    
+    const rule: CreateGatewayRuleRequest = {
+      name,
+      action,
+      enabled: true,
+      precedence: await this.getNextAvailablePrecedence(),
+      traffic,
+      filters: [],
+      description
+    };
+    
+    return await this.createRule(rule);
+  }
+
 }

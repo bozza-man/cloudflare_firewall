@@ -227,7 +227,7 @@ class AllowRuleCreator {
         
         spinner.succeed(`Created: ${group.name} (${group.domains.length} domains)`);
         
-      } catch (error) {
+      } catch (error: any) {
         failedRules.push({
           name: group.name,
           error: error.message
@@ -288,8 +288,8 @@ class AllowRuleCreator {
     
     try {
       const rules = await this.ruleManager.listRules();
-      const allowRules = rules.filter(r => r.action === 'allow');
-      const blockRules = rules.filter(r => r.action === 'block');
+      const allowRules = (rules as any[]).filter(r => r.action === 'allow');
+      const blockRules = (rules as any[]).filter(r => r.action === 'block');
       
       spinner.succeed('Analysis complete');
       
@@ -319,7 +319,7 @@ class AllowRuleCreator {
         }
       }
       
-    } catch (error) {
+    } catch (error: any) {
       spinner.fail('Failed to analyze rules');
       throw error;
     }
@@ -329,8 +329,8 @@ class AllowRuleCreator {
     const conflicts: string[] = [];
     
     // Check for overlapping precedence
-    for (const allow of allowRules) {
-      for (const block of blockRules) {
+    for (const allow of allowRules as any[]) {
+      for (const block of blockRules as any[]) {
         if (Math.abs(allow.precedence - block.precedence) < 10) {
           conflicts.push(
             `"${allow.name}" (precedence ${allow.precedence}) may conflict with "${block.name}" (precedence ${block.precedence})`
@@ -358,7 +358,7 @@ async function main() {
     console.log(chalk.gray('\nNote: These rules allow common legitimate services.'));
     console.log(chalk.gray('Review and adjust based on your specific security requirements.'));
     
-  } catch (error) {
+  } catch (error: any) {
     console.error(chalk.red('\n❌ Error:'), error.message);
     process.exit(1);
   }

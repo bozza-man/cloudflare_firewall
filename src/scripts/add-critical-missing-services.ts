@@ -168,7 +168,7 @@ async function addCriticalMissingServices() {
       results.success.push(ruleData.name);
       spinner.succeed(`✅ Created: ${ruleData.name} (precedence: ${ruleData.precedence})`);
       
-    } catch (error) {
+    } catch (error: any) {
       const errorMessage = error.response?.data?.errors?.[0]?.message || error.message;
       
       if (errorMessage.includes('already exists') || 
@@ -225,7 +225,7 @@ async function addCriticalMissingServices() {
   try {
     const allRules = await gateway.listGatewayRules();
     console.log(chalk.cyan.bold(`📈 Total Gateway Rules: ${allRules.length}`));
-  } catch (error) {
+  } catch (error: any) {
     // Ignore
   }
 }

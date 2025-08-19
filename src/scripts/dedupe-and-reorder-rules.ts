@@ -52,7 +52,7 @@ class RuleDeduplicator {
       console.log(chalk.cyan(`Duplicates removed: ${deletedCount}`));
       console.log(chalk.cyan(`Final rule count: ${finalRules.length}`));
       
-    } catch (error) {
+    } catch (error: any) {
       spinner.fail('Optimization failed');
       throw error;
     }
@@ -78,7 +78,7 @@ class RuleDeduplicator {
       { pattern: /^CDN:/, key: 'cdn' }
     ];
     
-    for (const rule of rules) {
+    for (const rule of (rules as any[])) {
       for (const { pattern, key } of duplicatePatterns) {
         if (pattern.test(rule.name)) {
           if (!serviceGroups.has(key)) {
@@ -126,15 +126,15 @@ class RuleDeduplicator {
     const allDomains = new Set<string>();
     const allPatterns = new Set<string>();
     
-    for (const rule of rules) {
+    for (const rule of (rules as any[])) {
       if (!rule.traffic) continue;
       
       // Extract domains from "in {}" patterns
       const inMatches = rule.traffic.match(/in \{([^}]+)\}/g);
       if (inMatches) {
         for (const match of inMatches) {
-          const domains = match.replace(/in \{|\}/g, '').split(/[,\s]+/).filter(d => d);
-          domains.forEach(d => allDomains.add(d.replace(/"/g, '')));
+          const domains = match.replace(/in \{|\}/g, '').split(/[,\s]+/).filter((d: any) => d);
+          domains.forEach((d: any) => allDomains.add(d.replace(/"/g, '')));
         }
       }
       
@@ -171,8 +171,8 @@ class RuleDeduplicator {
     
     for (const [service, group] of groups) {
       console.log(chalk.cyan(`${service.toUpperCase()}:`));
-      console.log(chalk.green(`  ✓ Keep: ${group.primary.name} (precedence: ${group.primary.precedence})`));
-      for (const dup of group.duplicates) {
+      console.log(chalk.green(`  ✓ Keep: ${(group.primary as any).name} (precedence: ${(group.primary as any).precedence})`));
+      for (const dup of (group.duplicates as any[])) {
         console.log(chalk.red(`  ✗ Remove: ${dup.name} (precedence: ${dup.precedence})`));
       }
       console.log();
@@ -183,13 +183,13 @@ class RuleDeduplicator {
     let deleted = 0;
     
     for (const group of groups.values()) {
-      for (const dup of group.duplicates) {
+      for (const dup of (group.duplicates as any[])) {
         const spinner = ora(`Deleting: ${dup.name}`).start();
         try {
           await this.gateway.deleteGatewayRule(dup.id);
           deleted++;
           spinner.succeed(`Deleted: ${dup.name}`);
-        } catch (error) {
+        } catch (error: any) {
           spinner.fail(`Failed to delete: ${dup.name}`);
         }
         // Small delay to avoid rate limiting
@@ -232,7 +232,7 @@ class RuleDeduplicator {
       categorized.set(category.name, []);
     }
     
-    for (const rule of rules) {
+    for (const rule of (rules as any[])) {
       let assigned = false;
       for (const category of categoryRanges) {
         if (category.pattern.test(rule.name)) {
@@ -269,7 +269,7 @@ class RuleDeduplicator {
             await this.gateway.updateRulePrecedence(rule.id, currentPrecedence);
             totalReordered++;
             spinner.succeed(`Reordered: ${rule.name}`);
-          } catch (error) {
+          } catch (error: any) {
             spinner.fail(`Failed: ${rule.name}`);
           }
           await new Promise(resolve => setTimeout(resolve, 300));
@@ -307,7 +307,7 @@ async function main() {
     console.log(chalk.cyan('Monitor your dashboard to verify everything is working:'));
     console.log(chalk.gray('http://localhost:3001\n'));
     
-  } catch (error) {
+  } catch (error: any) {
     console.error(chalk.red('❌ Error:'), error.message);
     process.exit(1);
   }

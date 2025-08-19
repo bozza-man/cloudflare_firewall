@@ -163,7 +163,7 @@ async function findBlockingRules(): Promise<void> {
     console.log(chalk.yellow('\n💡 These domains are being blocked by your Gateway configuration.'));
     console.log(chalk.blue('This is why the enhanced security review correctly flagged them as inaccessible.'));
 
-  } catch (error) {
+  } catch (error: any) {
     console.error(chalk.red('❌ Error analyzing Gateway rules:'), error);
   }
 }

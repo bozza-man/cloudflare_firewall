@@ -6,8 +6,6 @@ import { EnhancedGatewayRuleManager } from '../rules/enhanced-gateway-rule-manag
 import { SmartDomainCategorizer } from '../scripts/smart-domain-categorizer.js';
 import chalk from 'chalk';
 import ora from 'ora';
-import fs from 'fs/promises';
-import { createReadStream } from 'fs';
 import { createInterface } from 'readline';
 
 interface Command {
@@ -229,7 +227,7 @@ export class NaturalLanguageInterface {
     
     console.log(chalk.green(`📋 Found ${domains.length} domains to categorize`));
     
-    const assignments = await this.categorizer.categorizeDomains(domains, {
+    await this.categorizer.categorizeDomains(domains, {
       useAI: command.parameters.useAI || false,
       dryRun: command.parameters.dryRun || false,
       outputFile: `categorization-${Date.now()}.json`
@@ -274,7 +272,8 @@ export class NaturalLanguageInterface {
       // Let AI generate the rule from natural language
       console.log(chalk.blue('🤖 Using AI to create rule from your description...'));
       
-      const rule = await this.ruleManager.createRuleFromDescription(command.intent);
+      const rule = await this.ruleManager.createRuleFromNLDescription(command.intent) ||
+                   await this.ruleManager.createRule({...command.intent as any});
       console.log(chalk.green(`✅ Created rule: ${rule.name} (ID: ${rule.id})`));
     }
   }
@@ -310,7 +309,7 @@ export class NaturalLanguageInterface {
   /**
    * Execute analysis of current configuration
    */
-  private async executeAnalysis(command: Command): Promise<void> {
+  private async executeAnalysis(_command: Command): Promise<void> {
     console.log(chalk.cyan.bold('\n🔍 Gateway Configuration Analysis\n'));
     
     const spinner = ora('Analyzing your Gateway configuration...').start();
@@ -470,7 +469,7 @@ export class NaturalLanguageInterface {
   private extractRuleName(input: string): string | undefined {
     const patterns = [
       /(?:name|call|label)(?:\s+(?:it|this|the\s+rule))?\s+"([^"]+)"/i,
-      /(?:name|call|label)(?:\s+(?:it|this|the\s+rule))?\s+([^,\n\.]+)/i
+      /(?:name|call|label)(?:\s+(?:it|this|the\s+rule))?\s+([^,\n.]+)/i
     ];
     
     for (const pattern of patterns) {

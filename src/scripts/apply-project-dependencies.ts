@@ -2,11 +2,13 @@ import { GatewayClient } from '../api/gateway-client.js';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 
+
+
 type Rule = {
   name: string;
   description: string;
   precedence: number;
-  action: string;
+  action: 'allow' | 'block' | 'isolate' | 'do_not_isolate' | 'do_not_inspect' | 'inspect';
   enabled: boolean;
   filters: string[];
   traffic: string;
@@ -33,7 +35,7 @@ async function applyRule(client: GatewayClient, rule: Rule) {
       const result = await client.createGatewayRule(rule);
       console.log(`Created rule: ${rule.name} (${result.id})`);
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error(`Failed to apply rule ${rule.name}:`, error);
   }
 }

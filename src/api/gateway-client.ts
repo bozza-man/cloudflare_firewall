@@ -11,8 +11,8 @@ import type {
 } from '../types/gateway.js';
 
 export class GatewayClient {
-  private api: AxiosInstance;
-  private accountId: string;
+  public api: AxiosInstance;
+  public accountId: string;
 
   constructor() {
     this.accountId = config.cloudflare.accountId;

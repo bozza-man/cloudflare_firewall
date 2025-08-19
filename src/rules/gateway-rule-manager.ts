@@ -3,6 +3,7 @@ import { GatewayAIAssistant } from '../llm/gateway-ai-assistant.js';
 import { ConflictResolver } from './conflict-resolver.js';
 import { DomainConflictDetector } from './domain-conflict-detector.js';
 import { DomainVerifier } from '../utils/domain-verifier.js';
+import { RuleNamingTemplate } from '../utils/rule-naming-template.js';
 import type { 
   GatewayRule, 
   CreateGatewayRuleRequest, 
@@ -45,6 +46,21 @@ export class GatewayRuleManager {
     const spinner = ora('Analyzing new rule...').start();
     
     try {
+      // Apply standardized naming template if not already standardized
+      if (!RuleNamingTemplate.isStandardized(rule.name)) {
+        const standardizedName = RuleNamingTemplate.standardizeRuleName({
+          ...rule,
+          filters: rule.filters,
+          action: rule.action
+        });
+        
+        console.log(chalk.cyan('\n📝 Applying standardized naming template:'));
+        console.log(chalk.gray(`   Original: ${rule.name}`));
+        console.log(chalk.green(`   Standardized: ${standardizedName}`));
+        
+        rule.name = standardizedName;
+      }
+      
       const existingRules = await this.gateway.listGatewayRules();
       
       // LESSON LEARNED: Always check for exact duplicates first!
@@ -296,9 +312,14 @@ export class GatewayRuleManager {
   }
 
   async createRuleFromDescription(description: string): Promise<GatewayRule> {
-    const spinner = ora('Generating rule from description...').start();
+    const spinner = ora('Analyzing description and existing rules...').start();
     
     try {
+      // First, check existing rules and lists to see if we should add to an existing rule/list
+      const existingRules = await this.gateway.listGatewayRules();
+      const existingLists = await this.gateway.listGatewayLists();
+      
+      // Generate filters from description
       const { filters, explanation, traffic } = await this.ai.generateRuleFilters(description);
       
       if (filters.length === 0) {
@@ -307,6 +328,84 @@ export class GatewayRuleManager {
       }
 
       spinner.succeed(`Generated filters: ${explanation}`);
+      
+      // Extract domains and other characteristics from the generated filters
+      const domains = this.domainVerifier.extractDomainsFromFilters(filters);
+      const inferredAction = this.inferActionFromDescription(description);
+      const inferredTrafficType = RuleNamingTemplate.detectTrafficType({ filters, traffic });
+      
+      // Check if these domains can be added to an existing list or rule
+      const existingMatch = await this.findExistingRuleOrListMatch(
+        domains,
+        inferredAction,
+        inferredTrafficType,
+        existingRules,
+        existingLists
+      );
+      
+      if (existingMatch) {
+        spinner.stop();
+        console.log(chalk.yellow('\n🔍 Found existing rule/list that could be used:'));
+        console.log(`   ${existingMatch.type}: ${existingMatch.name}`);
+        
+        if (existingMatch.type === 'list') {
+          console.log(chalk.cyan(`\n💡 Consider adding these domains to the existing list "${existingMatch.name}":`));
+          domains.forEach(d => console.log(`   - ${d}`));
+          console.log(chalk.gray('\nUse the "lists" command to manage Gateway Lists.'));
+          
+          // Ask if they want to create a new rule anyway
+          if (process.stdin.isTTY) {
+            const { default: inquirer } = await import('inquirer');
+            const { createNew } = await inquirer.prompt([{
+              type: 'confirm',
+              name: 'createNew',
+              message: 'Create a new rule anyway?',
+              default: false
+            }]);
+            
+            if (!createNew) {
+              throw new Error('Rule creation cancelled - use existing list instead');
+            }
+          }
+        } else if (existingMatch.type === 'rule') {
+          console.log(chalk.cyan(`\n💡 These domains could be added to the existing rule "${existingMatch.name}":`));
+          domains.forEach(d => console.log(`   - ${d}`));
+          
+          if (process.stdin.isTTY) {
+            const { default: inquirer } = await import('inquirer');
+            const { choice } = await inquirer.prompt([{
+              type: 'list',
+              name: 'choice',
+              message: 'What would you like to do?',
+              choices: [
+                { name: 'Add domains to existing rule', value: 'update' },
+                { name: 'Create a new rule', value: 'new' },
+                { name: 'Cancel', value: 'cancel' }
+              ]
+            }]);
+            
+            if (choice === 'cancel') {
+              throw new Error('Rule creation cancelled');
+            } else if (choice === 'update') {
+              // Update the existing rule with new domains
+              spinner.start('Updating existing rule...');
+              const updatedFilters = await this.mergeFiltersWithDomains(
+                existingMatch.rule!.filters,
+                domains
+              );
+              
+              const updatedRule = await this.updateRule({
+                id: existingMatch.rule!.id,
+                filters: updatedFilters
+              });
+              
+              console.log(chalk.green(`\n✅ Updated existing rule "${existingMatch.name}" with new domains`));
+              return updatedRule;
+            }
+          }
+        }
+      }
+      
       console.log(chalk.cyan('\nGenerated filters:'));
       filters.forEach(filter => console.log(`  - ${filter}`));
 
@@ -319,11 +418,25 @@ export class GatewayRuleManager {
       // Check if stdin is a TTY (interactive terminal)
       if (process.stdin.isTTY) {
         const { default: inquirer } = await import('inquirer');
+        
+        // Auto-infer values from description
+        const inferredAction = this.inferActionFromDescription(description);
+        const trafficType = RuleNamingTemplate.detectTrafficType({ filters, traffic });
+        const category = RuleNamingTemplate.suggestCategory({ filters, action: inferredAction });
+        const descriptionText = RuleNamingTemplate.generateDescription(filters, inferredAction);
+        const defaultName = RuleNamingTemplate.generateRuleName({
+          trafficType,
+          category,
+          description: descriptionText,
+          action: inferredAction === 'allow' ? 'Allow' : inferredAction === 'block' ? 'Block' : undefined
+        });
+        
         answers = await inquirer.prompt([
           {
             type: 'input',
             name: 'name',
             message: 'Enter a name for this rule:',
+            default: defaultName,
             validate: (input) => input.trim().length > 0 || 'Name is required'
           },
           {
@@ -331,7 +444,7 @@ export class GatewayRuleManager {
             name: 'action',
             message: 'Select the action:',
             choices: ['block', 'allow', 'isolate', 'do_not_isolate', 'do_not_inspect'],
-            default: 'block'
+            default: inferredAction
           },
           {
             type: 'confirm',
@@ -341,18 +454,29 @@ export class GatewayRuleManager {
           }
         ]);
       } else {
-        // Non-interactive mode - use defaults or derive from description
-        const ruleName = description.replace(/[^a-zA-Z0-9\s]/g, '').trim();
-        const action = description.toLowerCase().includes('allow') ? 'allow' : 'block';
+        // Non-interactive mode - use inferred values from description
+        const baseAction = this.inferActionFromDescription(description);
+        
+        // Generate standardized name
+        const trafficType = RuleNamingTemplate.detectTrafficType({ filters, traffic });
+        const category = RuleNamingTemplate.suggestCategory({ filters, action: baseAction });
+        const descriptionText = RuleNamingTemplate.generateDescription(filters, baseAction);
+        
+        const ruleName = RuleNamingTemplate.generateRuleName({
+          trafficType,
+          category,
+          description: descriptionText,
+          action: baseAction === 'allow' ? 'Allow' : 'Block'
+        });
         
         console.log(`\n${chalk.cyan('Non-interactive mode detected. Using defaults:')}`);
         console.log(`  Rule name: ${ruleName}`);
-        console.log(`  Action: ${action}`);
+        console.log(`  Action: ${baseAction}`);
         console.log(`  Confirmed: Yes`);
         
         answers = {
           name: ruleName,
-          action: action,
+          action: baseAction,
           confirm: true
         };
       }
@@ -648,6 +772,110 @@ export class GatewayRuleManager {
       spinner.fail('Failed to analyze precedence');
       throw error;
     }
+  }
+
+  /**
+   * Infer action from natural language description
+   */
+  private inferActionFromDescription(description: string): 'allow' | 'block' | 'isolate' | 'do_not_isolate' | 'do_not_inspect' {
+    const lowerDesc = description.toLowerCase();
+    
+    if (lowerDesc.includes('allow') || lowerDesc.includes('permit') || lowerDesc.includes('whitelist')) {
+      return 'allow';
+    } else if (lowerDesc.includes('isolate') || lowerDesc.includes('sandbox')) {
+      return 'isolate';
+    } else if (lowerDesc.includes('do not isolate') || lowerDesc.includes("don't isolate")) {
+      return 'do_not_isolate';
+    } else if (lowerDesc.includes('bypass') || lowerDesc.includes('do not inspect') || lowerDesc.includes("don't inspect")) {
+      return 'do_not_inspect';
+    } else {
+      // Default to block for security
+      return 'block';
+    }
+  }
+
+  /**
+   * Find existing rule or list that matches the domains/action
+   */
+  private async findExistingRuleOrListMatch(
+    domains: string[],
+    action: string,
+    trafficType: string,
+    existingRules: GatewayRule[],
+    existingLists: GatewayList[]
+  ): Promise<{ type: 'rule' | 'list'; name: string; rule?: GatewayRule; list?: GatewayList } | null> {
+    if (domains.length === 0) return null;
+    
+    // Check for rules with similar domains and same action
+    for (const rule of existingRules) {
+      if (rule.action === action && rule.traffic === trafficType) {
+        const ruleDomains = this.extractDomainsFromRule(rule);
+        const overlap = domains.filter(d => ruleDomains.includes(d));
+        
+        // If there's significant overlap, suggest using this rule
+        if (overlap.length > 0 && overlap.length >= domains.length * 0.5) {
+          return { type: 'rule', name: rule.name, rule };
+        }
+      }
+    }
+    
+    // Check for lists that could be used
+    for (const list of existingLists) {
+      // Check if list name suggests it's for similar purpose
+      const listNameLower = list.name.toLowerCase();
+      const actionMatch = (action === 'allow' && listNameLower.includes('allow')) ||
+                          (action === 'block' && listNameLower.includes('block'));
+      
+      if (actionMatch && list.type === 'DOMAIN') {
+        // Check if any rules already use this list for similar purpose
+        const rulesUsingList = existingRules.filter(rule => {
+          return rule.filters.some(f => f.includes(`$${list.id}`));
+        });
+        
+        if (rulesUsingList.some(r => r.action === action)) {
+          return { type: 'list', name: list.name, list };
+        }
+      }
+    }
+    
+    return null;
+  }
+
+  /**
+   * Merge existing filters with new domains
+   */
+  private async mergeFiltersWithDomains(existingFilters: string[], newDomains: string[]): Promise<string[]> {
+    const mergedFilters = [...existingFilters];
+    
+    // Find DNS filter and add new domains
+    let dnsFilterIndex = mergedFilters.findIndex(f => f.includes('dns.fqdn'));
+    
+    if (dnsFilterIndex >= 0) {
+      // Extract existing domains from the filter
+      const existingFilter = mergedFilters[dnsFilterIndex];
+      const existingDomains = this.domainVerifier.extractDomainsFromFilters([existingFilter]);
+      
+      // Combine unique domains
+      const allDomains = [...new Set([...existingDomains, ...newDomains])];
+      
+      // Rebuild the filter
+      if (allDomains.length === 1) {
+        mergedFilters[dnsFilterIndex] = `dns.fqdn == "${allDomains[0]}"`;
+      } else {
+        const domainList = allDomains.map(d => `"${d}"`).join(' ');
+        mergedFilters[dnsFilterIndex] = `dns.fqdn in {${domainList}}`;
+      }
+    } else {
+      // Add new DNS filter
+      if (newDomains.length === 1) {
+        mergedFilters.push(`dns.fqdn == "${newDomains[0]}"`);
+      } else {
+        const domainList = newDomains.map(d => `"${d}"`).join(' ');
+        mergedFilters.push(`dns.fqdn in {${domainList}}`);
+      }
+    }
+    
+    return mergedFilters;
   }
 
   /**

@@ -185,7 +185,7 @@ export class GatewayLogCollector extends EventEmitter {
     }
   }
 
-  private processLog(rawLog: unknown, logType: string): void {
+  private processLog(rawLog: any, logType: string): void {
     try {
       // Generate unique ID for deduplication
       const logId = this.generateLogId(rawLog);
@@ -215,13 +215,13 @@ export class GatewayLogCollector extends EventEmitter {
     }
   }
 
-  private generateLogId(log: unknown): string {
+  private generateLogId(log: any): string {
     // Generate a unique ID based on log content
     const key = `${log.timestamp || Date.now()}_${log.id || ''}_${log.action || ''}_${log.ruleId || ''}`;
     return key;
   }
 
-  private transformLog(rawLog: unknown, logType: string): GatewayLog {
+  private transformLog(rawLog: any, logType: string): GatewayLog {
     const level = this.determineLogLevel(rawLog);
     
     return {
@@ -259,7 +259,7 @@ export class GatewayLogCollector extends EventEmitter {
     };
   }
 
-  private determineLogLevel(log: unknown): LogLevel {
+  private determineLogLevel(log: any): LogLevel {
     // Determine log level based on action and other factors
     const logData = log as Record<string, unknown>;
     const action = ((logData.action || logData.decision || '') as string).toLowerCase();

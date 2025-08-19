@@ -378,8 +378,12 @@ export class SecureNaturalLanguageInterface {
       // Let AI generate the rule from natural language with security validation
       console.log(chalk.blue('🤖 Using AI to create secure rule from your description...'));
       
-      const rule = await this.ruleManager.createRuleFromDescription(command.intent);
-      console.log(chalk.green(`✅ Created secure rule: ${rule.name} (ID: ${rule.id})`));
+      const rule = await this.ruleManager.createRuleFromNLDescription(command.intent);
+      if (rule) {
+        console.log(chalk.green(`✅ Created secure rule: ${rule.name} (ID: ${rule.id})`));
+      } else {
+        console.log(chalk.red('❌ Failed to create rule from description'));
+      }
     }
   }
 

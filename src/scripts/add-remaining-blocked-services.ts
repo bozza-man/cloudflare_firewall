@@ -154,7 +154,7 @@ async function addRemainingBlockedServices() {
       results.success.push(ruleData.name);
       spinner.succeed(`✅ Created: ${ruleData.name} (precedence: ${ruleData.precedence})`);
       
-    } catch (error) {
+    } catch (error: any) {
       const errorMessage = error.response?.data?.errors?.[0]?.message || error.message;
       
       if (errorMessage.includes('already exists') || 
@@ -225,7 +225,7 @@ async function addRemainingBlockedServices() {
     const blockRules = allRules.filter(r => r.action === 'block');
     console.log(chalk.green(`   Allow rules: ${allowRules.length}`));
     console.log(chalk.red(`   Block rules: ${blockRules.length}`));
-  } catch (error) {
+  } catch (error: any) {
     // Ignore
   }
 }

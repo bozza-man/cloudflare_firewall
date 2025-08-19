@@ -60,7 +60,7 @@ async function testDNSResolution(domain: string): Promise<ConnectivityTest['dnsR
     } else {
       return { success: false, ips: [], error: 'No IP addresses found' };
     }
-  } catch (error) {
+  } catch (error: any) {
     return { 
       success: false, 
       ips: [], 
@@ -78,7 +78,7 @@ async function testHTTP(domain: string): Promise<ConnectivityTest['httpCheck']> 
     const statusCode = statusMatch ? parseInt(statusMatch[1]) : undefined;
     
     return { success: true, statusCode };
-  } catch (error) {
+  } catch (error: any) {
     return { 
       success: false, 
       error: error instanceof Error ? error.message : 'HTTP request failed' 
@@ -95,7 +95,7 @@ async function testHTTPS(domain: string): Promise<ConnectivityTest['httpsCheck']
     const statusCode = statusMatch ? parseInt(statusMatch[1]) : undefined;
     
     return { success: true, statusCode };
-  } catch (error) {
+  } catch (error: any) {
     return { 
       success: false, 
       error: error instanceof Error ? error.message : 'HTTPS request failed' 
@@ -112,7 +112,7 @@ async function testPing(domain: string): Promise<ConnectivityTest['pingTest']> {
     const avgTime = avgMatch ? avgMatch[1] + 'ms' : undefined;
     
     return { success: true, avgTime };
-  } catch (error) {
+  } catch (error: any) {
     return { 
       success: false, 
       error: error instanceof Error ? error.message : 'Ping failed' 

@@ -6,18 +6,31 @@ import chalk from 'chalk';
 import { program } from 'commander';
 import fs from 'fs/promises';
 
-interface ScanCommandOptions {
-  type: 'rules' | 'lists' | 'both' | 'domains';
+interface CommandOptions {
+  type: string;
+  disableThreatIntelligence?: boolean;
+  autoBlockMalicious?: boolean;
+  requireManualReview?: boolean;
+  confidenceThreshold: string;
+  allowedRiskLevel: string;
+  rateLimit: string;
   output?: string;
-  rateLimitMs: number;
-  confidenceThreshold: number;
-  allowedRiskLevel: 'low' | 'medium' | 'high';
-  autoBlockMalicious: boolean;
-  enableThreatIntelligence: boolean;
-  requireManualReview: boolean;
-  domainsFile?: string;
-  domains?: string[];
-  verbose: boolean;
+}
+
+interface ValidationOptions {
+  file?: string;
+  output?: string;
+  confidenceThreshold: string;
+  rateLimit: string;
+  verbose?: boolean;
+}
+
+interface LookupOptions {
+  verbose?: boolean;
+}
+
+interface StatsOptions {
+  detailed?: boolean;
 }
 
 export class SecurityScanCommand {
@@ -107,13 +120,13 @@ export class SecurityScanCommand {
   /**
    * Execute comprehensive security scan
    */
-  private async executeScan(options: any): Promise<void> {
+  private async executeScan(options: CommandOptions): Promise<void> {
     console.log(chalk.cyan.bold('🛡️  Cloudflare Gateway Security Scanner\n'));
     
     const scanOptions: SecurityScanOptions = {
       enableThreatIntelligence: !options.disableThreatIntelligence,
-      autoBlockMalicious: options.autoBlockMalicious,
-      requireManualReview: options.requireManualReview,
+      autoBlockMalicious: options.autoBlockMalicious || false,
+      requireManualReview: options.requireManualReview || false,
       confidenceThreshold: parseFloat(options.confidenceThreshold),
       allowedRiskLevel: options.allowedRiskLevel as 'low' | 'medium' | 'high',
       rateLimitMs: parseInt(options.rateLimit),
@@ -178,7 +191,7 @@ export class SecurityScanCommand {
   /**
    * Execute domain validation
    */
-  private async executeValidation(inputDomains: string[], options: any): Promise<void> {
+  private async executeValidation(inputDomains: string[], options: ValidationOptions): Promise<void> {
     console.log(chalk.cyan.bold('🔍 Domain Security Validation\n'));
 
     let domains: string[] = inputDomains;
@@ -277,7 +290,7 @@ export class SecurityScanCommand {
   /**
    * Execute threat intelligence lookup
    */
-  private async executeLookup(target: string, options: any): Promise<void> {
+  private async executeLookup(target: string, options: LookupOptions): Promise<void> {
     console.log(chalk.cyan.bold(`🔍 Threat Intelligence Lookup: ${target}\n`));
 
     const isIP = this.isValidIP(target);
@@ -481,7 +494,7 @@ export class SecurityScanCommand {
   /**
    * Execute statistics command
    */
-  private async executeStats(options: any): Promise<void> {
+  private async executeStats(options: StatsOptions): Promise<void> {
     console.log(chalk.cyan.bold('📊 Gateway Security Statistics\n'));
 
     try {
@@ -630,5 +643,3 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     process.exit(1);
   });
 }
-
-export { SecurityScanCommand };

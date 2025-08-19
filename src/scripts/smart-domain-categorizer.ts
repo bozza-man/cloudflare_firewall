@@ -151,7 +151,7 @@ export class SmartDomainCategorizer {
       
       return assignments;
       
-    } catch (error) {
+    } catch (error: any) {
       spinner.fail('Domain categorization failed');
       throw error;
     }
@@ -197,7 +197,7 @@ export class SmartDomainCategorizer {
                                  aiAnalysis.priority === 'medium' ? 'important' : 'normal',
           tags: [aiAnalysis.category, aiAnalysis.priority]
         };
-      } catch (error) {
+      } catch (error: any) {
         console.log(chalk.yellow(`⚠️  AI analysis failed for ${domain}, using pattern match`));
       }
     }
@@ -430,7 +430,7 @@ export class SmartDomainCategorizer {
       
       spinner.succeed(`Successfully processed ${assignments.length} Gateway Lists`);
       
-    } catch (error) {
+    } catch (error: any) {
       spinner.fail('Failed to apply list assignments');
       throw error;
     }
@@ -536,7 +536,7 @@ async function main() {
     
     console.log(chalk.green('\n✅ Domain categorization completed successfully!'));
     
-  } catch (error) {
+  } catch (error: any) {
     console.error(chalk.red('❌ Error:'), error.message);
     process.exit(1);
   }

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
+
 import chalk from 'chalk';
 import express from 'express';
 import { Server } from 'http';
@@ -9,6 +10,7 @@ import { fileURLToPath } from 'url';
 import { LogStreamServer } from '../streaming/log-stream-server.js';
 import { GatewayLogCollector } from '../streaming/gateway-log-collector.js';
 import { GatewayClient } from '../api/gateway-client.js';
+import type { GatewayLog, LogLevel } from '../types/streaming.js';
 import open from 'open';
 import ora from 'ora';
 
@@ -176,10 +178,10 @@ export class StreamLogsCommand {
       
       const randomElement = <T>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
       
-      const log = {
+      const log: GatewayLog = {
         id: `log-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         timestamp: new Date().toISOString(),
-        level: randomElement(levels) as 'info' | 'warn' | 'error' | 'debug',
+        level: randomElement(levels) as LogLevel,
         type: 'activity',
         action: randomElement(actions),
         ruleId: randomElement(rules).id,
@@ -266,7 +268,7 @@ export class StreamLogsCommand {
         // Stop Express server
         if (this.expressServer) {
           await new Promise((resolve) => {
-            this.expressServer.close(resolve);
+            this.expressServer!.close(resolve as () => void);
           });
         }
         

@@ -217,7 +217,7 @@ async function addEssentialAllowRules() {
       results.success.push(ruleData.name);
       spinner.succeed(`✅ Created: ${ruleData.name} (precedence: ${ruleData.precedence})`);
       
-    } catch (error) {
+    } catch (error: any) {
       const errorMessage = error.response?.data?.errors?.[0]?.message || error.message;
       
       if (errorMessage.includes('already exists') || 

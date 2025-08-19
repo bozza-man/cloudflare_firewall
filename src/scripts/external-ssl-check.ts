@@ -60,7 +60,7 @@ async function checkSSLLabs(domain: string): Promise<ExternalSSLCheck | null> {
     }
     
     return null;
-  } catch (error) {
+  } catch (error: any) {
     return {
       domain,
       error: `SSL Labs check failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
@@ -97,7 +97,7 @@ async function checkCertificateTransparencyLogs(domain: string): Promise<Externa
     }
     
     return null;
-  } catch (error) {
+  } catch (error: any) {
     return {
       domain,
       error: `CT logs check failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
@@ -114,7 +114,7 @@ async function checkVirusTotal(domain: string): Promise<ExternalSSLCheck | null>
     // For demonstration, we'll skip this unless you have an API key
     return null;
     
-  } catch (error) {
+  } catch (error: any) {
     return {
       domain,
       error: `VirusTotal check failed: ${error instanceof Error ? error.message : 'Unknown error'}`,

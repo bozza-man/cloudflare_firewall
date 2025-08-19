@@ -6,8 +6,9 @@ import chalk from 'chalk';
 import type { OSINTAnalysis } from './threat-intelligence-client.js';
 
 const execAsync = promisify(exec);
-const dnsLookup = promisify(dns.lookup);
-const dnsResolve = promisify(dns.resolve);
+  // These are defined but not currently used
+  const _dnsLookup = promisify(dns.lookup);
+  const _dnsResolve = promisify(dns.resolve);
 const dnsResolvePtr = promisify(dns.reverse);
 
 export interface OSINTProviderConfig {
@@ -36,9 +37,9 @@ export class OSINTProviders {
   constructor(config: Partial<OSINTProviderConfig> = {}) {
     this.config = {
       enableFreeServices: true,
-      ipApiKey: undefined,
-      whoisXmlApiKey: undefined,
-      securityTrailsApiKey: undefined,
+      ipApiKey: process.env.IP_API_KEY || "",
+      whoisXmlApiKey: process.env.WHOIS_XML_API_KEY || "",
+      securityTrailsApiKey: process.env.SECURITY_TRAILS_API_KEY || "",
       maxConcurrent: 3,
       rateLimitMs: 1000,
       requestTimeout: 10000,
@@ -119,7 +120,8 @@ export class OSINTProviders {
 
       // Fallback to API services
       if (this.config.whoisXmlApiKey) {
-        return await this.getWhoisXmlApi(domain);
+        const result = await this.getWhoisXmlApi(domain);
+        return result === null ? undefined : result;
       }
 
       return undefined;
@@ -135,10 +137,10 @@ export class OSINTProviders {
   private async getRdapData(domain: string): Promise<OSINTAnalysis['whoisData'] | null> {
     try {
       const tld = domain.split('.').pop()?.toLowerCase();
-      if (!tld) return null;
+      if (!tld) return undefined;
 
       // Common RDAP servers
-      const rdapServers = {
+      const rdapServers: Record<string, string> = {
         'com': 'https://rdap.verisign.com/com/v1/',
         'net': 'https://rdap.verisign.com/net/v1/',
         'org': 'https://rdap.pir.org/',
@@ -151,7 +153,7 @@ export class OSINTProviders {
       };
 
       const serverUrl = rdapServers[tld];
-      if (!serverUrl) return null;
+      if (!serverUrl) return undefined;
 
       const response = await this.rateLimitedRequest(() => 
         this.httpClient.get(`${serverUrl}domain/${domain}`)
@@ -161,19 +163,19 @@ export class OSINTProviders {
         const data = response.data;
         
         return {
-          registrar: data.entities?.find((e: any) => e.roles?.includes('registrar'))?.vcardArray?.[1]?.find((v: any) => v[0] === 'fn')?.[3],
-          registrationDate: data.events?.find((e: any) => e.eventAction === 'registration')?.eventDate,
-          expirationDate: data.events?.find((e: any) => e.eventAction === 'expiration')?.eventDate,
-          nameServers: data.nameservers?.map((ns: any) => ns.ldhName),
-          registrantCountry: data.entities?.find((e: any) => e.roles?.includes('registrant'))?.vcardArray?.[1]?.find((v: any) => v[0] === 'adr')?.[3]?.[6],
-          registrantOrganization: data.entities?.find((e: any) => e.roles?.includes('registrant'))?.vcardArray?.[1]?.find((v: any) => v[0] === 'org')?.[3],
-          privacyProtection: data.entities?.some((e: any) => e.vcardArray?.[1]?.some((v: any) => v[3]?.toLowerCase().includes('privacy')))
+          registrar: data.entities?.find((e: { roles?: string[] }) => e.roles?.includes('registrar'))?.vcardArray?.[1]?.find((v: unknown[]) => v[0] === 'fn')?.[3],
+          registrationDate: data.events?.find((e: { eventAction?: string }) => e.eventAction === 'registration')?.eventDate,
+          expirationDate: data.events?.find((e: { eventAction?: string }) => e.eventAction === 'expiration')?.eventDate,
+          nameServers: data.nameservers?.map((ns: { ldhName?: string }) => ns.ldhName),
+          registrantCountry: data.entities?.find((e: { roles?: string[] }) => e.roles?.includes('registrant'))?.vcardArray?.[1]?.find((v: unknown[]) => v[0] === 'adr')?.[3]?.[6],
+          registrantOrganization: data.entities?.find((e: { roles?: string[] }) => e.roles?.includes('registrant'))?.vcardArray?.[1]?.find((v: unknown[]) => v[0] === 'org')?.[3],
+          privacyProtection: data.entities?.some((e: { vcardArray?: unknown[][] }) => e.vcardArray?.[1]?.some((v: any) => v[3]?.toString().toLowerCase().includes('privacy')))
         };
       }
 
-      return null;
+      return undefined;
     } catch (error) {
-      return null;
+      return undefined;
     }
   }
 
@@ -203,7 +205,7 @@ export class OSINTProviders {
         privacyProtection: stdout.toLowerCase().includes('privacy') || stdout.toLowerCase().includes('redacted')
       };
     } catch (error) {
-      return null;
+      return undefined;
     }
   }
 
@@ -211,7 +213,7 @@ export class OSINTProviders {
    * WhoisXML API (premium service)
    */
   private async getWhoisXmlApi(domain: string): Promise<OSINTAnalysis['whoisData'] | null> {
-    if (!this.config.whoisXmlApiKey) return null;
+    if (!this.config.whoisXmlApiKey) return undefined;
 
     try {
       const response = await this.rateLimitedRequest(() =>
@@ -225,7 +227,7 @@ export class OSINTProviders {
       );
 
       const whoisRecord = response.data.WhoisRecord;
-      if (!whoisRecord) return null;
+      if (!whoisRecord) return undefined;
 
       return {
         registrar: whoisRecord.registrarName,
@@ -237,7 +239,7 @@ export class OSINTProviders {
         privacyProtection: whoisRecord.registrant?.name?.toLowerCase().includes('privacy')
       };
     } catch (error) {
-      return null;
+      return undefined;
     }
   }
 
@@ -280,20 +282,26 @@ export class OSINTProviders {
       resolver.setServers(['8.8.8.8', '1.1.1.1']);
 
       switch (type) {
-        case 'A':
+        case 'A': {
           return await resolver.resolve4(domain);
-        case 'AAAA':
+        }
+        case 'AAAA': {
           return await resolver.resolve6(domain);
-        case 'MX':
+        }
+        case 'MX': {
           const mx = await resolver.resolveMx(domain);
           return mx.map(record => `${record.priority} ${record.exchange}`);
-        case 'TXT':
+        }
+        case 'TXT': {
           const txt = await resolver.resolveTxt(domain);
           return txt.map(record => record.join(''));
-        case 'CNAME':
+        }
+        case 'CNAME': {
           return await resolver.resolveCname(domain);
-        case 'NS':
+        }
+        case 'NS': {
           return await resolver.resolveNs(domain);
+        }
         default:
           return [];
       }
@@ -346,9 +354,9 @@ export class OSINTProviders {
         };
       }
 
-      return null;
+      return undefined;
     } catch (error) {
-      return null;
+      return undefined;
     }
   }
 
@@ -374,9 +382,9 @@ export class OSINTProviders {
         };
       }
 
-      return null;
+      return undefined;
     } catch (error) {
-      return null;
+      return undefined;
     }
   }
 
@@ -395,8 +403,8 @@ export class OSINTProviders {
 
       if (response.data && Array.isArray(response.data) && response.data.length > 0) {
         // Get the most recent certificate
-        const mostRecent = response.data.sort((a: any, b: any) => 
-          new Date(b.not_after || b.entry_timestamp).getTime() - new Date(a.not_after || a.entry_timestamp).getTime()
+        const mostRecent = response.data.sort((a: { not_after?: string; entry_timestamp?: string }, b: { not_after?: string; entry_timestamp?: string }) => 
+          new Date(b.not_after || b.entry_timestamp || "").getTime() - new Date(a.not_after || a.entry_timestamp || "").getTime()
         )[0];
 
         return {
@@ -475,7 +483,7 @@ export class OSINTProviders {
       // For now, we'll use a simple approach based on domain patterns and public data
       // In a production environment, you might integrate with Clearbit, HunterIO, etc.
       
-      const wellKnownCompanies = {
+      const wellKnownCompanies: Record<string, { companyName: string; industry: string; founded: string }> = {
         'apple.com': { companyName: 'Apple Inc.', industry: 'Technology', founded: '1976' },
         'google.com': { companyName: 'Google LLC', industry: 'Technology', founded: '1998' },
         'microsoft.com': { companyName: 'Microsoft Corporation', industry: 'Technology', founded: '1975' },

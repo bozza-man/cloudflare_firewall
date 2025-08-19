@@ -89,7 +89,7 @@ async function revertChanges() {
         try {
           await api.deleteGatewayList(listId);
           console.log(`✅ Successfully deleted list "${operation.listName}"\n`);
-        } catch (error) {
+        } catch (error: any) {
           console.error(`❌ Failed to delete list "${operation.listName}":`, error);
         }
       } else {
@@ -122,7 +122,7 @@ async function revertChanges() {
           });
 
           console.log(`✅ Successfully updated "${operation.listName}" - removed ${operation.domainsToRemove.length} domains\n`);
-        } catch (error) {
+        } catch (error: any) {
           console.error(`❌ Failed to update list "${operation.listName}":`, error);
         }
       }
@@ -136,7 +136,7 @@ async function revertChanges() {
     console.log('- Deleted "IoT and Smart Devices" list');
     console.log('- Deleted "Miscellaneous Domains" list');
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('💥 Error during revert process:', error);
     process.exit(1);
   }

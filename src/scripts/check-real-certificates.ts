@@ -59,7 +59,7 @@ async function getCertificateInfo(domain: string): Promise<CertificateInfo> {
     
     return parseCertificateOutput(domain, stdout);
     
-  } catch (error) {
+  } catch (error: any) {
     return {
       domain,
       error: `Failed to retrieve certificate: ${error instanceof Error ? error.message : 'Unknown error'}`

@@ -6,6 +6,11 @@ import { promisify } from 'util';
 import { exec } from 'child_process';
 import { GatewayClient } from '../api/gateway-client.js';
 import { config } from '../utils/config.js';
+import { GatewayRule, GatewayList } from '../types/gateway.js';
+
+interface ErrorWithCode extends Error {
+  code?: string;
+}
 
 const execAsync = promisify(exec);
 
@@ -30,14 +35,14 @@ class GatewayHostChecker {
   /**
    * Fetch all Gateway rules
    */
-  async fetchGatewayRules(): Promise<any[]> {
+  async fetchGatewayRules(): Promise<GatewayRule[]> {
     try {
       console.log(chalk.blue('📋 Fetching all Gateway rules...'));
       const rules = await this.gatewayClient.listGatewayRules();
       console.log(chalk.green(`✅ Found ${rules.length} Gateway rules`));
       return rules;
     } catch (error: any) {
-      console.error(chalk.red(`❌ Error fetching Gateway rules: ${error.message}`));
+      console.error(chalk.red(`❌ Error fetching Gateway rules: ${error instanceof Error ? error.message : 'Unknown error'}`));
       return [];
     }
   }
@@ -45,14 +50,14 @@ class GatewayHostChecker {
   /**
    * Fetch all Gateway lists
    */
-  async fetchGatewayLists(): Promise<any[]> {
+  async fetchGatewayLists(): Promise<GatewayList[]> {
     try {
       console.log(chalk.blue('📋 Fetching all Gateway lists...'));
       const lists = await this.gatewayClient.listGatewayLists();
       console.log(chalk.green(`✅ Found ${lists.length} Gateway lists`));
       return lists;
     } catch (error: any) {
-      console.error(chalk.red(`❌ Error fetching Gateway lists: ${error.message}`));
+      console.error(chalk.red(`❌ Error fetching Gateway lists: ${error instanceof Error ? error.message : 'Unknown error'}`));
       return [];
     }
   }
@@ -63,8 +68,8 @@ class GatewayHostChecker {
   async fetchListItems(listId: string): Promise<string[]> {
     try {
       const list = await this.gatewayClient.getGatewayList(listId);
-      return list.items?.map((item: any) => item.value) || [];
-    } catch (error) {
+      return list.items?.map((item: { value: string }) => item.value) || [];
+    } catch (error: any) {
       return [];
     }
   }
@@ -72,7 +77,7 @@ class GatewayHostChecker {
   /**
    * Extract domains from rule traffic expression
    */
-  extractDomainsFromRule(rule: any): { domains: string[], source: string } {
+  extractDomainsFromRule(rule: GatewayRule): { domains: string[], source: string } {
     const domains = new Set<string>();
     const traffic = rule.traffic || '';
     const source = `Rule: ${rule.name}`;
@@ -172,9 +177,10 @@ class GatewayHostChecker {
         });
         result.httpConnectivity = 'success';
       } catch (error: any) {
-        if (error.code === 'ECONNABORTED') {
+        const err = error as ErrorWithCode;
+        if (err.code === 'ECONNABORTED') {
           result.httpConnectivity = 'timeout';
-        } else if (error.message.includes('SSL') || error.message.includes('certificate')) {
+        } else if (err instanceof Error && (err.message.includes('SSL') || err.message.includes('certificate'))) {
           result.httpConnectivity = 'ssl_error';
         } else {
           result.httpConnectivity = 'failed';
@@ -190,17 +196,18 @@ class GatewayHostChecker {
         });
         result.httpsConnectivity = 'success';
       } catch (error: any) {
-        if (error.code === 'ECONNABORTED') {
+        const err = error as ErrorWithCode;
+        if (err.code === 'ECONNABORTED') {
           result.httpsConnectivity = 'timeout';
-        } else if (error.message.includes('SSL') || error.message.includes('certificate')) {
+        } else if (err instanceof Error && (err.message.includes('SSL') || err.message.includes('certificate'))) {
           result.httpsConnectivity = 'ssl_error';
         } else {
           result.httpsConnectivity = 'failed';
         }
       }
       
-    } catch (dnsError: any) {
-      result.error = dnsError.message;
+    } catch (dnsError) {
+      result.error = dnsError instanceof Error ? dnsError.message : 'Unknown DNS error';
       
       // Check if DNS returns blocked IP (0.0.0.0)
       try {
@@ -208,7 +215,10 @@ class GatewayHostChecker {
         if (stdout.includes('0.0.0.0')) {
           result.error = 'Blocked by Gateway (DNS returns 0.0.0.0)';
         }
-      } catch {}
+      } catch (error: any) {
+        // Ignore nslookup errors as this is just an additional check
+        // The main DNS resolution error is already captured
+      }
     }
 
     return result;

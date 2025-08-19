@@ -1,6 +1,8 @@
 import { GatewayClient } from '../api/gateway-client.js';
 import { GatewayAIAssistant } from '../llm/gateway-ai-assistant.js';
 import { RuleAnalyzer } from './rule-analyzer.js';
+import { ListAnalyzer } from './list-analyzer.js';
+import { RuleNamingTemplate } from '../utils/rule-naming-template.js';
 import type { GatewayRule } from '../types/gateway.js';
 import type {
   AIAnalysisResponse,
@@ -53,11 +55,13 @@ export class RuleOptimizer {
   private gateway: GatewayClient;
   private ai: GatewayAIAssistant;
   private analyzer: RuleAnalyzer;
+  private listAnalyzer: ListAnalyzer;
 
   constructor() {
     this.gateway = new GatewayClient();
     this.ai = new GatewayAIAssistant();
     this.analyzer = new RuleAnalyzer();
+    this.listAnalyzer = new ListAnalyzer();
   }
 
   async analyzeAndOptimize(options: {
@@ -97,6 +101,14 @@ export class RuleOptimizer {
 
       // Display local analysis
       this.analyzer.displayAnalysis(localAnalysis);
+
+      // Run list effectiveness analysis
+      spinner.text = 'Analyzing Gateway Lists usage...';
+      const listAnalysis = await this.listAnalyzer.analyzeListEffectiveness(sortedRules);
+      spinner.succeed('List analysis complete');
+      
+      // Display list analysis
+      this.listAnalyzer.displayListAnalysis(listAnalysis);
 
       // Convert RuleAnalysis to LocalAnalysis format
       const convertedLocalAnalysis: LocalAnalysis = {
@@ -258,6 +270,39 @@ export class RuleOptimizer {
   ): void {
     if (!localAnalysis.issues || !Array.isArray(localAnalysis.issues)) return;
 
+    // Check all rules for naming standard compliance and missing descriptions
+    rules.forEach(rule => {
+      const updates: any = {};
+      let reasons: string[] = [];
+      
+      // Check if rule name follows the standard template
+      if (!RuleNamingTemplate.isStandardized(rule.name)) {
+        const standardizedName = RuleNamingTemplate.standardizeRuleName(rule);
+        if (standardizedName !== rule.name) {
+          updates.name = standardizedName;
+          reasons.push('Standardize rule name to follow template');
+        }
+      }
+      
+      // Check if rule lacks a description
+      if (!rule.description || rule.description.trim() === '') {
+        const generatedDescription = this.generateRuleDescription(rule);
+        if (generatedDescription) {
+          updates.description = generatedDescription;
+          reasons.push('Add missing description');
+        }
+      }
+      
+      // If there are updates to make, add to the plan
+      if (Object.keys(updates).length > 0 && !plan.rulesToUpdate.some(u => u.rule.id === rule.id)) {
+        plan.rulesToUpdate.push({
+          rule,
+          updates,
+          reason: reasons.join(' and ')
+        });
+      }
+    });
+
     // Group redundant rules for potential deletion
     const redundantRules = localAnalysis.issues.filter(
       (issue: LocalAnalysisIssue) => issue.category === 'redundancy' && issue.type === 'warning'
@@ -330,6 +375,132 @@ export class RuleOptimizer {
     }
 
     return updates;
+  }
+
+  private generateRuleDescription(rule: GatewayRule): string {
+    const { name, action, traffic, filters } = rule;
+    
+    // Parse rule characteristics
+    const domains = this.extractDomainsFromFilters(filters);
+    const categories = this.extractCategoriesFromFilters(filters);
+    const isSecurityRule = this.isSecurityRule(rule);
+    const isTLSBypass = name.toLowerCase().includes('tls bypass') || name.toLowerCase().includes('bypass');
+    
+    // Generate contextual descriptions based on patterns
+    if (isSecurityRule && action === 'block') {
+      if (categories.length > 0) {
+        return `Blocks traffic from security threat categories: ${categories.join(', ')}. Protects against malicious content and unauthorized access.`;
+      }
+      if (name.includes('Countries')) {
+        return `Blocks traffic from high-risk geographic regions to reduce security threats and comply with access policies.`;
+      }
+      return `Security blocking rule that prevents access to potentially harmful or unauthorized content.`;
+    }
+    
+    if (action === 'allow' && domains.length > 0) {
+      const serviceName = this.inferServiceFromDomains(domains);
+      if (serviceName) {
+        return `Allows access to ${serviceName} services and APIs. Enables functionality for ${domains.slice(0, 3).join(', ')}${domains.length > 3 ? ` and ${domains.length - 3} other domains` : ''}.`;
+      }
+      return `Permits access to specified domains for essential business services and applications.`;
+    }
+    
+    if (isTLSBypass) {
+      return `Bypasses TLS inspection for critical authentication and secure communication endpoints to prevent connection issues.`;
+    }
+    
+    // Fallback descriptions based on action
+    switch (action) {
+      case 'allow':
+        return `Allows specified traffic to ensure required services and applications function properly.`;
+      case 'block':
+        return `Blocks specified traffic to enforce security policies and prevent unauthorized access.`;
+      case 'isolate':
+        return `Isolates suspicious traffic for security analysis while maintaining network protection.`;
+      default:
+        return `${action.charAt(0).toUpperCase() + action.slice(1)} rule for traffic matching specified criteria.`;
+    }
+  }
+
+  private extractDomainsFromFilters(filters: string[]): string[] {
+    const domains: string[] = [];
+    
+    filters.forEach(filter => {
+      // Extract domains from dns.fqdn patterns
+      const dnsMatches = filter.match(/dns\.fqdn.*?["\{]([^"\}]+)["\}]/g);
+      if (dnsMatches) {
+        dnsMatches.forEach(match => {
+          const domainMatch = match.match(/["\{]([^"\}]+)["\}]/);
+          if (domainMatch) {
+            domains.push(...domainMatch[1].split(/[",\s]+/).filter(d => d.length > 0));
+          }
+        });
+      }
+      
+      // Extract domains from http.request.host patterns
+      const hostMatches = filter.match(/http\.request\.host.*?["\{]([^"\}]+)["\}]/g);
+      if (hostMatches) {
+        hostMatches.forEach(match => {
+          const domainMatch = match.match(/["\{]([^"\}]+)["\}]/);
+          if (domainMatch) {
+            domains.push(...domainMatch[1].split(/[",\s]+/).filter(d => d.length > 0));
+          }
+        });
+      }
+    });
+    
+    return [...new Set(domains)].filter(d => d.includes('.'));
+  }
+
+  private extractCategoriesFromFilters(filters: string[]): string[] {
+    const categories: string[] = [];
+    
+    filters.forEach(filter => {
+      const catMatches = filter.match(/category.*?\{([^}]+)\}/g);
+      if (catMatches) {
+        catMatches.forEach(match => {
+          const nums = match.match(/\d+/g);
+          if (nums) {
+            categories.push(...nums);
+          }
+        });
+      }
+    });
+    
+    return [...new Set(categories)];
+  }
+
+  private isSecurityRule(rule: GatewayRule): boolean {
+    const name = rule.name.toLowerCase();
+    const filters = rule.filters.join(' ').toLowerCase();
+    
+    return name.includes('security') || 
+           name.includes('malware') || 
+           name.includes('phishing') || 
+           name.includes('threat') ||
+           filters.includes('security_category');
+  }
+
+  private inferServiceFromDomains(domains: string[]): string | null {
+    const servicePatterns = {
+      'Apple': ['apple.com', 'icloud.com', 'aaplimg.com'],
+      'Microsoft': ['microsoft.com', 'office.com', 'outlook.com'],
+      'Google': ['google.com', 'googleapis.com', 'gstatic.com'],
+      'Amazon AWS': ['amazonaws.com', 'cloudfront.net'],
+      'Tesla': ['tesla.com', 'teslamotors.com'],
+      'AI Services': ['anthropic.com', 'openai.com', 'claude.ai'],
+      'GitHub': ['github.com', 'githubusercontent.com'],
+      'Slack': ['slack.com', 'slack-edge.com'],
+      'Smart Home': ['aqara.com', 'nest.com', 'ui.com']
+    };
+    
+    for (const [service, patterns] of Object.entries(servicePatterns)) {
+      if (patterns.some(pattern => domains.some(domain => domain.includes(pattern)))) {
+        return service;
+      }
+    }
+    
+    return null;
   }
 
   private displayOptimizationPlan(plan: OptimizationPlan): void {

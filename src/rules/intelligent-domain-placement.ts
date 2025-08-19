@@ -231,7 +231,12 @@ export class IntelligentDomainPlacement {
   private async generatePlacementSuggestions(
     domains: string[],
     securityResults: Map<string, SecurityValidationResult>,
-    existingConfig: any
+    existingConfig: {
+      rules: GatewayRule[];
+      lists: GatewayList[];
+      rulesByCategory: Map<string, GatewayRule[]>;
+      listsByCategory: Map<string, GatewayList[]>;
+    }
   ): Promise<DomainPlacementSuggestion[]> {
     const suggestions: DomainPlacementSuggestion[] = [];
     
@@ -262,7 +267,11 @@ export class IntelligentDomainPlacement {
    */
   private async handleUserDecisions(
     suggestions: DomainPlacementSuggestion[],
-    options: any
+    options: {
+      allowSecurityWarnings?: boolean;
+      interactiveApproval?: boolean;
+      securityOptions?: Partial<SecurityScanOptions>;
+    }
   ): Promise<DomainPlacementSuggestion[]> {
     console.log(chalk.cyan.bold('\n🎯 Domain Placement Recommendations\n'));
     
@@ -398,7 +407,7 @@ export class IntelligentDomainPlacement {
       // Group approved domains by their placement targets
       const placementGroups = this.groupByPlacement(report.approved);
       
-      for (const [placementKey, domains] of placementGroups) {
+      for (const [_, domains] of placementGroups) {
         const placement = domains[0].recommendedPlacement;
         const domainList = domains.map(d => d.domain);
         
@@ -471,8 +480,13 @@ export class IntelligentDomainPlacement {
 
   private generatePlacementOptions(
     domain: string, 
-    category: any, 
-    existingConfig: any
+    category: { category: string; confidence: number; listName: string }, 
+    existingConfig: {
+      rules: GatewayRule[];
+      lists: GatewayList[];
+      rulesByCategory: Map<string, GatewayRule[]>;
+      listsByCategory: Map<string, GatewayList[]>;
+    }
   ): PlacementOption[] {
     const options: PlacementOption[] = [];
     
@@ -563,7 +577,7 @@ export class IntelligentDomainPlacement {
     return this.categorizeExistingRule({ name: list.name } as GatewayRule);
   }
 
-  private isListCategoryMatch(list: GatewayList, category: any): boolean {
+  private isListCategoryMatch(list: GatewayList, category: { category: string; listName: string }): boolean {
     const listName = list.name.toLowerCase();
     const categoryName = category.category.toLowerCase();
     
@@ -572,7 +586,7 @@ export class IntelligentDomainPlacement {
            listName.includes(category.listName.toLowerCase());
   }
 
-  private isRuleCategoryMatch(rule: GatewayRule, category: any): boolean {
+  private isRuleCategoryMatch(rule: GatewayRule, category: { category: string; listName: string }): boolean {
     return this.isListCategoryMatch({ name: rule.name } as GatewayList, category);
   }
 

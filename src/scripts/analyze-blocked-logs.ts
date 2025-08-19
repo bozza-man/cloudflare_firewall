@@ -40,7 +40,7 @@ class BlockedTrafficAnalyzer {
   private blockedDomains: Map<string, BlockedDomain> = new Map();
   
   // Known legitimate services that are commonly blocked
-  private legitimateServices = {
+  private legitimateServices: Record<string, { category: string; purpose: string }> = {
     // Development tools
     'github.com': { category: 'Development', purpose: 'Code repository' },
     'githubusercontent.com': { category: 'Development', purpose: 'GitHub content' },
@@ -116,7 +116,7 @@ class BlockedTrafficAnalyzer {
     
     try {
       // Get current rules to understand what's being blocked
-      const rules = await this.gateway.listGatewayRules();
+      const rules = await this.gateway.listGatewayRules() as any[];
       const blockRules = rules.filter(r => r.action === 'block' && r.enabled);
       
       spinner.succeed(`Found ${blockRules.length} active blocking rules`);
@@ -151,7 +151,7 @@ class BlockedTrafficAnalyzer {
         console.log(chalk.green('\n✅ No additional allow rules needed at this time'));
       }
       
-    } catch (error) {
+    } catch (error: any) {
       spinner.fail('Analysis failed');
       throw error;
     }
@@ -159,7 +159,7 @@ class BlockedTrafficAnalyzer {
 
   private analyzeBlockingRules(blockRules: unknown[]): void {
     // Analyze what categories and domains are being blocked
-    for (const rule of blockRules) {
+    for (const rule of blockRules as any[]) {
       // Check if rule blocks by category
       if (rule.traffic?.includes('any(security_risks') || 
           rule.traffic?.includes('any(dns.security_category')) {
@@ -371,7 +371,7 @@ class BlockedTrafficAnalyzer {
         // Log the domains included
         console.log(chalk.gray(`  Includes: ${domains.map(d => d.domain).join(', ')}`));
         
-      } catch (error) {
+      } catch (error: any) {
         spinner.fail(`Failed to create rule for ${category}`);
         console.error(chalk.red(`  Error: ${(error instanceof Error ? error.message : String(error))}`));
       }
@@ -415,7 +415,7 @@ async function main() {
     console.log(chalk.gray('For real-time log analysis, use the Chrome extension while viewing'));
     console.log(chalk.gray('the Gateway logs in your Cloudflare dashboard.'));
     
-  } catch (error) {
+  } catch (error: any) {
     console.error(chalk.red('\n❌ Analysis failed:'), (error instanceof Error ? error.message : String(error)));
     process.exit(1);
   }

@@ -92,19 +92,19 @@ export class LogStreamServer extends EventEmitter {
     switch (message.type) {
       case 'filter':
         // Client wants to filter logs
-        this.sendFilteredLogs(ws, message.filter);
+        this.sendFilteredLogs(ws, ((message as any).filter || {}));
         break;
         
       case 'replay':
         // Client wants to replay logs from a specific time
-        this.replayLogs(ws, message.from, message.to);
+        this.replayLogs(ws, (message as any).from, (message as any).to);
         break;
         
       case 'subscribe':
         // Client wants to subscribe to specific log types
         ws.send(JSON.stringify({
           type: 'subscribed',
-          topics: message.topics
+          topics: (message as any).topics
         }));
         break;
         

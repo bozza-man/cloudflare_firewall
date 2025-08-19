@@ -27,7 +27,7 @@ async function testEndpoint(name: string, url: string, params?: any): Promise<an
       console.log(chalk.yellow(`⚠ ${name} - Returned but not successful`));
       return null;
     }
-  } catch (error) {
+  } catch (error: any) {
     if (error.response?.status === 404) {
       console.log(chalk.red(`✗ ${name} - Not found (404)`));
     } else if (error.response?.status === 403) {

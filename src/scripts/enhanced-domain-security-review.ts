@@ -193,7 +193,7 @@ async function enhancedDomainSecurityReview() {
       console.log('');
     }
     
-  } catch (error) {
+  } catch (error: any) {
     console.error(chalk.red('❌ Error during enhanced security review:'), error);
     process.exit(1);
   }

@@ -39,7 +39,7 @@ class ComprehensiveRuleOptimizer {
     const spinner = ora('Fetching all Gateway rules...').start();
     
     try {
-      const rules = await this.gateway.listGatewayRules();
+      const rules = await this.gateway.listGatewayRules() as any[];
       spinner.succeed(`Loaded ${rules.length} rules`);
       
       // Step 1: Categorize rules
@@ -67,7 +67,7 @@ class ComprehensiveRuleOptimizer {
       const plan = this.generateOptimizationPlan(rules, categorized, consolidation, orderingIssues);
       await this.displayAndExecutePlan(plan);
       
-    } catch (error) {
+    } catch (error: any) {
       spinner.fail('Analysis failed');
       throw error;
     }
@@ -97,7 +97,7 @@ class ComprehensiveRuleOptimizer {
       { name: 'General Allow', pattern: /Allow/i, range: [1750, 1999], priority: 17 },
     ];
 
-    for (const rule of rules) {
+    for (const rule of rules as any[]) {
       let assigned = false;
       for (const def of categoryDefinitions) {
         if (def.pattern.test(rule.name)) {
@@ -105,7 +105,7 @@ class ComprehensiveRuleOptimizer {
             categories.set(def.name, {
               category: def.name,
               rules: [],
-              suggestedRange: def.range,
+              suggestedRange: def.range as [number, number],
               priority: def.priority
             });
           }
@@ -122,7 +122,7 @@ class ComprehensiveRuleOptimizer {
           categories.set(category, {
             category,
             rules: [],
-            suggestedRange: def.range,
+            suggestedRange: def.range as [number, number],
             priority: def.priority
           });
         }
@@ -139,7 +139,7 @@ class ComprehensiveRuleOptimizer {
     // Group rules by similar patterns
     const groups = new Map<string, unknown[]>();
     
-    for (const rule of rules) {
+    for (const rule of rules as any[]) {
       if (rule.action !== 'allow') continue;
       
       // Extract base service from rule name
@@ -174,10 +174,10 @@ class ComprehensiveRuleOptimizer {
 
   private canConsolidateRules(rules: unknown[]): boolean {
     // Check if all rules have same action and similar filters
-    const firstAction = rules[0].action;
-    const firstFilters = rules[0].filters.join(',');
+    const firstAction = (rules as any[])[0].action;
+    const firstFilters = (rules as any[])[0].filters.join(',');
     
-    return rules.every(r => 
+    return (rules as any[]).every((r: any) => 
       r.action === firstAction && 
       r.filters.join(',') === firstFilters
     );
@@ -187,7 +187,7 @@ class ComprehensiveRuleOptimizer {
     const issues = [];
     
     // Sort by precedence
-    const sorted = [...rules].sort((a, b) => a.precedence - b.precedence);
+    const sorted = ([...rules] as any[]).sort((a: any, b: any) => a.precedence - b.precedence);
     
     // Check for gaps
     for (let i = 1; i < sorted.length; i++) {
@@ -204,7 +204,7 @@ class ComprehensiveRuleOptimizer {
     
     // Check for clustering
     const precedenceCount = new Map<number, number>();
-    for (const rule of rules) {
+    for (const rule of rules as any[]) {
       const range = Math.floor(rule.precedence / 100) * 100;
       precedenceCount.set(range, (precedenceCount.get(range) || 0) + 1);
     }
@@ -228,8 +228,8 @@ class ComprehensiveRuleOptimizer {
     
     for (let i = 0; i < rules.length; i++) {
       for (let j = i + 1; j < rules.length; j++) {
-        const rule1 = rules[i];
-        const rule2 = rules[j];
+        const rule1 = (rules as any[])[i];
+        const rule2 = (rules as any[])[j];
         
         // Skip if same action
         if (rule1.action === rule2.action) continue;
@@ -288,8 +288,8 @@ class ComprehensiveRuleOptimizer {
 
     // Plan reordering based on categories
     let nextPrecedence = 990;
-    for (const [category, group] of Array.from(categorized).sort((a, b) => a[1].priority - b[1].priority)) {
-      for (const rule of group.rules) {
+    for (const [category, group] of Array.from(categorized).sort((a: any, b: any) => a[1].priority - b[1].priority)) {
+      for (const rule of (group.rules as any[])) {
         if (Math.abs(rule.precedence - nextPrecedence) > 10) {
           plan.reorder.push({
             rule: rule.name,
@@ -304,7 +304,7 @@ class ComprehensiveRuleOptimizer {
     }
 
     // Plan consolidation
-    for (const opp of consolidation) {
+    for (const opp of (consolidation as any[])) {
       plan.consolidate.push({
         rules: opp.rules.map((r: any) => r.name),
         into: opp.suggestion,
@@ -323,7 +323,7 @@ class ComprehensiveRuleOptimizer {
 
     for (const [category, group] of categorized) {
       const currentRange = group.rules.length > 0 
-        ? `${Math.min(...group.rules.map(r => r.precedence))}-${Math.max(...group.rules.map(r => r.precedence))}`
+        ? `${Math.min(...group.rules.map((r: any) => r.precedence))}-${Math.max(...group.rules.map((r: any) => r.precedence))}`
         : 'N/A';
       
       table.push([
@@ -345,7 +345,7 @@ class ComprehensiveRuleOptimizer {
 
     console.log(chalk.yellow(`Found ${opportunities.length} consolidation opportunities:`));
     
-    for (const opp of opportunities.slice(0, 5)) { // Show first 5
+    for (const opp of (opportunities as any[]).slice(0, 5)) { // Show first 5
       console.log(chalk.gray(`\n• ${opp.service}:`));
       console.log(`  ${opp.reason}`);
       console.log(`  ${chalk.cyan('→')} ${opp.suggestion}`);
@@ -360,7 +360,7 @@ class ComprehensiveRuleOptimizer {
 
     console.log(chalk.yellow(`Found ${issues.length} ordering issues:`));
     
-    for (const issue of issues) {
+    for (const issue of issues as any[]) {
       if (issue.type === 'large_gap') {
         console.log(chalk.gray(`\n• Large gap (${issue.gap}) between:`));
         console.log(`  ${issue.between[0]} → ${issue.between[1]}`);
@@ -378,7 +378,7 @@ class ComprehensiveRuleOptimizer {
       return;
     }
 
-    const critical = conflicts.filter(c => c.severity !== 'resolved');
+    const critical = (conflicts as any[]).filter((c: any) => c.severity !== 'resolved');
     
     if (critical.length > 0) {
       console.log(chalk.red(`Found ${critical.length} potential conflicts:`));
@@ -450,7 +450,7 @@ class ComprehensiveRuleOptimizer {
           if (rule) {
             await this.gateway.updateRulePrecedence(rule.id, item.suggested);
           }
-        } catch (error) {
+        } catch (error: any) {
           console.error(chalk.red(`Failed to reorder ${item.rule}`));
         }
       }
@@ -458,12 +458,12 @@ class ComprehensiveRuleOptimizer {
       spinner.succeed('Optimizations applied successfully!');
       
       // Final summary
-      const rules = await this.gateway.listGatewayRules();
+      const rules = await this.gateway.listGatewayRules() as any[];
       console.log(chalk.green.bold('\n✅ Optimization Complete!'));
       console.log(chalk.cyan(`Total rules: ${rules.length}`));
       console.log(chalk.cyan(`Rules are now properly categorized and ordered`));
       
-    } catch (error) {
+    } catch (error: any) {
       spinner.fail('Some optimizations failed');
       console.error(error);
     }
@@ -483,7 +483,7 @@ async function main() {
     console.log('• Free of conflicts and duplicates');
     console.log('• Optimized for performance\n');
     
-  } catch (error) {
+  } catch (error: any) {
     console.error(chalk.red('❌ Error:'), error.message);
     process.exit(1);
   }

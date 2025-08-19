@@ -68,7 +68,7 @@ async function fixProblematicRules() {
     console.log('   • Service Discovery: Replaced "^_.*" with specific service patterns');
     console.log('   • Both rules should now work correctly without blocking DNS\n');
     
-  } catch (error) {
+  } catch (error: any) {
     console.error(chalk.red('❌ Error fixing rules:'), error);
   }
 }
