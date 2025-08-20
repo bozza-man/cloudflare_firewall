@@ -1,13 +1,16 @@
 import axios, { AxiosInstance } from 'axios';
 import chalk from 'chalk';
 import { config } from '../utils/config.js';
+import { mcpRadarClient } from './mcp-radar-client.js';
 
 /**
  * Enhanced Cloudflare Radar API Client
- * Utilizes more Radar API endpoints to gather comprehensive threat intelligence
+ * Utilizes MCP server when available, falls back to direct API calls
+ * Provides comprehensive threat intelligence from multiple Radar endpoints
  */
 export class EnhancedRadarClient {
   private radarApi: AxiosInstance;
+  private useMCP: boolean = true; // Try MCP first by default
   
   constructor() {
     this.radarApi = axios.create({
@@ -24,6 +27,25 @@ export class EnhancedRadarClient {
    * Get domain ranking and categories
    */
   async getDomainRanking(domain: string): Promise<any> {
+    // Try MCP first if enabled
+    if (this.useMCP) {
+      try {
+        const mcpData = await mcpRadarClient.getDomainDetails(domain);
+        if (mcpData) {
+          // Transform MCP data to match expected format
+          return {
+            details_0: {
+              rank: mcpData.rank,
+              categories: mcpData.categories?.map(c => ({ name: c }))
+            }
+          };
+        }
+      } catch (error) {
+        console.debug(chalk.gray(`📊 MCP domain ranking failed, falling back to direct API`));
+      }
+    }
+
+    // Fallback to direct API call
     try {
       const response = await this.radarApi.get(`/ranking/domain/${encodeURIComponent(domain)}`);
       if (response.data?.success && response.data?.result) {
@@ -40,6 +62,24 @@ export class EnhancedRadarClient {
    * Get ASN information for better organization identification
    */
   async getASNInfo(asn: number): Promise<any> {
+    // Try MCP first if enabled
+    if (this.useMCP) {
+      try {
+        const mcpData = await mcpRadarClient.getASDetails(asn);
+        if (mcpData) {
+          return {
+            asn: mcpData.asn,
+            name: mcpData.name,
+            country: mcpData.country,
+            orgName: mcpData.orgName
+          };
+        }
+      } catch (error) {
+        console.debug(chalk.gray(`📊 MCP ASN lookup failed, falling back to direct API`));
+      }
+    }
+
+    // Fallback to direct API call
     try {
       const response = await this.radarApi.get(`/entities/asns/${asn}`);
       if (response.data?.success && response.data?.result) {
@@ -56,6 +96,30 @@ export class EnhancedRadarClient {
    * Get IP entity information including ASN and location
    */
   async getIPInfo(ip: string): Promise<any> {
+    // Try MCP first if enabled
+    if (this.useMCP) {
+      try {
+        const mcpData = await mcpRadarClient.getIPDetails(ip);
+        if (mcpData) {
+          return {
+            ip: mcpData.ip,
+            asn: mcpData.asn,
+            asn_org: mcpData.organization,
+            country: mcpData.country,
+            city: mcpData.city,
+            latitude: mcpData.latitude,
+            longitude: mcpData.longitude,
+            is_proxy: mcpData.isProxy,
+            is_vpn: mcpData.isVpn,
+            is_tor: mcpData.isTor
+          };
+        }
+      } catch (error) {
+        console.debug(chalk.gray(`📊 MCP IP lookup failed, falling back to direct API`));
+      }
+    }
+
+    // Fallback to direct API call
     try {
       const response = await this.radarApi.get(`/entities/ip`, {
         params: { ip }

@@ -3,6 +3,7 @@ import { config } from '../utils/config.js';
 import chalk from 'chalk';
 import { OSINTProviders } from './osint-providers.js';
 import { enhancedRadarClient } from './enhanced-radar-client.js';
+import { dnsVerifier } from './dns-verifier.js';
 
 export interface ThreatIntelligenceResult {
   domain: string;
@@ -177,6 +178,9 @@ export class ThreatIntelligenceClient {
   async scanDomain(domain: string): Promise<ThreatIntelligenceResult> {
     console.log(chalk.cyan(`🔍 Scanning domain: ${domain}`));
     
+    // First, verify DNS resolution
+    const dnsResult = await dnsVerifier.verifyDomain(domain);
+    
     const result: ThreatIntelligenceResult = {
       domain,
       reputation: 'unknown',
@@ -186,6 +190,50 @@ export class ThreatIntelligenceClient {
       details: {},
       recommendations: [],
       allowRecommendation: 'caution'
+    };
+    
+    // Store the current result for use in other methods
+    this.currentResult = result;
+    
+    // Check DNS resolution status
+    if (!dnsResult.resolves) {
+      console.log(chalk.red(`❌ Domain ${domain} does not resolve - likely invalid or non-existent`));
+      result.reputation = 'suspicious';
+      result.confidence = 0.9;
+      result.threats.push('Domain does not resolve via DNS');
+      result.details.dnsStatus = 'NXDOMAIN';
+      result.recommendations.push('⚠️ BLOCK: Domain does not resolve - potential typosquatting or malicious domain');
+      result.allowRecommendation = 'block';
+      return result;
+    }
+    
+    // Check for DNS hijacking
+    if (dnsResult.discrepancies.some(d => d.includes('CRITICAL'))) {
+      console.log(chalk.red(`🚨 DNS hijacking detected for ${domain}!`));
+      result.reputation = 'malicious';
+      result.confidence = 0.95;
+      result.threats.push('Possible DNS hijacking detected');
+      dnsResult.discrepancies.forEach(d => result.threats.push(d));
+      result.details.dnsStatus = 'HIJACKED';
+      result.details.dnsDiscrepancies = dnsResult.discrepancies;
+      result.recommendations.push('🚫 BLOCK: DNS hijacking indicators detected');
+      result.allowRecommendation = 'block';
+      return result;
+    }
+    
+    // Check for private IPs
+    if (dnsResult.addresses.ipv4.some(ip => dnsVerifier.isPrivateIP(ip))) {
+      console.log(chalk.yellow(`⚠️ Domain ${domain} resolves to private IP addresses`));
+      result.details.hasPrivateIPs = true;
+    }
+    
+    // Store DNS info in details
+    result.details.dnsInfo = {
+      resolves: dnsResult.resolves,
+      ipv4: dnsResult.addresses.ipv4,
+      ipv6: dnsResult.addresses.ipv6,
+      dnssecValid: dnsResult.dnssecValid,
+      responseTime: dnsResult.responseTime
     };
 
     try {
