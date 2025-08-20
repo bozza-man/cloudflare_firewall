@@ -357,32 +357,53 @@ export class SecureNaturalLanguageInterface {
     
     const domains = command.parameters.domains || [];
     const action = command.parameters.action || 'block';
+    const isDryRun = command.parameters.dryRun || false;
+    
+    if (isDryRun) {
+      console.log(chalk.yellow('🔍 DRY RUN MODE - No changes will be made\n'));
+    }
     
     if (domains.length > 0) {
       // Create rule for specific domains with security validation
-      console.log(chalk.green(`Creating ${action} rule for ${domains.length} domains with security validation...`));
+      const mode = isDryRun ? 'Would create' : 'Creating';
+      console.log(chalk.green(`${mode} ${action} rule for ${domains.length} domains with security validation...`));
       
       const ruleName = command.parameters.ruleName || 
         `${action.charAt(0).toUpperCase() + action.slice(1)} ${domains.slice(0, 2).join(', ')}${domains.length > 2 ? ' and others' : ''}`;
       
-      const rule = await this.ruleManager.createRule({
-        name: ruleName,
-        action,
-        filters: domains.map(domain => `dns.fqdn == "${domain}"`),
-        description: `Auto-created rule to ${action} access to specified domains with security validation`
-      });
-      
-      console.log(chalk.green(`✅ Created secure rule: ${rule.name} (ID: ${rule.id})`));
+      if (isDryRun) {
+        // Show what would be created
+        console.log(chalk.blue('\n📋 Rule Preview:'));
+        console.log(`   Name: ${ruleName}`);
+        console.log(`   Action: ${action.toUpperCase()}`);
+        console.log(`   Filters: ${domains.map(domain => `dns.fqdn == "${domain}"`).join(' OR ')}`);
+        console.log(`   Description: Auto-created rule to ${action} access to specified domains with security validation`);
+        console.log(chalk.yellow('\n✅ Dry run complete - no rule was created'));
+      } else {
+        const rule = await this.ruleManager.createRule({
+          name: ruleName,
+          action,
+          filters: domains.map(domain => `dns.fqdn == "${domain}"`),
+          description: `Auto-created rule to ${action} access to specified domains with security validation`
+        });
+        
+        console.log(chalk.green(`✅ Created secure rule: ${rule.name} (ID: ${rule.id})`));
+      }
       
     } else {
       // Let AI generate the rule from natural language with security validation
       console.log(chalk.blue('🤖 Using AI to create secure rule from your description...'));
       
-      const rule = await this.ruleManager.createRuleFromNLDescription(command.intent);
-      if (rule) {
-        console.log(chalk.green(`✅ Created secure rule: ${rule.name} (ID: ${rule.id})`));
+      if (isDryRun) {
+        console.log(chalk.yellow('\n📋 Would generate rule from description: "' + command.intent + '"'));
+        console.log(chalk.yellow('✅ Dry run complete - no rule was created'));
       } else {
-        console.log(chalk.red('❌ Failed to create rule from description'));
+        const rule = await this.ruleManager.createRuleFromNLDescription(command.intent);
+        if (rule) {
+          console.log(chalk.green(`✅ Created secure rule: ${rule.name} (ID: ${rule.id})`));
+        } else {
+          console.log(chalk.red('❌ Failed to create rule from description'));
+        }
       }
     }
   }
@@ -830,7 +851,7 @@ export class SecureNaturalLanguageInterface {
     return undefined;
   }
 
-  private showHelp(): void {
+  public showHelp(): void {
     console.log(chalk.cyan.bold('\n🤖 Secure Natural Language Gateway Manager\n'));
     
     console.log(chalk.blue('I can help you manage your Cloudflare Gateway with security-integrated commands!\n'));
@@ -882,17 +903,18 @@ export class SecureNaturalLanguageInterface {
  */
 async function main() {
   const args = process.argv.slice(2);
+  const nlInterface = new SecureNaturalLanguageInterface();
   
   if (args.length === 0) {
+    // Show help when no arguments are provided
     console.log(chalk.cyan.bold('🤖 Secure Natural Language Gateway Manager'));
-    console.log(chalk.gray('Usage: npx tsx src/cli/secure-natural-language-interface.ts "<your command>"'));
-    console.log(chalk.gray('Example: npx tsx src/cli/secure-natural-language-interface.ts "scan my gateway for security issues"'));
-    console.log(chalk.gray('\nFor interactive mode, use: npx tsx src/cli/secure-natural-language-interface.ts "help"'));
-    process.exit(1);
+    nlInterface.showHelp();
+    console.log(chalk.gray('\nUsage: npx tsx src/cli/secure-natural-language-interface.ts "<your command>"'));
+    console.log(chalk.gray('Or run: npm run gateway "<your command>"'));
+    process.exit(0); // Exit with success code instead of error
   }
   
   const input = args.join(' ');
-  const nlInterface = new SecureNaturalLanguageInterface();
   
   console.log(chalk.cyan(`💬 Processing: "${input}"`));
   await nlInterface.processNaturalLanguage(input);

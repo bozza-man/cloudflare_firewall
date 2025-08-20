@@ -2,6 +2,7 @@ import axios, { AxiosInstance } from 'axios';
 import { config } from '../utils/config.js';
 import chalk from 'chalk';
 import { OSINTProviders } from './osint-providers.js';
+import { enhancedRadarClient } from './enhanced-radar-client.js';
 
 export interface ThreatIntelligenceResult {
   domain: string;
@@ -141,6 +142,7 @@ export class ThreatIntelligenceClient {
   private radarApi: AxiosInstance;
   private fallbackApis: Map<string, AxiosInstance> = new Map();
   private osintProviders: OSINTProviders;
+  private currentResult: ThreatIntelligenceResult | null = null;
   
   constructor() {
     // Initialize Cloudflare Radar API
@@ -161,6 +163,7 @@ export class ThreatIntelligenceClient {
       enableFreeServices: config.osint.enableFreeServices,
       whoisXmlApiKey: config.osint.whoisXmlApiKey,
       securityTrailsApiKey: config.osint.securityTrailsApiKey,
+      sslmateApiKey: config.osint.sslmateApiKey,
       maxConcurrent: config.osint.maxConcurrentRequests,
       rateLimitMs: config.osint.rateLimitMs,
       requestTimeout: config.osint.requestTimeoutMs,
@@ -307,24 +310,76 @@ export class ThreatIntelligenceClient {
   }
 
   /**
-   * Scan domain using Cloudflare Radar API
+   * Scan domain using enhanced Cloudflare Radar API
    */
   private async scanWithRadar(domain: string): Promise<RadarDomainInfo | null> {
     try {
-      const response = await this.radarApi.get(`/domains/${domain}`);
+      // Clean and validate domain format
+      const cleanDomain = domain.toLowerCase().trim();
       
-      if (response.data?.success && response.data?.result) {
-        return response.data.result as RadarDomainInfo;
+      // Remove protocol if present
+      const domainWithoutProtocol = cleanDomain.replace(/^https?:\/\//, '');
+      
+      // Remove path and query string if present
+      const domainOnly = domainWithoutProtocol.split('/')[0].split('?')[0];
+      
+      // Validate domain format (basic check)
+      if (!domainOnly || !domainOnly.includes('.') || domainOnly.length < 3) {
+        console.debug(chalk.gray(`⚠️  Invalid domain format for Radar API: ${domain}`));
+        return null;
+      }
+      
+      // For common domains that often fail, skip Radar API
+      const skipDomains = ['example.com', 'localhost', 'test.com', '0.0.0.0', '127.0.0.1'];
+      if (skipDomains.includes(domainOnly)) {
+        console.debug(chalk.gray(`⚠️  Skipping Radar API for known test domain: ${domainOnly}`));
+        return null;
+      }
+      
+      // Use enhanced Radar client for comprehensive assessment
+      const assessment = await enhancedRadarClient.assessDomainSecurity(domainOnly);
+      
+      if (assessment) {
+        // Display Radar API data
+        console.log(chalk.blue('📊 Radar API Data:'));
+        console.log(chalk.gray(`  Risk Score: ${assessment.riskScore * 100}%`));
+        console.log(chalk.gray(`  Popularity Rank: ${assessment.popularity || 'Unknown'}`));
+        console.log(chalk.gray(`  Categories: ${assessment.categories?.join(', ') || 'None'}`));
+        if (assessment.organizationInfo) {
+          console.log(chalk.gray(`  Organization: ${assessment.organizationInfo.organization || 'Unknown'}`));
+          console.log(chalk.gray(`  ASN: ${assessment.organizationInfo.asn || 'Unknown'}`));
+          console.log(chalk.gray(`  Country: ${assessment.organizationInfo.country || 'Unknown'}`));
+        }
+        console.log(chalk.gray(`  Risk Reasons: ${assessment.reasons.join(', ')}`));
+        
+        // Store organization info in result details if available
+        if (assessment.organizationInfo && this.currentResult) {
+          this.currentResult.details.organization = assessment.organizationInfo.organization;
+          this.currentResult.details.country = assessment.organizationInfo.country;
+          this.currentResult.details.asn = assessment.organizationInfo.asn;
+        }
+        
+        return {
+          domain: domainOnly,
+          category: assessment.categories || [],
+          content_categories: assessment.categories || [],
+          additional_information: {
+            suspected_malware: false, // Don't flag as malware based solely on risk score
+            adult_content: assessment.categories?.some(c => c.toLowerCase().includes('adult')) || false
+          },
+          risk_score: assessment.riskScore * 100, // Convert to percentage
+          popularity: assessment.popularity || 0,
+          // Add enhanced data
+          enhanced_data: {
+            organizationInfo: assessment.organizationInfo,
+            reasons: assessment.reasons
+          }
+        } as any;
       }
       
       return null;
     } catch (error) {
-      if (axios.isAxiosError(error) && error.response?.status === 404) {
-        console.log(chalk.yellow(`⚠️  Domain ${domain} not found in Radar database`));
-        return null;
-      }
-      
-      console.warn(chalk.yellow(`⚠️  Radar scan failed for ${domain}: ${error instanceof Error ? error.message : 'Unknown error'}`));
+      console.debug(chalk.gray(`⚠️  Enhanced Radar scan failed for ${domain}`));
       return null;
     }
   }
@@ -538,19 +593,23 @@ export class ThreatIntelligenceClient {
     result.details.popularity = radarData.popularity || 0;
 
     // Determine reputation based on Radar data
+    // Adjusted thresholds to reduce false positives for legitimate domains
     const riskScore = radarData.risk_score || 0;
     if (riskScore > 80) {
       result.reputation = 'malicious';
       result.confidence = 0.9;
-    } else if (riskScore > 50) {
+    } else if (riskScore > 65) {
       result.reputation = 'suspicious';
       result.confidence = 0.7;
-    } else if (riskScore > 20) {
-      result.reputation = 'suspicious';
+    } else if (riskScore > 50) {
+      // Domains with moderate risk scores should be unknown, not suspicious
+      result.reputation = 'unknown';
       result.confidence = 0.5;
     } else {
+      // Low risk scores (0-50) indicate likely trusted domains
+      // This includes domains with unknown popularity (30%) which shouldn't be penalized
       result.reputation = 'trusted';
-      result.confidence = 0.8;
+      result.confidence = 0.7; // Slightly lower confidence for unknown popularity
     }
 
     // Add threats based on Radar data
@@ -587,14 +646,20 @@ export class ThreatIntelligenceClient {
     });
 
     // Determine reputation based on IP risk score
+    // Adjusted thresholds to reduce false positives
     const riskScore = radarData.risk_score || 0;
     if (riskScore > 80) {
       result.reputation = 'malicious';
       result.confidence = 0.9;
-    } else if (riskScore > 50) {
+    } else if (riskScore > 60) {
       result.reputation = 'suspicious';
       result.confidence = 0.7;
+    } else if (riskScore > 40) {
+      // IPs with moderate risk scores should be unknown, not suspicious
+      result.reputation = 'unknown';
+      result.confidence = 0.5;
     } else {
+      // Low risk scores indicate trusted IPs
       result.reputation = 'trusted';
       result.confidence = 0.8;
     }
@@ -641,7 +706,7 @@ export class ThreatIntelligenceClient {
     } else if (result.reputation === 'suspicious' || mediumSeverityThreats.length > 0) {
       result.allowRecommendation = 'caution';
       result.recommendations.push('⚠️  CAUTION: Suspicious activity detected - requires review');
-    } else if (result.reputation === 'trusted' && result.confidence > 0.7) {
+    } else if (result.reputation === 'trusted' && result.confidence >= 0.7) {
       result.allowRecommendation = 'allow';
       result.recommendations.push('✅ ALLOW: Clean reputation with high confidence');
     } else {

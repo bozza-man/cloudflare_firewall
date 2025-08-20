@@ -1,25 +1,30 @@
-name = "cloudflare-firewall-ai"
+name = "cloudflare-dynamic-block-page"
 main = "src/worker/index.ts"
 compatibility_date = "2024-02-01"
+workers_dev = true
 
 [vars]
-OPENAI_API_KEY = ""  # Will be set via environment variable
-ENVIRONMENT = "production"
+# BEARER_TOKEN = ""  # Set as secret: wrangler secret put BEARER_TOKEN
+CORS_ORIGIN = "https://block.bozza.au"  # Update to your domain in production
+ACCOUNT_ID = "0b0ee2b5eaf1fb8a2612e40ab6488052"  # Your Cloudflare account ID
+ORGANIZATION_ID = ""  # Your Zero Trust organization ID
+TARGET_GROUP = ""  # Optional: group to flag for special attention
+DEBUG = "true"  # Set to "true" to enable debug page
 
-# AI Worker configuration
-[ai]
-binding = "AI"
-
-# AutoRAG configuration
+# KV namespace for theme storage
 [[kv_namespaces]]
-binding = "RAG_STORAGE"
-id = ""  # Will be set during deployment
+binding = "IDENTITY_DYNAMIC_THEME_STORE"
+id = "874ed0b066ac4df3b2200c888ff3b86b"
 
-# Static website configuration
-[site]
-bucket = "./public"
-entry-point = "./src/worker"
+# Routes configuration
+[[routes]]
+pattern = "block.bozza.au/*"  # Replace with your custom domain
+zone_name = "bozza.au"  # Replace with your zone
 
 [build]
-command = "npm run build"
-watch_dir = "src"
+command = "npm run build:worker"
+
+# Development configuration
+[dev]
+port = 8787
+local_protocol = "http"

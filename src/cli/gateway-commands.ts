@@ -241,6 +241,11 @@ export async function createGatewayCommands(): Promise<Command> {
   const monitorCommand = new MonitorCommand();
   program.addCommand(monitorCommand.getCommand());
 
+  // Add block page command
+  const { BlockPageCommand } = await import('./block-page-command.js');
+  const blockPageCommand = new BlockPageCommand();
+  program.addCommand(blockPageCommand.getCommand());
+
   return program;
 }
 

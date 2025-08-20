@@ -226,7 +226,10 @@ If there are no conflicts, return an empty array.`;
 
   async suggestRulePrecedence(
     newRule: { 
-      filters: string[]; 
+      filters: Array<{ 
+        expression: string; 
+        value: string | string[] | number[];
+      }>; 
       action: string; 
       name: string;
       traffic?: string;
@@ -289,9 +292,13 @@ Analyze the new rule and:
 4. Leave gaps (10-50 points) for future insertions
 5. Avoid conflicts with existing precedence values
 
-Respond with JSON containing:
-- precedence: the numeric precedence value
-- reasoning: detailed explanation of categorization and placement`;
+Respond ONLY with valid JSON in this exact format:
+{
+  "precedence": number,
+  "reasoning": "string without line breaks or special characters"
+}
+
+IMPORTANT: Ensure the reasoning field is a single line string without any newlines, tabs, or special control characters.`;
 
     try {
       const response = await this.client.messages.create({
@@ -315,7 +322,15 @@ Respond with JSON containing:
         };
       }
 
-      const jsonMatch = content.text.match(/\{[\s\S]*\}/);
+      // Clean the response text to remove any potential control characters
+      let cleanedText = content.text;
+      
+      // Remove any non-printable characters except spaces, tabs, and newlines for initial parsing
+      cleanedText = cleanedText.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '');
+      
+      // Try to extract JSON using a more robust regex
+      const jsonMatch = cleanedText.match(/{[^{}]*(?:{[^{}]*}[^{}]*)*}/);
+      
       if (!jsonMatch) {
         const maxPrecedence = existingRules.length > 0 
           ? Math.max(...existingRules.map(r => r.precedence)) 
@@ -326,7 +341,34 @@ Respond with JSON containing:
         };
       }
 
-      return JSON.parse(jsonMatch[0]);
+      try {
+        // Further clean the matched JSON string
+        let jsonString = jsonMatch[0];
+        
+        // Replace any remaining newlines, tabs, and carriage returns within string values
+        // This regex matches strings and replaces control characters within them
+        jsonString = jsonString.replace(/"([^"]*)"/g, (match, p1) => {
+          const cleaned = p1
+            .replace(/\n/g, ' ')
+            .replace(/\r/g, ' ')
+            .replace(/\t/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+          return `"${cleaned}"`;
+        });
+        
+        return JSON.parse(jsonString);
+      } catch (parseError) {
+        console.error('Error parsing JSON:', parseError);
+        console.error('JSON string:', jsonString);
+        const maxPrecedence = existingRules.length > 0 
+          ? Math.max(...existingRules.map(r => r.precedence)) 
+          : 0;
+        return { 
+          precedence: maxPrecedence + 1000, 
+          reasoning: 'Error parsing JSON response' 
+        };
+      }
     } catch (error) {
       console.error('Error suggesting rule precedence:', error);
       const maxPrecedence = existingRules.length > 0 
@@ -386,7 +428,7 @@ Provide a clear, concise explanation of:
 
 Gateway supports these filter types (IMPORTANT: Each rule can only use ONE traffic type):
 - DNS: dns.fqdn, dns.content_category, dns.security_category
-- HTTP: http.request.host, http.request.uri, http.conn.hostname
+- HTTP: http.request.host, http.request.uri.path, http.request.uri.query
 - L4: net.src.geo.country, net.dst.port, net.dst.ip
 
 Correct filter syntax examples:

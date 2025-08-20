@@ -62,52 +62,81 @@ export class GatewayClient {
 
   async createGatewayRule(rule: CreateGatewayRuleRequest): Promise<GatewayRule> {
     try {
-      // Convert filter expressions to Cloudflare Gateway format
+      // If traffic expression is already provided, use it directly
+      if (rule.traffic) {
+        const payload = {
+          name: rule.name,
+          description: rule.description || '',
+          action: rule.action,
+          enabled: rule.enabled !== undefined ? rule.enabled : true,
+          filters: rule.filters || ['dns'],
+          traffic: rule.traffic,
+          precedence: rule.precedence || await this.getNextPrecedence(),
+          identity: rule.identity || '',
+          device_posture: rule.device_posture || '',
+          rule_settings: rule.rule_settings || {}
+        };
+        
+        const response = await this.api.post<CloudflareResponse<GatewayRule>>(
+          `/accounts/${this.accountId}/gateway/rules`,
+          payload
+        );
+        return response.data.result;
+      }
+      
+      // Otherwise, try to process filters to build traffic expression
       let trafficExpression = '';
       let filterTypes: string[] = [];
       
       if (rule.filters && rule.filters.length > 0) {
-        // Filter out invalid fields that are not supported by Cloudflare Gateway
-        const validFilters = rule.filters.filter(filter => {
-          // Remove filters with unsupported fields
-          return !filter.includes('app.type') && 
-                 !filter.includes('app.') && 
-                 filter.trim().length > 0;
-        });
-        
-        if (validFilters.length === 0) {
-          // If no valid filters remain, create a simple domain-based filter
-          // This is a fallback to prevent empty rules
-          trafficExpression = 'true';
-          filterTypes = ['dns'];
+        // Check if filters contains simple traffic type identifiers
+        if (rule.filters.length === 1 && ['http', 'dns', 'l4'].includes(rule.filters[0])) {
+          // Simple traffic type, no expression provided
+          filterTypes = rule.filters;
+          trafficExpression = 'any(dns.fqdn[*] != "")'; // Default expression for filtering
         } else {
-          // Separate filters by traffic type since Cloudflare Gateway rules
-          // can only handle one traffic type per rule
-          const dnsFilters = validFilters.filter(f => f.includes('dns.'));
-          const httpFilters = validFilters.filter(f => f.includes('http.'));
-          const l4Filters = validFilters.filter(f => f.includes('net.'));
+          // Filter out invalid fields that are not supported by Cloudflare Gateway
+          const validFilters = rule.filters.filter(filter => {
+            // Remove filters with unsupported fields
+            return !filter.includes('app.type') && 
+                   !filter.includes('app.') && 
+                   filter.trim().length > 0;
+          });
           
-          // Choose the most appropriate traffic type and filters
-          // Priority: DNS > HTTP > L4 (DNS is most common for domain-based rules)
-          if (dnsFilters.length > 0) {
+          if (validFilters.length === 0) {
+            // If no valid filters remain, create a simple domain-based filter
+            // This is a fallback to prevent empty rules
+            trafficExpression = 'any(dns.fqdn[*] != "")';
             filterTypes = ['dns'];
-            trafficExpression = dnsFilters.join(' or ');
-          } else if (httpFilters.length > 0) {
-            filterTypes = ['http'];
-            trafficExpression = httpFilters.join(' or ');
-          } else if (l4Filters.length > 0) {
-            filterTypes = ['l4'];
-            trafficExpression = l4Filters.join(' or ');
           } else {
-            // Fallback to DNS
-            filterTypes = ['dns'];
-            trafficExpression = 'true';
+            // Separate filters by traffic type since Cloudflare Gateway rules
+            // can only handle one traffic type per rule
+            const dnsFilters = validFilters.filter(f => f.includes('dns.'));
+            const httpFilters = validFilters.filter(f => f.includes('http.'));
+            const l4Filters = validFilters.filter(f => f.includes('net.'));
+            
+            // Choose the most appropriate traffic type and filters
+            // Priority: DNS > HTTP > L4 (DNS is most common for domain-based rules)
+            if (dnsFilters.length > 0) {
+              filterTypes = ['dns'];
+              trafficExpression = dnsFilters.join(' or ');
+            } else if (httpFilters.length > 0) {
+              filterTypes = ['http'];
+              trafficExpression = httpFilters.join(' or ');
+            } else if (l4Filters.length > 0) {
+              filterTypes = ['l4'];
+              trafficExpression = l4Filters.join(' or ');
+            } else {
+              // Fallback to DNS
+              filterTypes = ['dns'];
+              trafficExpression = 'any(dns.fqdn[*] != "")';
+            }
           }
         }
       } else {
         // Default fallback
-        filterTypes = [rule.traffic || 'dns'];
-        trafficExpression = 'true'; // Allow all for this traffic type
+        filterTypes = ['dns'];
+        trafficExpression = 'any(dns.fqdn[*] != "")'; // Default expression
       }
       
       const payload = {
@@ -136,9 +165,26 @@ export class GatewayClient {
 
   async updateGatewayRule(update: UpdateGatewayRuleRequest): Promise<GatewayRule> {
     try {
+      // Fetch the existing rule first to get all required fields
+      const existingRule = await this.getGatewayRule(update.id);
+      
+      // Merge the updates with existing rule data, preserving all required fields
+      const updatePayload = {
+        name: update.name !== undefined ? update.name : existingRule.name,
+        description: update.description !== undefined ? update.description : existingRule.description,
+        action: update.action !== undefined ? update.action : existingRule.action,
+        enabled: update.enabled !== undefined ? update.enabled : existingRule.enabled,
+        filters: update.filters !== undefined ? update.filters : existingRule.filters,
+        traffic: update.traffic !== undefined ? update.traffic : existingRule.traffic,
+        precedence: update.precedence !== undefined ? update.precedence : existingRule.precedence,
+        identity: update.identity !== undefined ? update.identity : existingRule.identity,
+        device_posture: update.device_posture !== undefined ? update.device_posture : existingRule.device_posture,
+        rule_settings: update.rule_settings !== undefined ? update.rule_settings : existingRule.rule_settings
+      };
+      
       const response = await this.api.put<CloudflareResponse<GatewayRule>>(
         `/accounts/${this.accountId}/gateway/rules/${update.id}`,
-        update
+        updatePayload
       );
       return response.data.result;
     } catch (error) {

@@ -23,6 +23,7 @@ export const config = {
     securityTrailsApiKey: process.env.SECURITYTRAILS_API_KEY || undefined,
     clearbitApiKey: process.env.CLEARBIT_API_KEY || undefined,
     hunterApiKey: process.env.HUNTER_API_KEY || undefined,
+    sslmateApiKey: process.env.SSLMATE_API_KEY || undefined,
     
     // Rate limiting and performance settings
     maxConcurrentRequests: parseInt(process.env.OSINT_MAX_CONCURRENT || '3'),

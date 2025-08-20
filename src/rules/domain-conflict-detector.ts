@@ -50,10 +50,17 @@ export class DomainConflictDetector {
         domains.add(hostMatch[1]);
       }
       
-      // Handle http.request.uri.host format
-      const uriHostMatch = filter.match(/http\.request\.uri\.host\s*==\s*"([^"]+)"/);
-      if (uriHostMatch) {
-        domains.add(uriHostMatch[1]);
+      // Additional http.request.host patterns
+      const httpHostInMatch = filter.match(/http\.request\.host\s+in\s+\{([^}]+)\}/);
+      if (httpHostInMatch) {
+        const domainList = httpHostInMatch[1];
+        const domainMatches = domainList.match(/"([^"]+)"/g);
+        if (domainMatches) {
+          domainMatches.forEach(match => {
+            const domain = match.replace(/"/g, '');
+            domains.add(domain);
+          });
+        }
       }
     }
     

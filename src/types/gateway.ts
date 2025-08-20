@@ -14,6 +14,18 @@ export interface GatewayRule {
   rule_settings?: {
     block_page_enabled?: boolean;
     block_page_reason?: string;
+    block_page?: {
+      enabled: boolean;
+      url?: string;
+      context?: {
+        rule_name?: string;
+        custom_message?: string;
+        show_rule_name?: boolean;
+        show_category?: boolean;
+        show_user_info?: boolean;
+        support_contact?: string;
+      };
+    };
     override_ips?: string[];
     override_host?: string;
     l4_override?: {

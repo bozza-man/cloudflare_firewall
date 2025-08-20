@@ -4,6 +4,7 @@ import { exec } from 'child_process';
 import dns from 'dns';
 import chalk from 'chalk';
 import type { OSINTAnalysis } from './threat-intelligence-client.js';
+import { enhancedRadarClient } from './enhanced-radar-client.js';
 
 const execAsync = promisify(exec);
   // These are defined but not currently used
@@ -19,6 +20,7 @@ export interface OSINTProviderConfig {
   ipApiKey?: string;
   whoisXmlApiKey?: string;
   securityTrailsApiKey?: string;
+  sslmateApiKey?: string;
   
   // Rate limiting
   maxConcurrent: number;
@@ -40,10 +42,11 @@ export class OSINTProviders {
       ipApiKey: process.env.IP_API_KEY || "",
       whoisXmlApiKey: process.env.WHOIS_XML_API_KEY || "",
       securityTrailsApiKey: process.env.SECURITY_TRAILS_API_KEY || "",
+      sslmateApiKey: process.env.SSLMATE_API_KEY || "",
       maxConcurrent: 3,
-      rateLimitMs: 1000,
-      requestTimeout: 10000,
-      dnsTimeout: 5000,
+      rateLimitMs: 500,  // Reduced from 1000ms for faster scans
+      requestTimeout: 5000,  // Reduced from 10000ms to fail faster
+      dnsTimeout: 2000,  // Reduced from 5000ms for quicker DNS operations
       ...config
     };
 
@@ -185,7 +188,7 @@ export class OSINTProviders {
   private async getWhoisCommand(domain: string): Promise<OSINTAnalysis['whoisData'] | null> {
     try {
       const { stdout } = await execAsync(`whois ${domain}`, { 
-        timeout: this.config.dnsTimeout * 1000 
+        timeout: this.config.dnsTimeout  // Already in milliseconds, no need to multiply
       });
 
       const registrarMatch = stdout.match(/Registrar:\s*(.+)/i);
@@ -395,9 +398,22 @@ export class OSINTProviders {
     try {
       console.log(chalk.gray(`  → Looking up certificates for ${domain} in CT logs...`));
 
+      // Try SSLMate Cert Spotter first (more reliable)
+      const sslMateResult = await this.getCertificatesFromSSLMate(domain);
+      if (sslMateResult) return sslMateResult;
+
+      // Fallback to crt.sh if SSLMate fails
+      // First, do a quick health check on crt.sh
+      try {
+        await this.httpClient.head('https://crt.sh', { timeout: 1000 });
+      } catch (error) {
+        console.debug(chalk.gray(`  CT logs services unavailable, skipping...`));
+        return undefined;
+      }
+
       const response = await this.rateLimitedRequest(() =>
         this.httpClient.get(`https://crt.sh/?q=${encodeURIComponent(domain)}&output=json`, {
-          timeout: 15000
+          timeout: 3000  // Reduced from 15000ms to fail faster
         })
       );
 
@@ -418,7 +434,8 @@ export class OSINTProviders {
 
       return undefined;
     } catch (error) {
-      console.warn(chalk.yellow(`Certificate transparency lookup failed for ${domain}: ${error instanceof Error ? error.message : 'Unknown error'}`));
+      // Silently fail for CT logs - they're supplementary data
+      console.debug(chalk.gray(`  CT logs lookup skipped for ${domain} (service unavailable)`));
       return undefined;
     }
   }
@@ -444,9 +461,17 @@ export class OSINTProviders {
     try {
       console.log(chalk.gray(`  → Enumerating subdomains for ${domain}...`));
 
+      // First, do a quick health check on crt.sh
+      try {
+        await this.httpClient.head('https://crt.sh', { timeout: 1000 });
+      } catch (error) {
+        console.debug(chalk.gray(`  Subdomain enumeration service unavailable, skipping...`));
+        return [];
+      }
+
       const response = await this.rateLimitedRequest(() =>
         this.httpClient.get(`https://crt.sh/?q=%.${encodeURIComponent(domain)}&output=json`, {
-          timeout: 20000
+          timeout: 3000  // Reduced from 20000ms to fail faster
         })
       );
 
@@ -470,7 +495,8 @@ export class OSINTProviders {
 
       return [];
     } catch (error) {
-      console.warn(chalk.yellow(`Subdomain enumeration failed for ${domain}: ${error instanceof Error ? error.message : 'Unknown error'}`));
+      // Silently fail for subdomain enumeration - it's supplementary data
+      console.debug(chalk.gray(`  Subdomain enumeration skipped for ${domain} (service unavailable)`));
       return [];
     }
   }
@@ -516,6 +542,104 @@ export class OSINTProviders {
     } catch (error) {
       console.warn(chalk.yellow(`Business info lookup failed for ${domain}: ${error instanceof Error ? error.message : 'Unknown error'}`));
       return undefined;
+    }
+  }
+
+  /**
+   * Get certificates from SSLMate Cert Spotter API (CT Search API v1)
+   * Documentation: https://sslmate.com/help/reference/ct_search_api_v1
+   */
+  private async getCertificatesFromSSLMate(domain: string): Promise<OSINTAnalysis['certificates'] | null> {
+    try {
+      // SSLMate requires API key for authentication
+      if (!this.config.sslmateApiKey) {
+        console.debug(chalk.gray(`  SSLMate API key not configured, skipping...`));
+        return null;
+      }
+
+      // Build the API URL with proper parameters
+      const url = `https://api.certspotter.com/v1/issuances`;
+      const params = new URLSearchParams();
+      params.append('domain', domain);
+      params.append('include_subdomains', 'false');
+      params.append('match_wildcards', 'true');
+      params.append('expand', 'dns_names');
+      params.append('expand', 'issuer');
+
+      const response = await this.httpClient.get(
+        `${url}?${params.toString()}`,
+        { 
+          timeout: 5000,
+          headers: {
+            'User-Agent': 'CloudflareFirewall-OSINTClient/1.0',
+            'Authorization': `Bearer ${this.config.sslmateApiKey}`  // SSLMate uses Bearer token auth
+          }
+        }
+      );
+
+      if (response.data && Array.isArray(response.data) && response.data.length > 0) {
+        // Sort by not_after date to get the most recent valid certificate
+        const sorted = response.data.sort((a: any, b: any) => {
+          const dateA = new Date(a.not_after || '').getTime();
+          const dateB = new Date(b.not_after || '').getTime();
+          return dateB - dateA;  // Most recent first
+        });
+        
+        const mostRecent = sorted[0];
+        
+        return {
+          issuer: mostRecent.issuer?.friendly_name || mostRecent.issuer?.name || 'Unknown Issuer',
+          validFrom: mostRecent.not_before,
+          validTo: mostRecent.not_after,
+          subjectAlternativeNames: mostRecent.dns_names || [],
+          fingerprint: mostRecent.cert_sha256 || mostRecent.tbs_sha256
+        };
+      }
+
+      console.debug(chalk.gray(`  No certificates found for ${domain} via SSLMate`));
+      return null;
+    } catch (error) {
+      // Check for specific error types
+      if (error instanceof Error) {
+        if (error.message.includes('401') || error.message.includes('403')) {
+          console.debug(chalk.gray(`  SSLMate API authentication failed - check API key`));
+        } else if (error.message.includes('429')) {
+          console.debug(chalk.gray(`  SSLMate API rate limit exceeded`));
+        } else {
+          console.debug(chalk.gray(`  SSLMate lookup failed for ${domain}: ${error.message}`));
+        }
+      }
+      console.debug(chalk.gray(`  Trying crt.sh as fallback...`));
+      return null;
+    }
+  }
+
+  /**
+   * Alternative subdomain enumeration using SecurityTrails (if API key available)
+   */
+  private async getSubdomainsFromSecurityTrails(domain: string): Promise<string[] | null> {
+    if (!this.config.securityTrailsApiKey) return null;
+
+    try {
+      const response = await this.httpClient.get(
+        `https://api.securitytrails.com/v1/domain/${domain}/subdomains`,
+        {
+          timeout: 3000,
+          headers: {
+            'APIKEY': this.config.securityTrailsApiKey,
+            'User-Agent': 'CloudflareFirewall-OSINTClient/1.0'
+          }
+        }
+      );
+
+      if (response.data && response.data.subdomains) {
+        return response.data.subdomains.map((sub: string) => `${sub}.${domain}`);
+      }
+
+      return null;
+    } catch (error) {
+      console.debug(chalk.gray(`  SecurityTrails lookup failed for ${domain}`));
+      return null;
     }
   }
 }

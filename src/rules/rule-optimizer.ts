@@ -229,9 +229,18 @@ export class RuleOptimizer {
     }
 
     // Process reordering suggestions (with null checks)
+    // CRITICAL: Never move the catch-all rule (0519eb6f-0e60-4713-8213-19da74e501f9)
+    const CATCH_ALL_RULE_ID = '0519eb6f-0e60-4713-8213-19da74e501f9';
+    
     if (localAnalysis.proposedOrder && Array.isArray(localAnalysis.proposedOrder)) {
       localAnalysis.proposedOrder.forEach((proposal: ProposedRuleOrder) => {
         if (proposal.rule && proposal.rule.id) {
+          // Skip the catch-all rule - it must always stay last
+          if (proposal.rule.id === CATCH_ALL_RULE_ID) {
+            console.log(chalk.yellow(`\n⚠️  Skipping catch-all rule "${proposal.rule.name}" - must remain last`));
+            return;
+          }
+          
           plan.reorderingPlan.push({
             ruleId: proposal.rule.id,
             ruleName: proposal.rule.name,
@@ -247,6 +256,11 @@ export class RuleOptimizer {
       aiAnalysis.optimizedRuleset.forEach((optRaw: unknown) => {
         const opt = optRaw as AIOptimizedRule;
         if (opt.rule && opt.newPrecedence && opt.newPrecedence !== opt.rule.precedence) {
+          // Skip the catch-all rule - it must always stay last
+          if (opt.rule.id === CATCH_ALL_RULE_ID) {
+            return;
+          }
+          
           const existing = plan.reorderingPlan.find(r => r.ruleId === opt.rule.id);
           if (!existing) {
             plan.reorderingPlan.push({
@@ -270,40 +284,10 @@ export class RuleOptimizer {
   ): void {
     if (!localAnalysis.issues || !Array.isArray(localAnalysis.issues)) return;
 
-    // Check all rules for naming standard compliance and missing descriptions
-    rules.forEach(rule => {
-      const updates: any = {};
-      let reasons: string[] = [];
-      
-      // Check if rule name follows the standard template
-      if (!RuleNamingTemplate.isStandardized(rule.name)) {
-        const standardizedName = RuleNamingTemplate.standardizeRuleName(rule);
-        if (standardizedName !== rule.name) {
-          updates.name = standardizedName;
-          reasons.push('Standardize rule name to follow template');
-        }
-      }
-      
-      // Check if rule lacks a description
-      if (!rule.description || rule.description.trim() === '') {
-        const generatedDescription = this.generateRuleDescription(rule);
-        if (generatedDescription) {
-          updates.description = generatedDescription;
-          reasons.push('Add missing description');
-        }
-      }
-      
-      // If there are updates to make, add to the plan
-      if (Object.keys(updates).length > 0 && !plan.rulesToUpdate.some(u => u.rule.id === rule.id)) {
-        plan.rulesToUpdate.push({
-          rule,
-          updates,
-          reason: reasons.join(' and ')
-        });
-      }
-    });
+    // Track which rules are marked for deletion to avoid updating them
+    const markedForDeletion = new Set<string>();
 
-    // Group redundant rules for potential deletion
+    // First, identify redundant rules for deletion (do this first to avoid updating rules we'll delete)
     const redundantRules = localAnalysis.issues.filter(
       (issue: LocalAnalysisIssue) => issue.category === 'redundancy' && issue.type === 'warning'
     );
@@ -324,19 +308,95 @@ export class RuleOptimizer {
         rules.find(r => r.id === relatedRuleIds[0]) : null;
 
       if (relatedRule) {
-        // Prefer to keep the more specific or earlier rule
-        const shouldKeepCurrent = rule.precedence < relatedRule.precedence ||
-          (rule.filters.length >= relatedRule.filters.length);
+        // More aggressive deletion strategy:
+        // Delete the rule with higher precedence (evaluated later) unless it has significantly more specific filters
+        const currentFilterCount = rule.filters.join(' ').length;
+        const relatedFilterCount = relatedRule.filters.join(' ').length;
+        const isSignificantlyMoreSpecific = currentFilterCount > relatedFilterCount * 1.5;
         
-        if (!shouldKeepCurrent) {
+        // Delete the later rule unless it's significantly more specific
+        const shouldDeleteCurrent = rule.precedence > relatedRule.precedence && !isSignificantlyMoreSpecific;
+        const shouldDeleteRelated = relatedRule.precedence > rule.precedence && 
+          !((relatedFilterCount > currentFilterCount * 1.5));
+        
+        if (shouldDeleteCurrent) {
           plan.rulesToDelete.push({
             rule,
-            reason: `Redundant with "${relatedRule.name}" - ${issue.message}`
+            reason: `Redundant with "${relatedRule.name}" (earlier rule covers same domains)`
           });
           processedRules.add(rule.id);
+          markedForDeletion.add(rule.id);
+        } else if (shouldDeleteRelated && !processedRules.has(relatedRule.id)) {
+          plan.rulesToDelete.push({
+            rule: relatedRule,
+            reason: `Redundant with "${rule.name}" (earlier rule covers same domains)`
+          });
+          processedRules.add(relatedRule.id);
+          markedForDeletion.add(relatedRule.id);
         }
       }
     });
+
+    // Log how many rules are marked for deletion
+    if (markedForDeletion.size > 0) {
+      console.log(chalk.yellow(`\n📝 Identified ${markedForDeletion.size} redundant rules for deletion`));
+    }
+
+    // Check all rules for naming standard compliance and missing descriptions
+    // But skip rules that are marked for deletion
+    rules.forEach(rule => {
+      // Skip if this rule is marked for deletion
+      if (markedForDeletion.has(rule.id)) return;
+      
+      const updates: any = {};
+      let reasons: string[] = [];
+      
+      // Always add description if missing
+      if (!rule.description || rule.description.trim() === '') {
+        const generatedDescription = this.generateRuleDescription(rule);
+        if (generatedDescription) {
+          updates.description = generatedDescription;
+          reasons.push('Add missing description');
+        }
+      } else if (rule.description.length < 20) {
+        // Also update if description is too short to be meaningful
+        const generatedDescription = this.generateRuleDescription(rule);
+        if (generatedDescription && generatedDescription.length > rule.description.length) {
+          updates.description = generatedDescription;
+          reasons.push('Enhance short description');
+        }
+      }
+      
+      // Check if rule name could be improved (even if it follows the template)
+      if (!RuleNamingTemplate.isStandardized(rule.name)) {
+        const standardizedName = RuleNamingTemplate.standardizeRuleName(rule);
+        if (standardizedName !== rule.name) {
+          updates.name = standardizedName;
+          reasons.push('Standardize rule name to follow template');
+        }
+      } else {
+        // Even if standardized, check if the name could be more descriptive
+        const betterName = this.suggestBetterRuleName(rule);
+        if (betterName && betterName !== rule.name && betterName.length > rule.name.length + 5) {
+          updates.name = betterName;
+          reasons.push('Improve rule name clarity');
+        }
+      }
+      
+      // If there are updates to make, add to the plan
+      if (Object.keys(updates).length > 0 && !plan.rulesToUpdate.some(u => u.rule.id === rule.id)) {
+        plan.rulesToUpdate.push({
+          rule,
+          updates,
+          reason: reasons.join(' and ')
+        });
+      }
+    });
+
+    // Log how many rules will be updated
+    if (plan.rulesToUpdate.length > 0) {
+      console.log(chalk.yellow(`\n✏️  Identified ${plan.rulesToUpdate.length} rules for updates (names/descriptions)`));
+    }
 
     // Handle conflict errors by suggesting consolidation
     const conflictRules = localAnalysis.issues.filter(
@@ -503,6 +563,31 @@ export class RuleOptimizer {
     return null;
   }
 
+  /**
+   * Suggest a better, more descriptive rule name
+   */
+  private suggestBetterRuleName(rule: GatewayRule): string | null {
+    const { filters, action } = rule;
+    
+    // Extract meaningful information from filters
+    const domains = this.extractDomainsFromFilters(filters);
+    
+    // If we can identify a specific service, suggest a better name
+    if (domains.length > 0) {
+      const service = this.inferServiceFromDomains(domains);
+      if (service) {
+        const trafficType = filters.some(f => f.includes('dns.')) ? 'DNS' : 
+                          filters.some(f => f.includes('http.')) ? 'HTTP' : 'NETWORK';
+        const actionStr = action === 'allow' ? 'Allow' : action === 'block' ? 'Block' : 'Custom';
+        return `${trafficType}: Productivity (${actionStr}) - ${service}: Core Services`;
+      }
+    }
+    
+    // Don't suggest a change if we can't improve it
+    return null;
+  }
+
+
   private displayOptimizationPlan(plan: OptimizationPlan): void {
     console.log(chalk.bold.cyan('\n📋 Optimization Plan:\n'));
 
@@ -625,10 +710,13 @@ export class RuleOptimizer {
 
         try {
           spinner.text = `Updating rule: ${rule.name}`;
-          await this.gateway.updateGatewayRule({
+          // Ensure we include the rule ID and preserve the action if not being updated
+          const updatePayload = {
             id: rule.id,
+            action: updates.action || rule.action,  // Preserve action if not being updated
             ...updates
-          });
+          };
+          await this.gateway.updateGatewayRule(updatePayload);
           successCount++;
         } catch (error) {
           console.error(chalk.red(`\nFailed to update ${rule.name}:`, error));
@@ -636,7 +724,7 @@ export class RuleOptimizer {
         }
       }
 
-      // Apply reordering
+      // Apply reordering with intelligent conflict resolution
       if (plan.reorderingPlan.length > 0) {
         if (interactive) {
           spinner.stop();
@@ -648,30 +736,24 @@ export class RuleOptimizer {
               default: true
             }
           ]);
-          if (confirm) {
+          if (!confirm) {
             spinner.start();
-            for (const { ruleId, ruleName, newPrecedence } of plan.reorderingPlan) {
-              try {
-                spinner.text = `Reordering rule: ${ruleName}`;
-                await this.gateway.updateRulePrecedence(ruleId, newPrecedence);
-                successCount++;
-              } catch (error) {
-                console.error(chalk.red(`\nFailed to reorder ${ruleName}:`, error));
-                errorCount++;
-              }
-            }
+          } else {
+            spinner.start();
+            const { reorderSuccess, reorderErrors } = await this.applyIntelligentReordering(
+              plan.reorderingPlan,
+              spinner
+            );
+            successCount += reorderSuccess;
+            errorCount += reorderErrors;
           }
         } else {
-          for (const { ruleId, ruleName, newPrecedence } of plan.reorderingPlan) {
-            try {
-              spinner.text = `Reordering rule: ${ruleName}`;
-              await this.gateway.updateRulePrecedence(ruleId, newPrecedence);
-              successCount++;
-            } catch (error) {
-              console.error(chalk.red(`\nFailed to reorder ${ruleName}:`, error));
-              errorCount++;
-            }
-          }
+          const { reorderSuccess, reorderErrors } = await this.applyIntelligentReordering(
+            plan.reorderingPlan,
+            spinner
+          );
+          successCount += reorderSuccess;
+          errorCount += reorderErrors;
         }
       }
 
@@ -685,6 +767,180 @@ export class RuleOptimizer {
     } catch (error) {
       spinner.fail('Optimization failed');
       throw error;
+    }
+  }
+
+  /**
+   * Intelligently reorder rules to avoid precedence conflicts
+   * Uses a multi-phase approach to move rules without conflicts
+   */
+  private async applyIntelligentReordering(
+    reorderingPlan: OptimizationPlan['reorderingPlan'],
+    spinner: any // ora spinner instance
+  ): Promise<{ reorderSuccess: number; reorderErrors: number }> {
+    let reorderSuccess = 0;
+    let reorderErrors = 0;
+
+    // Get current rules to identify catch-all blocks and determine safe ranges
+    const currentRules = await this.gateway.listGatewayRules();
+    const catchAllRules = currentRules.filter(rule => 
+      rule.name.toLowerCase().includes('catch') || 
+      rule.name.toLowerCase().includes('block all') ||
+      rule.name.toLowerCase().includes('default deny') ||
+      (rule.action === 'block' && rule.filters.some(f => 
+        f.includes('true') || f === '1=1' || f.includes('*')
+      ))
+    );
+    
+    // Find the minimum precedence of catch-all rules to stay safely before them
+    const minCatchAllPrecedence = catchAllRules.length > 0 
+      ? Math.min(...catchAllRules.map(r => r.precedence))
+      : 100000; // Default high value if no catch-all found
+    
+    // CRITICAL: Filter out the catch-all rule to ensure it never moves
+    const CATCH_ALL_RULE_ID = '0519eb6f-0e60-4713-8213-19da74e501f9';
+    const filteredPlan = reorderingPlan.filter(item => {
+      if (item.ruleId === CATCH_ALL_RULE_ID) {
+        console.log(chalk.red(`\n🛡️ Protecting catch-all rule "${item.ruleName}" from reordering - it must remain last`));
+        return false;
+      }
+      return true;
+    });
+    
+    // Sort the reordering plan to process in a smart order
+    const sortedPlan = this.sortReorderingPlan(filteredPlan);
+    
+    // Phase 1: Move rules to temporary LOW precedence values to maintain security
+    // CRITICAL: Use low values (1-1000) to stay BEFORE catch-all rules
+    spinner.text = 'Phase 1: Preparing precedence space (maintaining security)...';
+    const tempMoves: Array<{ ruleId: string; ruleName: string; tempPrecedence: number; targetPrecedence: number }> = [];
+    
+    // Start from precedence 1 for temporary moves - ensures rules stay before catch-all
+    const tempPrecedenceBase = 1;
+    
+    for (const [index, item] of sortedPlan.entries()) {
+      const tempPrecedence = tempPrecedenceBase + (index * 10); // Space them out by 10
+      
+      // Safety check: ensure temp precedence is well before any catch-all rule
+      if (tempPrecedence >= minCatchAllPrecedence - 1000) {
+        console.error(chalk.red(`\n⚠️  Safety: Cannot move ${item.ruleName} - would bypass catch-all rules`));
+        reorderErrors++;
+        continue;
+      }
+      
+      tempMoves.push({
+        ruleId: item.ruleId,
+        ruleName: item.ruleName,
+        tempPrecedence,
+        targetPrecedence: item.newPrecedence
+      });
+      
+      try {
+        spinner.text = `Phase 1: Safely moving ${item.ruleName} to temporary position ${tempPrecedence}...`;
+        await this.gateway.updateRulePrecedence(item.ruleId, tempPrecedence);
+      } catch (error) {
+        // If we can't move to temp position, skip this rule
+        console.error(chalk.yellow(`\nSkipping ${item.ruleName}: Could not move to temporary position`));
+        reorderErrors++;
+        // Remove from tempMoves since it failed
+        tempMoves.pop();
+      }
+    }
+    
+    // Phase 2: Move rules from temporary positions to their final positions
+    spinner.text = 'Phase 2: Moving rules to final positions...';
+    
+    // Sort by target precedence to avoid conflicts when moving to final positions
+    tempMoves.sort((a, b) => a.targetPrecedence - b.targetPrecedence);
+    
+    for (const { ruleId, ruleName, targetPrecedence } of tempMoves) {
+      try {
+        spinner.text = `Phase 2: Moving ${ruleName} to final position ${targetPrecedence}...`;
+        await this.gateway.updateRulePrecedence(ruleId, targetPrecedence);
+        reorderSuccess++;
+      } catch (error) {
+        console.error(chalk.red(`\nFailed to move ${ruleName} to final position:`, error));
+        reorderErrors++;
+        // Try to recover by finding next available precedence
+        try {
+          const alternativePrecedence = await this.findNearestAvailablePrecedence(targetPrecedence);
+          if (alternativePrecedence) {
+            spinner.text = `Retrying ${ruleName} with alternative precedence ${alternativePrecedence}...`;
+            await this.gateway.updateRulePrecedence(ruleId, alternativePrecedence);
+            console.log(chalk.yellow(`\n⚠️  ${ruleName} placed at ${alternativePrecedence} instead of ${targetPrecedence}`));
+            reorderSuccess++;
+            reorderErrors--; // Correct the error count since we recovered
+          }
+        } catch (retryError) {
+          // Could not recover, error count stays
+        }
+      }
+    }
+    
+    return { reorderSuccess, reorderErrors };
+  }
+
+  /**
+   * Sort reordering plan to minimize conflicts
+   * Rules moving up (decreasing precedence) should be processed first
+   * Rules moving down (increasing precedence) should be processed last
+   */
+  private sortReorderingPlan(
+    reorderingPlan: OptimizationPlan['reorderingPlan']
+  ): OptimizationPlan['reorderingPlan'] {
+    return [...reorderingPlan].sort((a, b) => {
+      const aDelta = a.newPrecedence - a.currentPrecedence;
+      const bDelta = b.newPrecedence - b.currentPrecedence;
+      
+      // Process rules moving up first (negative delta)
+      // Then process rules moving down (positive delta)
+      if (aDelta < 0 && bDelta >= 0) return -1;
+      if (aDelta >= 0 && bDelta < 0) return 1;
+      
+      // For rules moving in the same direction, process smaller moves first
+      return Math.abs(aDelta) - Math.abs(bDelta);
+    });
+  }
+
+  /**
+   * Find the nearest available precedence value to the target
+   */
+  private async findNearestAvailablePrecedence(targetPrecedence: number): Promise<number | null> {
+    try {
+      const rules = await this.gateway.listGatewayRules();
+      const usedPrecedences = new Set(rules.map(r => r.precedence));
+      
+      // Try values near the target precedence
+      const maxAttempts = 100;
+      for (let offset = 1; offset <= maxAttempts; offset++) {
+        // Try higher precedence
+        const higher = targetPrecedence + offset;
+        if (!usedPrecedences.has(higher) && higher <= 150000) {
+          return higher;
+        }
+        
+        // Try lower precedence
+        const lower = targetPrecedence - offset;
+        if (!usedPrecedences.has(lower) && lower > 0) {
+          return lower;
+        }
+      }
+      
+      // If no nearby precedence is available, find any available gap
+      const sortedPrecedences = Array.from(usedPrecedences).sort((a, b) => a - b);
+      for (let i = 0; i < sortedPrecedences.length - 1; i++) {
+        if (sortedPrecedences[i + 1] - sortedPrecedences[i] > 1) {
+          return sortedPrecedences[i] + 1;
+        }
+      }
+      
+      // Last resort: use max precedence + 1
+      const maxPrecedence = Math.max(...sortedPrecedences);
+      return maxPrecedence + 1;
+      
+    } catch (error) {
+      console.error('Failed to find available precedence:', error);
+      return null;
     }
   }
 }

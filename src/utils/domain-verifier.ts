@@ -66,8 +66,8 @@ export class DomainVerifier {
         }
       }
 
-      // Extract from http.request.uri.host format
-      const httpHostMatch = filter.match(/http\.request\.uri\.host\s*(?:==|in)\s*(?:"([^"]+)"|{([^}]+)})/);
+      // Extract from http.request.host format
+      const httpHostMatch = filter.match(/http\.request\.host\s*(?:==|in)\s*(?:"([^"]+)"|{([^}]+)})/);
       if (httpHostMatch) {
         if (httpHostMatch[1]) {
           // Single domain
