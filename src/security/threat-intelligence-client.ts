@@ -4,6 +4,10 @@ import chalk from 'chalk';
 import { OSINTProviders } from './osint-providers.js';
 import { enhancedRadarClient } from './enhanced-radar-client.js';
 import { dnsVerifier } from './dns-verifier.js';
+// MCP Clients for enhanced threat intelligence
+import { getSecurityMCPClient } from '../mcp/clients/security-client.js';
+import { getUtilityMCPClient } from '../mcp/clients/utility-client.js';
+import { getAnalyticsMCPClient } from '../mcp/clients/analytics-client.js';
 
 export interface ThreatIntelligenceResult {
   domain: string;
@@ -462,6 +466,9 @@ export class ThreatIntelligenceClient {
     
     // Pattern-based threat detection
     this.analyzePatterns(domain, result);
+    
+    // Enhanced MCP-based analysis
+    await this.enhanceWithMCPServers(domain, result);
   }
 
   /**
@@ -1051,6 +1058,211 @@ export class ThreatIntelligenceClient {
         description: 'IP appears to be from residential ISP',
         evidence: `ISP: ${analysis.geolocation.isp}`
       });
+    }
+  }
+
+  /**
+   * Enhance threat intelligence with MCP servers
+   */
+  private async enhanceWithMCPServers(domain: string, result: ThreatIntelligenceResult): Promise<void> {
+    try {
+      console.log(chalk.blue('🔌 Enhancing with MCP servers...'));
+      
+      // Use multiple MCP servers in parallel for comprehensive analysis
+      const [securityData, webAnalysis, dnsAnalytics] = await Promise.allSettled([
+        this.getSecurityMCPData(domain),
+        this.getWebAnalysisMCPData(domain),
+        this.getDNSAnalyticsMCPData(domain)
+      ]);
+      
+      // Process security MCP data
+      if (securityData.status === 'fulfilled' && securityData.value) {
+        this.mergeSecurityMCPData(result, securityData.value);
+      }
+      
+      // Process web analysis MCP data
+      if (webAnalysis.status === 'fulfilled' && webAnalysis.value) {
+        this.mergeWebAnalysisMCPData(result, webAnalysis.value);
+      }
+      
+      // Process DNS analytics MCP data
+      if (dnsAnalytics.status === 'fulfilled' && dnsAnalytics.value) {
+        this.mergeDNSAnalyticsMCPData(result, dnsAnalytics.value);
+      }
+      
+      console.log(chalk.green('✅ MCP enhancement complete'));
+    } catch (error) {
+      console.debug(chalk.yellow(`⚠️ MCP enhancement failed: ${error}`));
+      // Continue without MCP data - it's an enhancement, not critical
+    }
+  }
+
+  /**
+   * Get security data from MCP servers
+   */
+  private async getSecurityMCPData(domain: string): Promise<any> {
+    try {
+      const securityClient = await getSecurityMCPClient();
+      
+      // Check audit logs for suspicious activity
+      const auditLogs = await securityClient.queryAuditLogs({
+        resource: domain,
+        limit: 10
+      });
+      
+      // Get threat intelligence summary
+      const threatSummary = await securityClient.getThreatIntelligenceSummary();
+      
+      return {
+        auditLogs,
+        threatSummary,
+        source: 'MCP Security'
+      };
+    } catch (error) {
+      console.debug(`Security MCP data fetch failed: ${error}`);
+      return null;
+    }
+  }
+
+  /**
+   * Get web analysis from MCP servers
+   */
+  private async getWebAnalysisMCPData(domain: string): Promise<any> {
+    try {
+      const utilityClient = await getUtilityMCPClient();
+      
+      // Analyze webpage security
+      const url = domain.startsWith('http') ? domain : `https://${domain}`;
+      const webAnalysis = await utilityClient.analyzeWebpageSecurity(url);
+      
+      // Search documentation for known issues
+      const knownIssues = await utilityClient.searchDocumentation(`${domain} security`, {
+        limit: 3
+      });
+      
+      return {
+        webAnalysis,
+        knownIssues,
+        source: 'MCP Utility'
+      };
+    } catch (error) {
+      console.debug(`Web analysis MCP data fetch failed: ${error}`);
+      return null;
+    }
+  }
+
+  /**
+   * Get DNS analytics from MCP servers
+   */
+  private async getDNSAnalyticsMCPData(domain: string): Promise<any> {
+    try {
+      const analyticsClient = await getAnalyticsMCPClient();
+      
+      // Get DNS performance metrics
+      const dnsPerformance = await analyticsClient.getDNSPerformance('24h');
+      
+      // Analyze NXDOMAIN patterns
+      const nxdomainAnalysis = await analyticsClient.analyzeNXDOMAIN({
+        startTime: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+        endTime: new Date().toISOString(),
+        limit: 100
+      });
+      
+      return {
+        dnsPerformance,
+        nxdomainAnalysis,
+        source: 'MCP Analytics'
+      };
+    } catch (error) {
+      console.debug(`DNS analytics MCP data fetch failed: ${error}`);
+      return null;
+    }
+  }
+
+  /**
+   * Merge security MCP data into result
+   */
+  private mergeSecurityMCPData(result: ThreatIntelligenceResult, data: any): void {
+    if (!data) return;
+    
+    result.sources.push({
+      name: 'MCP Security Servers',
+      type: 'mcp' as any,
+      reputation: 90,
+      lastUpdate: new Date().toISOString()
+    });
+    
+    // Check for critical security events
+    if (data.threatSummary?.criticalEvents?.length > 0) {
+      result.threats.push({
+        type: 'suspicious',
+        severity: 'high',
+        confidence: 0.8,
+        source: 'MCP Security',
+        description: `Critical security events detected: ${data.threatSummary.criticalEvents.length} events`
+      });
+    }
+    
+    // Check audit logs for suspicious patterns
+    if (data.auditLogs?.length > 5) {
+      result.threats.push({
+        type: 'suspicious',
+        severity: 'medium',
+        confidence: 0.6,
+        source: 'MCP Audit Logs',
+        description: `Elevated audit activity: ${data.auditLogs.length} recent events`
+      });
+    }
+  }
+
+  /**
+   * Merge web analysis MCP data into result
+   */
+  private mergeWebAnalysisMCPData(result: ThreatIntelligenceResult, data: any): void {
+    if (!data) return;
+    
+    // Add web analysis findings
+    if (data.webAnalysis?.securityGuidelines) {
+      result.details.webSecurityAnalysis = {
+        hasScreenshot: !!data.webAnalysis.screenshot,
+        hasContent: !!data.webAnalysis.content,
+        securityGuidelines: data.webAnalysis.securityGuidelines
+      };
+    }
+    
+    // Add known issues
+    if (data.knownIssues?.length > 0) {
+      result.details.knownIssues = data.knownIssues.map((issue: any) => ({
+        title: issue.title,
+        url: issue.url,
+        relevance: issue.relevance
+      }));
+    }
+  }
+
+  /**
+   * Merge DNS analytics MCP data into result
+   */
+  private mergeDNSAnalyticsMCPData(result: ThreatIntelligenceResult, data: any): void {
+    if (!data) return;
+    
+    // Check for DNS anomalies
+    if (data.nxdomainAnalysis?.anomalies?.length > 0) {
+      result.threats.push({
+        type: 'suspicious',
+        severity: 'low',
+        confidence: 0.5,
+        source: 'MCP DNS Analytics',
+        description: `DNS anomalies detected: ${data.nxdomainAnalysis.anomalies.length} patterns`
+      });
+    }
+    
+    // Add DNS performance data
+    if (data.dnsPerformance) {
+      result.details.dnsPerformance = {
+        averageResponseTime: data.dnsPerformance.averageResponseTime,
+        successRate: data.dnsPerformance.successRate
+      };
     }
   }
 }
