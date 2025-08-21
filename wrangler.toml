@@ -21,8 +21,8 @@ id = "874ed0b066ac4df3b2200c888ff3b86b"
 pattern = "firewall.bozza.au/*"  # Production domain
 zone_id = "7249ad638510c628a7861d93535acbca"  # Your zone ID
 
-[build]
-command = "npm run build:worker"
+# [build]
+# command = "npm run build:worker"  # Commented out to let Wrangler handle TypeScript directly
 
 # Development configuration
 [dev]

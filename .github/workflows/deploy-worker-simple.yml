@@ -1,0 +1,36 @@
+name: Deploy Worker (Simple)
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy to Cloudflare
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy to Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: '3.109.0'
+          
+      - name: Verify deployment
+        run: |
+          echo "🚀 Worker deployed to https://firewall.bozza.au"
+          sleep 5
+          echo "Testing worker health..."
+          response=$(curl -s -o /dev/null -w "%{http_code}" https://firewall.bozza.au/api/env || echo "500")
+          echo "Worker returned status code: $response"
+          if [ "$response" = "200" ] || [ "$response" = "401" ]; then
+            echo "✅ Worker is responding"
+          else
+            echo "⚠️ Worker may not be fully deployed yet"
+          fi
