@@ -1,0 +1,251 @@
+name: Cloudflare Deployment
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '20.x'
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Run linter
+        run: npm run lint
+        
+      - name: Type check
+        run: npm run typecheck
+        
+      - name: Run tests
+        run: npm run test:ci
+        
+      - name: Upload coverage
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage/lcov.info
+          
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: test
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Build TypeScript
+        run: npm run build
+        
+      - name: Build Worker
+        run: npm run build:worker
+        
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts
+          path: |
+            dist/
+            
+  deploy-worker:
+    name: Deploy Worker
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
+          path: dist/
+          
+      - name: Deploy to Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy -c wrangler.full.toml --env ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
+          
+  setup-services:
+    name: Setup Cloudflare Services
+    runs-on: ubuntu-latest
+    needs: deploy-worker
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Setup AI Gateway
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          npm run setup:ai-gateway || echo "AI Gateway may already exist"
+          
+      - name: Create D1 Database
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: d1 create firewall-db --experimental-backend
+        continue-on-error: true
+        
+      - name: Run D1 Migrations
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: d1 execute firewall-db --file=./schema.sql
+          
+      - name: Create R2 Bucket
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: r2 bucket create gateway-rule-backups
+        continue-on-error: true
+        
+      - name: Create Vectorize Index
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: vectorize create gateway-rules --dimensions 768 --metric cosine
+        continue-on-error: true
+        
+  seed-data:
+    name: Seed Initial Data
+    runs-on: ubuntu-latest
+    needs: setup-services
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Index existing rules
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          WORKER_URL: ${{ secrets.WORKER_URL }}
+        run: |
+          echo "Indexing existing rules in Vectorize..."
+          # Add script to index existing rules
+          
+  performance-test:
+    name: Performance Test
+    runs-on: ubuntu-latest
+    needs: deploy-worker
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Run performance tests
+        env:
+          WORKER_URL: ${{ secrets.WORKER_URL }}
+        run: |
+          # Simple performance test
+          curl -w "@.github/curl-format.txt" -o /dev/null -s "$WORKER_URL/health"
+          
+      - name: Check response time
+        run: |
+          RESPONSE_TIME=$(curl -w "%{time_total}" -o /dev/null -s "${{ secrets.WORKER_URL }}/health")
+          echo "Response time: ${RESPONSE_TIME}s"
+          if (( $(echo "$RESPONSE_TIME > 1" | bc -l) )); then
+            echo "Warning: Response time is over 1 second"
+            exit 1
+          fi
+          
+  notify:
+    name: Notify Deployment
+    runs-on: ubuntu-latest
+    needs: [deploy-worker, setup-services]
+    if: always()
+    
+    steps:
+      - name: Send notification
+        env:
+          WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          STATUS="${{ needs.deploy-worker.result == 'success' && '✅ Success' || '❌ Failed' }}"
+          BRANCH="${{ github.ref_name }}"
+          COMMIT="${{ github.sha }}"
+          
+          curl -X POST $WEBHOOK_URL \
+            -H 'Content-Type: application/json' \
+            -d "{
+              \"text\": \"Deployment Status: $STATUS\",
+              \"blocks\": [
+                {
+                  \"type\": \"section\",
+                  \"text\": {
+                    \"type\": \"mrkdwn\",
+                    \"text\": \"*Cloudflare Firewall Manager Deployment*\\n\\nBranch: \`$BRANCH\`\\nCommit: \`$COMMIT\`\\nStatus: $STATUS\"
+                  }
+                }
+              ]
+            }"
+        continue-on-error: true

@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCP Command Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-height: calc(100vh - 120px);
+            overflow-y: auto;
+        }
+
+        .command-area {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .server-list {
+            list-style: none;
+        }
+
+        .server-item {
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .server-item:hover {
+            background: #f7fafc;
+        }
+
+        .server-item.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .server-status {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .server-status.connected {
+            background: #48bb78;
+        }
+
+        .server-status.disconnected {
+            background: #f56565;
+        }
+
+        .tool-list {
+            margin-top: 20px;
+        }
+
+        .tool-item {
+            padding: 10px;
+            margin-bottom: 8px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tool-item:hover {
+            background: #f7fafc;
+            border-color: #667eea;
+        }
+
+        .tool-item.selected {
+            background: #ebf4ff;
+            border-color: #667eea;
+        }
+
+        .tool-name {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 4px;
+        }
+
+        .tool-description {
+            font-size: 0.9em;
+            color: #718096;
+        }
+
+        .command-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .command-title {
+            font-size: 1.5em;
+            color: #2d3748;
+        }
+
+        .command-form {
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+            font-family: 'Monaco', 'Courier New', monospace;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a67d8;
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e0;
+        }
+
+        .btn-danger {
+            background: #f56565;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #e53e3e;
+        }
+
+        .output-area {
+            background: #1a202c;
+            color: #68d391;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            min-height: 200px;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .output-timestamp {
+            color: #718096;
+            font-size: 0.9em;
+        }
+
+        .output-command {
+            color: #63b3ed;
+            margin: 10px 0;
+        }
+
+        .output-result {
+            color: #68d391;
+        }
+
+        .output-error {
+            color: #fc8181;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding: 10px;
+            background: #f7fafc;
+            border-radius: 8px;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #e2e8f0;
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .loading-spinner.active {
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            color: #718096;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+        }
+
+        .tab:hover {
+            color: #4a5568;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .history-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            padding: 10px;
+            margin-bottom: 8px;
+            background: #f7fafc;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .history-item:hover {
+            background: #e2e8f0;
+        }
+
+        .history-timestamp {
+            font-size: 0.8em;
+            color: #718096;
+        }
+
+        .history-command {
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #2d3748;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎮 MCP Command Interface</h1>
+            <p>Execute commands on MCP servers</p>
+        </header>
+
+        <div class="main-grid">
+            <div class="sidebar">
+                <h3>Servers</h3>
+                <ul class="server-list" id="server-list">
+                    <!-- Server items will be populated here -->
+                </ul>
+
+                <div class="tool-list" id="tool-list">
+                    <h3>Available Tools</h3>
+                    <!-- Tool items will be populated here -->
+                </div>
+            </div>
+
+            <div class="command-area">
+                <div class="command-header">
+                    <h2 class="command-title">Command Executor</h2>
+                    <div class="status-indicator">
+                        <span id="connection-status">Disconnected</span>
+                        <div class="loading-spinner" id="loading-spinner"></div>
+                    </div>
+                </div>
+
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('execute')">Execute</button>
+                    <button class="tab" onclick="switchTab('history')">History</button>
+                    <button class="tab" onclick="switchTab('templates')">Templates</button>
+                </div>
+
+                <div class="tab-content active" id="tab-execute">
+                    <form class="command-form" id="command-form">
+                        <div class="form-group">
+                            <label class="form-label">Selected Server</label>
+                            <input type="text" class="form-input" id="selected-server" readonly value="None">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Tool/Command</label>
+                            <input type="text" class="form-input" id="command-input" placeholder="Enter tool name or select from list">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Arguments (JSON)</label>
+                            <textarea class="form-textarea" id="args-input" placeholder='{"key": "value"}'>{}</textarea>
+                        </div>
+
+                        <div class="button-group">
+                            <button type="submit" class="btn btn-primary">Execute Command</button>
+                            <button type="button" class="btn btn-secondary" onclick="clearForm()">Clear</button>
+                            <button type="button" class="btn btn-secondary" onclick="formatJSON()">Format JSON</button>
+                        </div>
+                    </form>
+
+                    <h3>Output</h3>
+                    <div class="output-area" id="output-area">
+                        <div class="output-timestamp">Ready for commands...</div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="tab-history">
+                    <h3>Command History</h3>
+                    <div class="history-list" id="history-list">
+                        <!-- History items will be populated here -->
+                    </div>
+                </div>
+
+                <div class="tab-content" id="tab-templates">
+                    <h3>Command Templates</h3>
+                    <div class="template-list">
+                        <div class="history-item" onclick="loadTemplate('listRules')">
+                            <div class="history-command">List Gateway Rules</div>
+                            <div class="history-timestamp">Get all configured gateway rules</div>
+                        </div>
+                        <div class="history-item" onclick="loadTemplate('checkDomain')">
+                            <div class="history-command">Check Domain Threat</div>
+                            <div class="history-timestamp">Check threat intelligence for a domain</div>
+                        </div>
+                        <div class="history-item" onclick="loadTemplate('analyzeTraffic')">
+                            <div class="history-command">Analyze Traffic</div>
+                            <div class="history-timestamp">Get traffic analytics for the last hour</div>
+                        </div>
+                        <div class="history-item" onclick="loadTemplate('getMetrics')">
+                            <div class="history-command">Get Metrics</div>
+                            <div class="history-timestamp">Retrieve system metrics</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="status-bar">
+                    <span>WebSocket: <span id="ws-status">Disconnected</span></span>
+                    <span>Commands executed: <span id="command-count">0</span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State
+        let selectedServer = null;
+        let selectedTool = null;
+        let ws = null;
+        let commandHistory = [];
+        let commandCount = 0;
+
+        // Templates
+        const templates = {
+            listRules: {
+                command: 'gateway_list_rules',
+                args: { limit: 100 }
+            },
+            checkDomain: {
+                command: 'check_threat',
+                args: { domain: 'example.com' }
+            },
+            analyzeTraffic: {
+                command: 'analyze_traffic',
+                args: { timeRange: '1h', groupBy: 'domain' }
+            },
+            getMetrics: {
+                command: 'get_metrics',
+                args: { metrics: ['requests', 'blocked', 'allowed'] }
+            }
+        };
+
+        // Initialize WebSocket
+        function initWebSocket() {
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsUrl = `${protocol}//${window.location.hostname}:3000/ws/mcp`;
+            
+            ws = new WebSocket(wsUrl);
+            
+            ws.onopen = () => {
+                console.log('WebSocket connected');
+                updateConnectionStatus('Connected');
+                document.getElementById('ws-status').textContent = 'Connected';
+                
+                // Request server status
+                ws.send(JSON.stringify({ type: 'getStatus' }));
+            };
+            
+            ws.onmessage = (event) => {
+                const message = JSON.parse(event.data);
+                handleWebSocketMessage(message);
+            };
+            
+            ws.onerror = (error) => {
+                console.error('WebSocket error:', error);
+                updateConnectionStatus('Error');
+                document.getElementById('ws-status').textContent = 'Error';
+            };
+            
+            ws.onclose = () => {
+                console.log('WebSocket disconnected');
+                updateConnectionStatus('Disconnected');
+                document.getElementById('ws-status').textContent = 'Disconnected';
+                
+                // Attempt reconnect
+                setTimeout(initWebSocket, 5000);
+            };
+        }
+
+        // Handle WebSocket messages
+        function handleWebSocketMessage(message) {
+            switch (message.type) {
+                case 'status':
+                    updateServerList(message.data);
+                    break;
+                case 'metrics':
+                    displayCommandResult(message.data);
+                    break;
+                case 'error':
+                    displayError(message.data);
+                    break;
+            }
+        }
+
+        // Update server list
+        function updateServerList(status) {
+            const serverList = document.getElementById('server-list');
+            serverList.innerHTML = '';
+            
+            Object.entries(status).forEach(([name, info]) => {
+                const li = document.createElement('li');
+                li.className = 'server-item';
+                li.onclick = () => selectServer(name, info);
+                
+                li.innerHTML = `
+                    <span>${name}</span>
+                    <span class="server-status ${info.connected ? 'connected' : 'disconnected'}"></span>
+                `;
+                
+                serverList.appendChild(li);
+            });
+        }
+
+        // Select server
+        async function selectServer(name, info) {
+            selectedServer = { name, ...info };
+            
+            // Update UI
+            document.querySelectorAll('.server-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.closest('.server-item').classList.add('active');
+            
+            document.getElementById('selected-server').value = name;
+            
+            // Load tools for this server
+            loadServerTools(name);
+        }
+
+        // Load server tools
+        async function loadServerTools(serverName) {
+            const toolList = document.getElementById('tool-list');
+            
+            // Mock tools for now
+            const tools = [
+                { name: 'list_tools', description: 'List available tools' },
+                { name: 'get_status', description: 'Get server status' },
+                { name: 'execute_query', description: 'Execute a query' },
+                { name: 'get_metrics', description: 'Get server metrics' }
+            ];
+            
+            toolList.innerHTML = '<h3>Available Tools</h3>';
+            
+            tools.forEach(tool => {
+                const div = document.createElement('div');
+                div.className = 'tool-item';
+                div.onclick = () => selectTool(tool);
+                
+                div.innerHTML = `
+                    <div class="tool-name">${tool.name}</div>
+                    <div class="tool-description">${tool.description}</div>
+                `;
+                
+                toolList.appendChild(div);
+            });
+        }
+
+        // Select tool
+        function selectTool(tool) {
+            selectedTool = tool;
+            
+            // Update UI
+            document.querySelectorAll('.tool-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            event.target.closest('.tool-item').classList.add('selected');
+            
+            document.getElementById('command-input').value = tool.name;
+        }
+
+        // Submit command
+        document.getElementById('command-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (!selectedServer) {
+                alert('Please select a server first');
+                return;
+            }
+            
+            const command = document.getElementById('command-input').value;
+            const argsText = document.getElementById('args-input').value;
+            
+            let args;
+            try {
+                args = JSON.parse(argsText);
+            } catch (error) {
+                alert('Invalid JSON in arguments');
+                return;
+            }
+            
+            executeCommand(command, args);
+        });
+
+        // Execute command
+        function executeCommand(command, args) {
+            if (!ws || ws.readyState !== WebSocket.OPEN) {
+                alert('WebSocket not connected');
+                return;
+            }
+            
+            // Show loading
+            document.getElementById('loading-spinner').classList.add('active');
+            
+            // Add to output
+            const output = document.getElementById('output-area');
+            output.innerHTML += `
+                <div class="output-timestamp">[${new Date().toLocaleTimeString()}]</div>
+                <div class="output-command">$ ${command} ${JSON.stringify(args)}</div>
+            `;
+            
+            // Send command
+            ws.send(JSON.stringify({
+                type: 'executeCommand',
+                serverName: selectedServer.name,
+                command: command,
+                args: args
+            }));
+            
+            // Add to history
+            commandHistory.unshift({
+                timestamp: new Date(),
+                server: selectedServer.name,
+                command: command,
+                args: args
+            });
+            
+            commandCount++;
+            document.getElementById('command-count').textContent = commandCount;
+            
+            updateHistory();
+        }
+
+        // Display command result
+        function displayCommandResult(data) {
+            document.getElementById('loading-spinner').classList.remove('active');
+            
+            const output = document.getElementById('output-area');
+            output.innerHTML += `
+                <div class="output-result">${JSON.stringify(data.result, null, 2)}</div>
+            `;
+            
+            output.scrollTop = output.scrollHeight;
+        }
+
+        // Display error
+        function displayError(data) {
+            document.getElementById('loading-spinner').classList.remove('active');
+            
+            const output = document.getElementById('output-area');
+            output.innerHTML += `
+                <div class="output-error">Error: ${data.error}</div>
+            `;
+            
+            output.scrollTop = output.scrollHeight;
+        }
+
+        // Update history
+        function updateHistory() {
+            const historyList = document.getElementById('history-list');
+            historyList.innerHTML = '';
+            
+            commandHistory.slice(0, 10).forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'history-item';
+                div.onclick = () => replayCommand(item);
+                
+                div.innerHTML = `
+                    <div class="history-timestamp">${item.timestamp.toLocaleString()}</div>
+                    <div class="history-command">${item.server}: ${item.command}</div>
+                `;
+                
+                historyList.appendChild(div);
+            });
+        }
+
+        // Replay command
+        function replayCommand(item) {
+            document.getElementById('command-input').value = item.command;
+            document.getElementById('args-input').value = JSON.stringify(item.args, null, 2);
+            switchTab('execute');
+        }
+
+        // Load template
+        function loadTemplate(templateName) {
+            const template = templates[templateName];
+            if (template) {
+                document.getElementById('command-input').value = template.command;
+                document.getElementById('args-input').value = JSON.stringify(template.args, null, 2);
+                switchTab('execute');
+            }
+        }
+
+        // Switch tab
+        function switchTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+        }
+
+        // Clear form
+        function clearForm() {
+            document.getElementById('command-input').value = '';
+            document.getElementById('args-input').value = '{}';
+        }
+
+        // Format JSON
+        function formatJSON() {
+            const argsInput = document.getElementById('args-input');
+            try {
+                const json = JSON.parse(argsInput.value);
+                argsInput.value = JSON.stringify(json, null, 2);
+            } catch (error) {
+                alert('Invalid JSON');
+            }
+        }
+
+        // Update connection status
+        function updateConnectionStatus(status) {
+            document.getElementById('connection-status').textContent = status;
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            initWebSocket();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,186 @@
+# Cloudflare Firewall Manager - Full Services Configuration
+name = "cloudflare-firewall-manager"
+main = "src/worker/index.ts"
+compatibility_date = "2024-10-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Account configuration
+account_id = "0b0ee2b5eaf1fb8a2612e40ab6488052"
+workers_dev = false
+
+# Production route
+[[routes]]
+pattern = "firewall-api.bozza.au/*"
+zone_name = "bozza.au"
+
+# Environment variables
+[vars]
+ENVIRONMENT = "production"
+VERSION = "2.0.0"
+AI_GATEWAY_SLUG = "firewall-ai"
+CORS_ORIGIN = "https://firewall.bozza.au"
+DEBUG = "false"
+
+# KV Namespaces for caching and session management
+[[kv_namespaces]]
+binding = "CACHE"
+id = "963d111a4ac54e30ad45d41fbf6d4841"
+
+[[kv_namespaces]]
+binding = "SESSIONS"
+id = "1fffa3c040544b67a0724ebbc251b0b7"
+
+[[kv_namespaces]]
+binding = "RATE_LIMIT"
+id = "85efe911fede4f63845df961c7fac175"
+
+# D1 Database for rule history and analytics
+[[d1_databases]]
+binding = "DB"
+database_name = "firewall-db"
+database_id = "ece31adc-abfb-4ac7-bf9d-d698f1ec0ae8"
+
+# R2 Storage for backups and exports
+[[r2_buckets]]
+binding = "BACKUPS"
+bucket_name = "gateway-rule-backups"
+
+# Vectorize for semantic search
+[[vectorize]]
+binding = "VECTORIZE"
+index_name = "gateway-rules"
+
+# AI binding for Workers AI
+[[ai]]
+binding = "AI"
+
+# Durable Objects for real-time features
+[[durable_objects.bindings]]
+name = "RATE_LIMITER"
+class_name = "RateLimiter"
+
+[[durable_objects.bindings]]
+name = "WEBSOCKET_HANDLER"
+class_name = "WebSocketHandler"
+
+[[durable_objects.bindings]]
+name = "RULE_COORDINATOR"
+class_name = "RuleCoordinator"
+
+# Durable Objects migrations
+[[migrations]]
+tag = "v1"
+new_classes = ["RateLimiter", "WebSocketHandler", "RuleCoordinator"]
+
+# Queue for async processing
+[[queues.producers]]
+binding = "RULE_QUEUE"
+queue = "rule-processing"
+
+[[queues.consumers]]
+queue = "rule-processing"
+max_batch_size = 10
+max_batch_timeout = 30
+
+# Analytics Engine for custom metrics
+[[analytics_engine_datasets]]
+binding = "ANALYTICS"
+dataset = "firewall_metrics"
+
+# Service bindings for microservices architecture
+[[services]]
+binding = "AUTH_SERVICE"
+service = "cloudflare-auth-service"
+
+[[services]]
+binding = "NOTIFICATION_SERVICE"
+service = "cloudflare-notification-service"
+
+# Secrets (to be set via wrangler secret put)
+# CLOUDFLARE_API_TOKEN
+# ANTHROPIC_API_KEY (for fallback)
+# WEBHOOK_SECRET
+# JWT_SECRET
+
+# Build configuration
+[build]
+command = "npm run build:worker"
+watch_paths = ["src/**/*.ts"]
+
+# Development configuration
+[dev]
+port = 8787
+local_protocol = "http"
+upstream_protocol = "https"
+host = "localhost"
+
+# Observability configuration
+[observability]
+enabled = true
+head_sampling_rate = 1
+
+# Tail configuration for logging
+[tail]
+format = "json"
+sample_rate = 0.1
+
+# Environment-specific configurations
+[env.staging]
+name = "cloudflare-firewall-manager-staging"
+vars.ENVIRONMENT = "staging"
+vars.DEBUG = "true"
+routes = [{pattern = "staging-firewall-api.bozza.au/*", zone_name = "bozza.au"}]
+
+[env.development]
+name = "cloudflare-firewall-manager-dev"
+vars.ENVIRONMENT = "development"
+vars.DEBUG = "true"
+workers_dev = true
+
+# Placement hints for performance
+[placement]
+mode = "smart"
+
+# Upload rules
+[upload]
+format = "modules"
+main = "./src/worker/index.ts"
+
+[[upload.rules]]
+type = "ESModule"
+globs = ["**/*.ts", "**/*.js"]
+
+# Node.js compatibility
+[node_compat]
+enabled = true
+
+# WASM modules (if needed for future enhancements)
+[[wasm_modules]]
+binding = "WASM"
+module = "./src/wasm/optimizer.wasm"
+
+# Browser rendering (for dashboard screenshots)
+[[browser]]
+binding = "BROWSER"
+
+# Hyperdrive for database connection pooling (future)
+[[hyperdrive]]
+binding = "HYPERDRIVE"
+id = "firewall-hyperdrive"
+
+# mTLS certificates for secure service-to-service communication
+[[mtls_certificates]]
+binding = "CLIENT_CERT"
+certificate_id = "firewall-client-cert"
+
+# Send email notifications
+[[send_email]]
+name = "EMAIL"
+destination_address = "alerts@example.com"
+allowed_destination_addresses = ["*@example.com"]
+
+# Logpush for audit logs
+[logpush]
+enabled = true
+dataset = "firewall_audit"
+destination = "r2://audit-logs"

@@ -14,6 +14,7 @@ import {
 } from './multi-server-config.js';
 import { MCPServerConfig } from './server-registry.js';
 import { mcpDebug } from '../security/mcp-config.js';
+import { sslConfig } from './ssl-config.js';
 
 interface MCPClientConnection {
   serverName: string;
@@ -137,11 +138,17 @@ export class MCPClientManager extends EventEmitter {
       args.push('--token', config.auth.token);
     }
     
+    // Get SSL configuration for this server
+    const sslConf = sslConfig.getConfig(serverName);
+    
     const processOptions: any = {
       env: {
         ...process.env,
         MCP_AUTH_TOKEN: config.auth?.token || '',
-        MCP_SERVER_URL: config.serverUrl
+        MCP_SERVER_URL: config.serverUrl,
+        // Add SSL environment variables for development
+        NODE_TLS_REJECT_UNAUTHORIZED: sslConf.rejectUnauthorized === false ? '0' : '1',
+        NODE_EXTRA_CA_CERTS: sslConf.ca ? '/tmp/mcp-ca.crt' : undefined
       }
     };
     

@@ -1,0 +1,84 @@
+{
+  "mcpServers": {
+    "cloudflare-bindings": {
+      "command": "npx",
+      "args": ["mcp-remote", "https://bindings.mcp.cloudflare.com/sse"],
+      "env": {
+        "CLOUDFLARE_ACCOUNT_ID": "0b0ee2b5eaf1fb8a2612e40ab6488052",
+        "CLOUDFLARE_API_TOKEN": "9586ac5f9e8deaeffa283a83d137d265123fe"
+      }
+    },
+    "cloudflare-observability": {
+      "command": "npx",
+      "args": ["mcp-remote", "https://observability.mcp.cloudflare.com/sse"],
+      "env": {
+        "CLOUDFLARE_ACCOUNT_ID": "0b0ee2b5eaf1fb8a2612e40ab6488052",
+        "CLOUDFLARE_API_TOKEN": "9586ac5f9e8deaeffa283a83d137d265123fe"
+      }
+    },
+    "cloudflare-radar": {
+      "command": "npx",
+      "args": ["mcp-remote", "https://radar.mcp.cloudflare.com/sse"],
+      "env": {
+        "CLOUDFLARE_API_TOKEN": "9586ac5f9e8deaeffa283a83d137d265123fe"
+      }
+    },
+    "cloudflare-browser": {
+      "command": "npx",
+      "args": ["mcp-remote", "https://browser.mcp.cloudflare.com/sse"],
+      "env": {
+        "CLOUDFLARE_ACCOUNT_ID": "0b0ee2b5eaf1fb8a2612e40ab6488052",
+        "CLOUDFLARE_API_TOKEN": "9586ac5f9e8deaeffa283a83d137d265123fe"
+      }
+    },
+    "cloudflare-ai-gateway": {
+      "command": "npx",
+      "args": ["mcp-remote", "https://ai-gateway.mcp.cloudflare.com/sse"],
+      "env": {
+        "CLOUDFLARE_ACCOUNT_ID": "0b0ee2b5eaf1fb8a2612e40ab6488052",
+        "CLOUDFLARE_API_TOKEN": "9586ac5f9e8deaeffa283a83d137d265123fe"
+      }
+    },
+    "cloudflare-auditlogs": {
+      "command": "npx",
+      "args": ["mcp-remote", "https://auditlogs.mcp.cloudflare.com/sse"],
+      "env": {
+        "CLOUDFLARE_ACCOUNT_ID": "0b0ee2b5eaf1fb8a2612e40ab6488052",
+        "CLOUDFLARE_API_TOKEN": "9586ac5f9e8deaeffa283a83d137d265123fe"
+      }
+    },
+    "cloudflare-dns-analytics": {
+      "command": "npx",
+      "args": ["mcp-remote", "https://dns-analytics.mcp.cloudflare.com/sse"],
+      "env": {
+        "CLOUDFLARE_ACCOUNT_ID": "0b0ee2b5eaf1fb8a2612e40ab6488052",
+        "CLOUDFLARE_ZONE_ID": "7249ad638510c628a7861d93535acbca",
+        "CLOUDFLARE_API_TOKEN": "9586ac5f9e8deaeffa283a83d137d265123fe"
+      }
+    },
+    "cloudflare-docs": {
+      "command": "npx",
+      "args": ["mcp-remote", "https://docs.mcp.cloudflare.com/sse"],
+      "env": {
+        "CLOUDFLARE_API_TOKEN": "9586ac5f9e8deaeffa283a83d137d265123fe"
+      }
+    },
+    "cloudflare-workers-builds": {
+      "command": "npx",
+      "args": ["mcp-remote", "https://builds.mcp.cloudflare.com/sse"],
+      "env": {
+        "CLOUDFLARE_ACCOUNT_ID": "0b0ee2b5eaf1fb8a2612e40ab6488052",
+        "CLOUDFLARE_API_TOKEN": "9586ac5f9e8deaeffa283a83d137d265123fe"
+      }
+    },
+    "cloudflare-graphql": {
+      "command": "npx",
+      "args": ["mcp-remote", "https://graphql.mcp.cloudflare.com/sse"],
+      "env": {
+        "CLOUDFLARE_ACCOUNT_ID": "0b0ee2b5eaf1fb8a2612e40ab6488052",
+        "CLOUDFLARE_ZONE_ID": "7249ad638510c628a7861d93535acbca",
+        "CLOUDFLARE_API_TOKEN": "9586ac5f9e8deaeffa283a83d137d265123fe"
+      }
+    }
+  }
+}

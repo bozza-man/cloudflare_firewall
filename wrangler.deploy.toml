@@ -1,0 +1,51 @@
+# Cloudflare Firewall Manager - Deployment Configuration
+name = "cloudflare-firewall-manager"
+main = "src/worker/firewall-api.ts"
+compatibility_date = "2024-10-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Account configuration
+account_id = "0b0ee2b5eaf1fb8a2612e40ab6488052"
+workers_dev = true
+
+# Environment variables
+[vars]
+ENVIRONMENT = "production"
+VERSION = "2.0.0"
+AI_GATEWAY_ID = "firewall-ai"
+CORS_ORIGIN = "*"
+DEBUG = "true"
+CLOUDFLARE_ACCOUNT_ID = "0b0ee2b5eaf1fb8a2612e40ab6488052"
+
+# KV Namespaces
+[[kv_namespaces]]
+binding = "CACHE"
+id = "963d111a4ac54e30ad45d41fbf6d4841"
+
+[[kv_namespaces]]
+binding = "SESSIONS"
+id = "1fffa3c040544b67a0724ebbc251b0b7"
+
+[[kv_namespaces]]
+binding = "RATE_LIMIT"
+id = "85efe911fede4f63845df961c7fac175"
+
+# D1 Database
+[[d1_databases]]
+binding = "DB"
+database_name = "firewall-db"
+database_id = "ece31adc-abfb-4ac7-bf9d-d698f1ec0ae8"
+
+# R2 Storage
+[[r2_buckets]]
+binding = "BACKUPS"
+bucket_name = "gateway-rule-backups"
+
+# AI binding for Workers AI
+[ai]
+binding = "AI"
+
+# Analytics Engine
+[[analytics_engine_datasets]]
+binding = "ANALYTICS"
+dataset = "firewall_metrics"

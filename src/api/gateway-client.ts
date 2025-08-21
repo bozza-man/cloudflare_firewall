@@ -22,13 +22,16 @@ export class GatewayClient {
       'Content-Type': 'application/json'
     };
     
-    if (config.cloudflare.apiToken) {
-      // Use API Token authentication
-      headers['Authorization'] = `Bearer ${config.cloudflare.apiToken}`;
-    } else if (config.cloudflare.globalKey && config.cloudflare.email) {
-      // Use Global API Key authentication  
+    // For Gateway endpoints, prefer Global API Key as it has Zero Trust permissions
+    // API tokens created programmatically don't have Gateway/Zero Trust permissions
+    if (config.cloudflare.globalKey && config.cloudflare.email) {
+      // Use Global API Key authentication (works with all endpoints including Gateway)
       headers['X-Auth-Email'] = config.cloudflare.email;
       headers['X-Auth-Key'] = config.cloudflare.globalKey;
+    } else if (config.cloudflare.apiToken) {
+      // Fallback to API Token if Global Key not available
+      // Note: This may not work for Gateway/Zero Trust endpoints
+      headers['Authorization'] = `Bearer ${config.cloudflare.apiToken}`;
     }
     
     this.api = axios.create({

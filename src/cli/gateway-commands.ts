@@ -2,8 +2,10 @@ import { Command } from 'commander';
 import chalk from 'chalk';
 import { GatewayRuleManager } from '../rules/gateway-rule-manager.js';
 import { RuleOptimizer } from '../rules/rule-optimizer.js';
+import { EnhancedRuleOptimizer } from '../rules/enhanced-rule-optimizer.js';
 import { DomainConflictDetector } from '../rules/domain-conflict-detector.js';
 import { StreamLogsCommand } from './stream-logs-command.js';
+import { MCPCommands } from './mcp-commands-simple.js';
 import type { GatewayRule, GatewayList, GatewayCategory } from '../types/gateway.js';
 import inquirer from 'inquirer';
 import ora from 'ora';
@@ -159,14 +161,26 @@ export async function createGatewayCommands(): Promise<Command> {
     .option('--auto-fix', 'Automatically apply recommended optimizations')
     .option('--dry-run', 'Show what would be changed without making actual changes')
     .option('-i, --interactive', 'Interactively approve each optimization')
+    .option('--with-mcp', 'Enable MCP observability for real traffic metrics')
+    .option('--classic', 'Use classic analyzer without MCP integration')
     .action(async (options) => {
       try {
-        const optimizer = new RuleOptimizer();
-        await optimizer.analyzeAndOptimize({
-          autoFix: options.autoFix,
-          dryRun: options.dryRun,
-          interactive: options.interactive
-        });
+        if (options.classic) {
+          const optimizer = new RuleOptimizer();
+          await optimizer.analyzeAndOptimize({
+            autoFix: options.autoFix,
+            dryRun: options.dryRun,
+            interactive: options.interactive
+          });
+        } else {
+          const enhancedOptimizer = new EnhancedRuleOptimizer();
+          await enhancedOptimizer.analyzeAndOptimize({
+            autoFix: options.autoFix,
+            dryRun: options.dryRun,
+            interactive: options.interactive,
+            useMCP: options.withMcp !== false
+          });
+        }
       } catch (error) {
         console.error(chalk.red('Error:'), error);
         process.exit(1);
@@ -245,6 +259,10 @@ export async function createGatewayCommands(): Promise<Command> {
   const { BlockPageCommand } = await import('./block-page-command.js');
   const blockPageCommand = new BlockPageCommand();
   program.addCommand(blockPageCommand.getCommand());
+
+  // Add MCP-powered commands
+  const mcpCommands = new MCPCommands();
+  program.addCommand(mcpCommands.getCommand());
 
   return program;
 }
