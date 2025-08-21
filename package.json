@@ -8,8 +8,8 @@
     "build": "tsc",
     "build:worker": "tsc --project tsconfig.worker.json",
     "dev": "tsx watch src/index.ts",
-    "dev:worker": "wrangler dev",
-    "deploy:worker": "wrangler deploy",
+    "dev:worker": "npx wrangler dev -c wrangler.full.toml",
+    "deploy:worker": "npx wrangler deploy -c wrangler.full.toml",
     "start": "node dist/index.js",
     "lint": "eslint src --ext .ts",
     "typecheck": "tsc --noEmit",
@@ -46,8 +46,6 @@
     "setup:r2": "npx wrangler r2 bucket create gateway-rule-backups",
     "setup:all": "npm run setup:ai-gateway && npm run setup:vectorize && npm run setup:d1 && npm run setup:r2",
     "migrate:ai": "tsx scripts/migrate-to-cloudflare-ai.ts",
-    "deploy:worker": "npx wrangler deploy -c wrangler.full.toml",
-    "dev:worker": "npx wrangler dev -c wrangler.full.toml",
     "tail:worker": "npx wrangler tail"
   },
   "keywords": [
@@ -80,6 +78,7 @@
     "ws": "^8.16.0"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250820.0",
     "@jest/globals": "^30.0.5",
     "@types/express": "^4.17.21",
     "@types/inquirer": "^9.0.7",

@@ -10,7 +10,7 @@ workers_dev = false
 
 # Production route
 [[routes]]
-pattern = "firewall-api.bozza.au/*"
+pattern = "firewall.bozza.au/*"
 zone_name = "bozza.au"
 
 # Environment variables
@@ -51,7 +51,7 @@ binding = "VECTORIZE"
 index_name = "gateway-rules"
 
 # AI binding for Workers AI
-[[ai]]
+[ai]
 binding = "AI"
 
 # Durable Objects for real-time features
@@ -105,7 +105,6 @@ service = "cloudflare-notification-service"
 # Build configuration
 [build]
 command = "npm run build:worker"
-watch_paths = ["src/**/*.ts"]
 
 # Development configuration
 [dev]
@@ -119,10 +118,12 @@ host = "localhost"
 enabled = true
 head_sampling_rate = 1
 
-# Tail configuration for logging
-[tail]
-format = "json"
-sample_rate = 0.1
+# Logging configuration
+logpush = true
+
+# Workers Trace Events logging
+[triggers]
+crons = []
 
 # Environment-specific configurations
 [env.staging]
@@ -141,26 +142,13 @@ workers_dev = true
 [placement]
 mode = "smart"
 
-# Upload rules
-[upload]
-format = "modules"
-main = "./src/worker/index.ts"
-
-[[upload.rules]]
-type = "ESModule"
-globs = ["**/*.ts", "**/*.js"]
-
-# Node.js compatibility
-[node_compat]
-enabled = true
+# Node.js compatibility is now handled by compatibility_flags
 
 # WASM modules (if needed for future enhancements)
-[[wasm_modules]]
-binding = "WASM"
-module = "./src/wasm/optimizer.wasm"
+# wasm_modules = ["./src/wasm/optimizer.wasm"]
 
 # Browser rendering (for dashboard screenshots)
-[[browser]]
+[browser]
 binding = "BROWSER"
 
 # Hyperdrive for database connection pooling (future)
@@ -176,11 +164,5 @@ certificate_id = "firewall-client-cert"
 # Send email notifications
 [[send_email]]
 name = "EMAIL"
-destination_address = "alerts@example.com"
 allowed_destination_addresses = ["*@example.com"]
 
-# Logpush for audit logs
-[logpush]
-enabled = true
-dataset = "firewall_audit"
-destination = "r2://audit-logs"
