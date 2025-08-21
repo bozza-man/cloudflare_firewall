@@ -106,7 +106,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: deploy -c wrangler.full.toml --env ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
+          command: deploy -c wrangler.firewall.toml --env ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
           
   setup-services:
     name: Setup Cloudflare Services

@@ -1,0 +1,93 @@
+# Cloudflare Firewall Manager - firewall.bozza.au Configuration
+name = "firewall-bozza-au"
+main = "src/worker/index.ts"
+compatibility_date = "2024-10-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Account configuration
+account_id = "0b0ee2b5eaf1fb8a2612e40ab6488052"
+workers_dev = false
+
+# Production route for firewall.bozza.au
+[[routes]]
+pattern = "firewall.bozza.au/*"
+zone_name = "bozza.au"
+zone_id = "7249ad638510c628a7861d93535acbca"
+
+# Environment variables
+[vars]
+ENVIRONMENT = "production"
+VERSION = "2.0.0"
+AI_GATEWAY_SLUG = "firewall-ai"
+CORS_ORIGIN = "https://firewall.bozza.au"
+DEBUG = "false"
+CLOUDFLARE_ACCOUNT_ID = "0b0ee2b5eaf1fb8a2612e40ab6488052"
+
+# KV Namespaces for caching and session management
+[[kv_namespaces]]
+binding = "CACHE"
+id = "963d111a4ac54e30ad45d41fbf6d4841"
+
+[[kv_namespaces]]
+binding = "SESSIONS"
+id = "1fffa3c040544b67a0724ebbc251b0b7"
+
+[[kv_namespaces]]
+binding = "RATE_LIMIT"
+id = "85efe911fede4f63845df961c7fac175"
+
+# D1 Database for rule history and analytics
+[[d1_databases]]
+binding = "DB"
+database_name = "firewall-db"
+database_id = "ece31adc-abfb-4ac7-bf9d-d698f1ec0ae8"
+
+# R2 Storage for backups and exports
+[[r2_buckets]]
+binding = "BACKUPS"
+bucket_name = "gateway-rule-backups"
+
+# AI binding for Workers AI
+[ai]
+binding = "AI"
+
+# Analytics Engine for custom metrics
+[[analytics_engine_datasets]]
+binding = "ANALYTICS"
+dataset = "firewall_metrics"
+
+# Secrets (to be set via wrangler secret put or GitHub Actions)
+# CLOUDFLARE_API_TOKEN
+# ANTHROPIC_API_KEY
+# WEBHOOK_SECRET
+# JWT_SECRET
+
+# Build configuration
+[build]
+command = "npm run build:worker"
+watch_paths = ["src/**/*.ts"]
+
+# Development configuration
+[dev]
+port = 8787
+local_protocol = "http"
+upstream_protocol = "https"
+host = "localhost"
+
+# Observability configuration
+[observability]
+enabled = true
+head_sampling_rate = 1
+
+# Environment-specific configurations
+[env.staging]
+name = "firewall-bozza-au-staging"
+vars.ENVIRONMENT = "staging"
+vars.DEBUG = "true"
+routes = [{pattern = "staging-firewall.bozza.au/*", zone_name = "bozza.au", zone_id = "7249ad638510c628a7861d93535acbca"}]
+
+[env.development]
+name = "firewall-bozza-au-dev"
+vars.ENVIRONMENT = "development"
+vars.DEBUG = "true"
+workers_dev = true

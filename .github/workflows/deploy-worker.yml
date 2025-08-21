@@ -1,0 +1,139 @@
+name: Deploy Cloudflare Worker
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/worker/**'
+      - 'wrangler.toml'
+      - '.github/workflows/deploy-worker.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'src/worker/**'
+      - 'wrangler.toml'
+      - '.github/workflows/deploy-worker.yml'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+
+jobs:
+  test:
+    name: Test Worker
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run TypeScript checks
+        run: npm run typecheck
+
+      - name: Run tests
+        run: npm run test:unit -- --testPathPattern=worker
+
+  deploy:
+    name: Deploy to Cloudflare Workers
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Worker
+        run: npm run build:worker
+
+      - name: Deploy to Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy
+          secrets: |
+            BEARER_TOKEN
+        env:
+          BEARER_TOKEN: ${{ secrets.WORKER_BEARER_TOKEN }}
+
+      - name: Verify deployment
+        run: |
+          echo "🚀 Worker deployed to https://firewall.bozza.au"
+          echo "Testing worker health..."
+          response=$(curl -s -o /dev/null -w "%{http_code}" https://firewall.bozza.au/api/env)
+          if [ $response -eq 200 ]; then
+            echo "✅ Worker is responding correctly"
+          else
+            echo "⚠️ Worker returned status code: $response"
+            exit 1
+          fi
+
+  deploy-staging:
+    name: Deploy to Staging (Manual)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging'
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Worker
+        run: npm run build:worker
+
+      - name: Create staging wrangler config
+        run: |
+          cp wrangler.toml wrangler.staging.toml
+          sed -i 's/firewall-bozza-au/firewall-staging-bozza-au/g' wrangler.staging.toml
+          sed -i 's/firewall.bozza.au/firewall-staging.bozza.au/g' wrangler.staging.toml
+          sed -i 's/DEBUG = "false"/DEBUG = "true"/g' wrangler.staging.toml
+
+      - name: Deploy to Staging
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy --config wrangler.staging.toml
+          secrets: |
+            BEARER_TOKEN
+        env:
+          BEARER_TOKEN: ${{ secrets.WORKER_BEARER_TOKEN }}
+
+      - name: Post deployment info
+        run: |
+          echo "🔧 Staging worker deployed to https://firewall-staging.bozza.au"
+          echo "Debug mode is enabled for staging environment"
