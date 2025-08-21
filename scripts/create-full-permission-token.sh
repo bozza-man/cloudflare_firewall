@@ -55,16 +55,16 @@ TOKEN_PAYLOAD=$(cat <<EOF
         "com.cloudflare.api.account.${ACCOUNT_ID}": "*"
       },
       "permission_groups": [
-        "c1fde68c7bcc44588cbb6ddbc16d6480",
-        "1a71c399447a4097ac4e3d47b2e2b4e5",
-        "f7f0eda5697f475c90846e879bab8666",
-        "2df70883747742589491dca19a752607",
-        "6e8783fce2554bc7bcb1ada73b92ce23",
-        "8a78fc561a834c25a03e6dc9f4a385f4",
-        "d8b9aae08dc94af2928e1e09fa8f5690",
-        "e17beae8b8cb423a99b1730f21238bed",
-        "82b3c18e1dd446de97ff67ea2dc3c62e",
-        "0b7c25468ca848b6b5af3c8815ad1f34"
+        {"id": "c1fde68c7bcc44588cbb6ddbc16d6480"},
+        {"id": "1a71c399447a4097ac4e3d47b2e2b4e5"},
+        {"id": "f7f0eda5697f475c90846e879bab8666"},
+        {"id": "2df70883747742589491dca19a752607"},
+        {"id": "6e8783fce2554bc7bcb1ada73b92ce23"},
+        {"id": "8a78fc561a834c25a03e6dc9f4a385f4"},
+        {"id": "d8b9aae08dc94af2928e1e09fa8f5690"},
+        {"id": "e17beae8b8cb423a99b1730f21238bed"},
+        {"id": "82b3c18e1dd446de97ff67ea2dc3c62e"},
+        {"id": "0b7c25468ca848b6b5af3c8815ad1f34"}
       ]
     },
     {
@@ -73,9 +73,9 @@ TOKEN_PAYLOAD=$(cat <<EOF
         "com.cloudflare.api.account.zone.${ZONE_ID}": "*"
       },
       "permission_groups": [
-        "e086da7e2179491d91ee5f35b3ca210a",
-        "82e64a83756745bbbb1c9c2701bf816b",
-        "c8fed203ed3043cba015a93ad1616f1f"
+        {"id": "e086da7e2179491d91ee5f35b3ca210a"},
+        {"id": "82e64a83756745bbbb1c9c2701bf816b"},
+        {"id": "c8fed203ed3043cba015a93ad1616f1f"}
       ]
     }
   ]
@@ -107,9 +107,9 @@ if [ "$TOKEN_VALUE" == "null" ] || [ -z "$TOKEN_VALUE" ]; then
         "com.cloudflare.api.account.zone.*": "*"
       },
       "permission_groups": [
-        "c8fed203ed3043cba015a93ad1616f1f",
-        "e086da7e2179491d91ee5f35b3ca210a",
-        "82e64a83756745bbbb1c9c2701bf816b"
+        {"id": "c8fed203ed3043cba015a93ad1616f1f"},
+        {"id": "e086da7e2179491d91ee5f35b3ca210a"},
+        {"id": "82e64a83756745bbbb1c9c2701bf816b"}
       ]
     }
   ]
