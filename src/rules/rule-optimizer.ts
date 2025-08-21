@@ -349,7 +349,7 @@ export class RuleOptimizer {
       if (markedForDeletion.has(rule.id)) return;
       
       const updates: any = {};
-      let reasons: string[] = [];
+      const reasons: string[] = [];
       
       // Always add description if missing
       if (!rule.description || rule.description.trim() === '') {

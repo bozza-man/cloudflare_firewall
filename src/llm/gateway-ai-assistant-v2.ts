@@ -661,7 +661,7 @@ Provide a JSON response with:
       
       if (typeof response === 'string') {
         // Clean up JSON string
-        let jsonStr = response.replace(/[\u0000-\u001F\u007F-\u009F]/g, '');
+        const jsonStr = response.replace(/[\u0000-\u001F\u007F-\u009F]/g, '');
         parsed = JSON.parse(jsonStr);
       } else if (response.response) {
         // Cloudflare AI format

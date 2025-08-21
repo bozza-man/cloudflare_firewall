@@ -74,7 +74,7 @@ async function allowBlockPageDomains() {
     const rules = await gateway.listGatewayRules();
     
     // Check if we already have an allow rule for block pages
-    let blockPageRule = rules.find(rule => 
+    const blockPageRule = rules.find(rule => 
       rule.name === 'Allow Block Page Domains' ||
       (rule.name && rule.name.toLowerCase().includes('block page') && rule.action === 'allow')
     );
@@ -129,7 +129,7 @@ async function allowBlockPageDomains() {
     // Also create DNS allow rule for these domains
     spinner.start('Checking DNS allow rules...');
     
-    let dnsRule = rules.find(rule => 
+    const dnsRule = rules.find(rule => 
       rule.name === 'Allow Block Page Domains (DNS)' ||
       (rule.name && rule.name.toLowerCase().includes('block page') && 
        rule.action === 'allow' && rule.filters?.includes('dns'))

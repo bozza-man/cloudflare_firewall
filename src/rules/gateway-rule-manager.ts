@@ -848,7 +848,7 @@ export class GatewayRuleManager {
     const mergedFilters = [...existingFilters];
     
     // Find DNS filter and add new domains
-    let dnsFilterIndex = mergedFilters.findIndex(f => f.includes('dns.fqdn'));
+    const dnsFilterIndex = mergedFilters.findIndex(f => f.includes('dns.fqdn'));
     
     if (dnsFilterIndex >= 0) {
       // Extract existing domains from the filter
