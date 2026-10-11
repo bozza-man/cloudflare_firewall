@@ -58,14 +58,14 @@
   "license": "MIT",
   "dependencies": {
     "@anthropic-ai/sdk": "^0.24.3",
-    "@modelcontextprotocol/sdk": "^1.17.3",
-    "axios": "^1.7.2",
+    "@modelcontextprotocol/sdk": "^1.31.0",
+    "axios": "^1.20.0",
     "axios-retry": "^4.5.0",
     "chalk": "^5.3.0",
     "cli-table3": "^0.6.5",
     "commander": "^12.1.0",
     "dotenv": "^16.4.5",
-    "express": "^4.18.2",
+    "express": "^4.22.3",
     "inquirer": "^9.2.23",
     "itty-router": "^4.0.26",
     "mcp-remote": "^0.1.18",
@@ -74,8 +74,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-loader-spinner": "^6.1.6",
-    "react-router-dom": "^6.21.1",
-    "ws": "^8.16.0"
+    "react-router-dom": "^7.18.4",
+    "ws": "^8.22.0"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250820.0",
@@ -85,7 +85,7 @@
     "@types/jest": "^30.0.0",
     "@types/node": "^20.14.9",
     "@types/supertest": "^6.0.3",
-    "@types/ws": "^8.5.10",
+    "@types/ws": "^8.18.2",
     "@typescript-eslint/eslint-plugin": "^7.14.1",
     "@typescript-eslint/parser": "^7.14.1",
     "eslint": "^8.57.0",
@@ -99,7 +99,7 @@
     "ts-node": "^10.9.2",
     "tsx": "^4.16.0",
     "typescript": "^5.5.3",
-    "wrangler": "^4.31.0"
+    "wrangler": "^4.149.0"
   },
   "lint-staged": {
     "src/**/*.{ts,js}": [
