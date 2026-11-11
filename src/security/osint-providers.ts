@@ -5,6 +5,7 @@ import dns from 'dns';
 import chalk from 'chalk';
 import type { OSINTAnalysis } from './threat-intelligence-client.js';
 import { enhancedRadarClient } from './enhanced-radar-client.js';
+import { IANA_RDAP_DNS_BOOTSTRAP, parseRdapBootstrap, rdapBaseFor, type RdapBootstrap } from './rdap-bootstrap.js';
 
 const execAsync = promisify(exec);
   // These are defined but not currently used
@@ -35,6 +36,7 @@ export class OSINTProviders {
   private config: Required<OSINTProviderConfig>;
   private httpClient: AxiosInstance;
   private semaphore: { count: number; waiting: Array<() => void> };
+  private rdapBootstrap?: Promise<RdapBootstrap | null>;
 
   constructor(config: Partial<OSINTProviderConfig> = {}) {
     this.config = {
@@ -135,27 +137,31 @@ export class OSINTProviders {
   }
 
   /**
+   * IANA's RDAP bootstrap, fetched once per instance. null when IANA is unreachable
+   * (RDAP is then skipped for that lookup and the fetch is retried next time).
+   */
+  private loadRdapBootstrap(): Promise<RdapBootstrap | null> {
+    if (!this.rdapBootstrap) {
+      this.rdapBootstrap = this.httpClient.get(IANA_RDAP_DNS_BOOTSTRAP).then(
+        (res) => parseRdapBootstrap(res.data),
+        () => {
+          this.rdapBootstrap = undefined;
+          return null;
+        },
+      );
+    }
+    return this.rdapBootstrap;
+  }
+
+  /**
    * RDAP (Registration Data Access Protocol) lookup
    */
   private async getRdapData(domain: string): Promise<OSINTAnalysis['whoisData'] | null> {
     try {
-      const tld = domain.split('.').pop()?.toLowerCase();
-      if (!tld) return undefined;
-
-      // Common RDAP servers
-      const rdapServers: Record<string, string> = {
-        'com': 'https://rdap.verisign.com/com/v1/',
-        'net': 'https://rdap.verisign.com/net/v1/',
-        'org': 'https://rdap.pir.org/',
-        'info': 'https://rdap.afilias.net/rdap/afilias/',
-        'biz': 'https://rdap.afilias.net/rdap/afilias/',
-        'au': 'https://rdap.audns.net.au/au/',
-        'uk': 'https://rdap.nominet.uk/uk/',
-        'fr': 'https://rdap.nic.fr/',
-        'de': 'https://rdap.denic.de/',
-      };
-
-      const serverUrl = rdapServers[tld];
+      // RDAP server from IANA's bootstrap (RFC 9224), not a hard-coded table: see rdap-bootstrap.ts.
+      // TLDs IANA lists no RDAP service for (e.g. .de) fall through to the whois fallbacks.
+      const bootstrap = await this.loadRdapBootstrap();
+      const serverUrl = bootstrap ? rdapBaseFor(domain, bootstrap) : undefined;
       if (!serverUrl) return undefined;
 
       const response = await this.rateLimitedRequest(() => 
